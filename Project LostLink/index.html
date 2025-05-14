@@ -1,0 +1,426 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>LostLink - Home</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			/* Chatbot Styles */
+			.chatbot-button {
+				position: fixed;
+				bottom: 20px;
+				left: 20px;
+				background: #df7366;
+				color: #fff;
+				border-radius: 50%;
+				width: 60px;
+				height: 60px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				z-index: 10001;
+				-moz-transition: background-color 0.35s ease-in-out;
+				-webkit-transition: background-color 0.35s ease-in-out;
+				-ms-transition: background-color 0.35s ease-in-out;
+				transition: background-color 0.35s ease-in-out;
+			}
+			.chatbot-button:hover {
+				background: #ef8376;
+			}
+			.chatbot-window {
+				display: none;
+				position: fixed;
+				bottom: 100px;
+				left: 20px;
+				width: 300px;
+				max-height: 400px;
+				background: #fff;
+				border-radius: 8px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+				z-index: 10001;
+				overflow: hidden;
+			}
+			.chatbot-window.open {
+				display: block;
+			}
+			.chatbot-header {
+				background: #df7366;
+				color: #fff;
+				padding: 10px;
+				font-size: 1.2em;
+				text-align: center;
+			}
+			.chatbot-messages {
+				padding: 10px;
+				height: 300px;
+				overflow-y: auto;
+				font-size: 0.9em;
+			}
+			.chatbot-message {
+				margin: 5px 0;
+				padding: 8px;
+				border-radius: 5px;
+			}
+			.chatbot-message.bot {
+				background: #f0f4f4;
+				color: #5b5b5b;
+			}
+			.chatbot-message.user {
+				background: #df7366;
+				color: #fff;
+				text-align: right;
+			}
+			.chatbot-input {
+				display: flex;
+				border-top: 1px solid #ccc;
+			}
+			.chatbot-input input {
+				flex: 1;
+				border: none;
+				padding: 10px;
+				font-size: 0.9em;
+			}
+			.chatbot-input button {
+				background: #df7366;
+				color: #fff;
+				border: none;
+				padding: 10px;
+				cursor: pointer;
+				-moz-transition: background-color 0.35s ease-in-out;
+				-webkit-transition: background-color 0.35s ease-in-out;
+				-ms-transition: background-color 0.35s ease-in-out;
+				transition: background-color 0.35s ease-in-out;
+			}
+			.chatbot-input button:hover {
+				background: #ef8376;
+			}
+		</style>
+	</head>
+	<body class="homepage is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<div id="header">
+					<!-- Inner -->
+					<div class="inner">
+						<header>
+							<h1><id="logo">LostLink</a></h1>
+							<hr />
+							<p>Airline & Airport Lost Items Tracking System</p>
+						</header>
+						<footer>
+							<a href="#banner" class="button circled scrolly">Start</a>
+						</footer>
+					</div>
+
+
+					<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="About_Us.html">About Us</a></li>
+							<li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+							<li><a href="track_your_item.html">Track Items</a></li>
+							<li><a href="claim_item.html">Claim Items</a></li>
+                            <li><a href="contact_support.html">Contact Us</a></li>
+						</ul>
+					</nav>
+
+			</div>
+			<!-- Banner -->
+				<section id="banner">
+					<header>
+						<h2>Hi. Welcome to <strong>LostLink</strong>.</h2>
+						<p>
+							A new standard for operational excellence in the travel industry.
+						</p>
+					</header>
+				</section>
+
+			<!-- Carousel -->
+<section class="carousel">
+	<div class="reel">
+
+		<article>
+			<a href="report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+			<header>
+				<h3><a href="report_Lost_Items.html">Report Lost Items</a></h3>
+			</header>
+			<p>Submit info about stuff you lost to start finding it.</p>
+		</article>
+
+		<article>
+			<a href="track_your_item.html" class="image featured"><img src="images/pic02.jpg" alt="" /></a>
+			<header>
+				<h3><a href="track_your_item.html">Track Your Item</a></h3>
+			</header>
+			<p>Check where your lost item is or its status.</p>
+		</article>
+
+		<article>
+			<a href="claim_item.html" class="image featured"><img src="images/claim.jpg" alt="" /></a>
+			<header>
+				<h3><a href="claim_item.html">Claim Item</a></h3>
+			</header>
+			<p>Say a found item is yours and get it back.</p>
+		</article>
+
+		<article>
+			<a href="login_staff.html" class="image featured"><img src="images/staff.jpg" alt="" /></a>
+			<header>
+				<h3><a href="login_staff.html">Login (Staff)</a></h3>
+			</header>
+			<p>Sign in as staff to check status and report found items.</p>
+		</article>
+
+		<article>
+			<a href="contact_support.html" class="image featured"><img src="images/contact.jpg" alt="" /></a>
+			<header>
+				<h3><a href="contact_support.html">Contact Support</a></h3>
+			</header>
+			<p>Reach out to the support team for help or questions.</p>
+		</article>
+
+	</div>
+</section>
+
+		<!-- Main -->
+		<div class="wrapper style2">
+			<article id="main" class="container special">
+				<header>
+					<h2><a href="about_Us.html">Reuniting You with Your Belongings</a></h2>
+					<p>
+						LostLink is your trusted partner in recovering lost items at airports, offering a seamless platform to report, track, and claim your belongings.
+					</p>
+				</header>
+				<p>
+					At LostLink, we understand how stressful it can be to lose personal items during travel. Our innovative platform simplifies the lost and found process, connecting passengers with their belongings through real-time tracking, a comprehensive found items database, and a secure claiming process. Whether you’ve misplaced a wallet, a bag, or an electronic device, LostLink is here to help you every step of the way. Our dedicated team works closely with airport staff to ensure quick and accurate recovery, making travel worry-free.
+				</p>
+				<footer>
+					<a href="about_us.html" class="button">Learn More About Us</a>
+				</footer>
+			</article>
+		</div>
+
+	<!-- Features -->
+		<div class="wrapper style1">
+			<section id="features" class="container special">
+				<header>
+					<h2>Key Features of LostLink</h2>
+					<p>Explore the tools that make recovering your lost items fast and easy.</p>
+				</header>
+				<div class="row">
+					<article class="col-4 col-12-mobile special">
+						<a href="Report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="Report Lost Items" /></a>
+						<header>
+							<h3><a href="Report_Lost_Items.html">Report Lost Items</a></h3>
+						</header>
+						<p>
+							Quickly submit details about your lost item to initiate the recovery process. Provide descriptions, locations, and images to help us find it faster.
+						</p>
+					</article>
+					<article class="col-4 col-12-mobile special">
+						<a href="track_your_item.html" class="image featured"><img src="images/pic02.jpg" alt="Track Your Item" /></a>
+						<header>
+							<h3><a href="track_your_item.html">Track Your Item</a></h3>
+						</header>
+						<p>
+							Monitor the status of your lost item in real time with our tracking system, receiving updates on its location and recovery progress.
+						</p>
+					</article>
+					<article class="col-4 col-12-mobile special">
+						<a href="claim_item.html" class="image featured"><img src="images/pic03.jpg" alt="Claim Item" /></a>
+						<header>
+							<h3><a href="claim_item.html">Claim Your Item</a></h3>
+						</header>
+						<p>
+							Identify and claim your found item securely through our verification process, ensuring it’s returned to you promptly.
+						</p>
+					</article>
+				</div>
+			</section>
+		</div>
+
+	<!-- Footer -->
+		<div id="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<!-- Contact -->
+							<section class="contact">
+								<header>
+									<h3>Need Help with a Lost Item?</h3>
+								</header>
+								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+								<ul class="icons">
+									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+								</ul>
+							</section>
+
+						<!-- Copyright -->
+							<div class="copyright">
+								<ul class="menu">
+									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+								</ul>
+							</div>
+<!-- Chatbot -->
+<div class="chatbot-button" onclick="toggleChatbot()">
+	<span>🤖</span>
+</div>
+<div class="chatbot-window" id="chatbotWindow">
+	<div class="chatbot-header">
+		LostLink Chatbot
+		<span class="close-btn" onclick="toggleChatbot()">✖</span>
+	</div>
+	<div class="chatbot-messages" id="chatbotMessages">
+		<div class="chatbot-message bot">Hello! How can I assist you with your lost items?</div>
+		<div class="chatbot-quick-replies" id="quickReplies">
+			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I report a lost item?')">Report Lost Item</button>
+			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I track my item?')">Track Item</button>
+			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I claim a found item?')">Claim Item</button>
+			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I contact support?')">Contact Support</button>
+		</div>
+	</div>
+	<div class="chatbot-input">
+		<input type="text" id="chatbotInput" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') sendMessage()">
+		<button onclick="sendMessage()">Send</button>
+	</div>
+</div>
+
+</div>
+					
+					
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+<!-- Tawk.to Live Chat -->
+<script>
+	var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+	(function(){
+		var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+		s1.async=true;
+		s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/default';
+		s1.charset='UTF-8';
+		s1.setAttribute('crossorigin','*');
+		s0.parentNode.insertBefore(s1,s0);
+	})();
+</script>
+<!-- Chatbot Script -->
+<script>
+	let lastUserTopic = ''; // Track context for follow-up questions
+
+	function toggleChatbot() {
+		const window = document.getElementById('chatbotWindow');
+		window.classList.toggle('open');
+	}
+
+	function sendQuickReply(message) {
+		const input = document.getElementById('chatbotInput');
+		input.value = message;
+		sendMessage();
+	}
+
+	function sendMessage() {
+		const input = document.getElementById('chatbotInput');
+		const messages = document.getElementById('chatbotMessages');
+		const quickReplies = document.getElementById('quickReplies');
+		const userMessage = input.value.trim();
+		if (!userMessage) return;
+
+		// Add user message
+		const userDiv = document.createElement('div');
+		userDiv.className = 'chatbot-message user';
+		userDiv.textContent = userMessage;
+		messages.appendChild(userDiv);
+
+		// Show typing indicator
+		const typingDiv = document.createElement('div');
+		typingDiv.className = 'chatbot-message bot typing';
+		typingDiv.textContent = '...';
+		messages.appendChild(typingDiv);
+		messages.scrollTop = messages.scrollHeight;
+
+		// Simulate typing delay and respond
+		setTimeout(() => {
+			typingDiv.remove();
+			const botDiv = document.createElement('div');
+			botDiv.className = 'chatbot-message bot';
+			botDiv.innerHTML = getBotResponse(userMessage.toLowerCase());
+			messages.appendChild(botDiv);
+
+			// Update quick replies based on context
+			updateQuickReplies();
+			messages.scrollTop = messages.scrollHeight;
+		}, 1000); // 1-second delay for typing effect
+
+		// Clear input
+		input.value = '';
+	}
+
+	function updateQuickReplies() {
+		const quickReplies = document.getElementById('quickReplies');
+		quickReplies.innerHTML = ''; // Clear existing buttons
+		const buttons = [
+			{ text: 'Report Lost Item', message: 'How do I report a lost item?' },
+			{ text: 'Track Item', message: 'How do I track my item?' },
+			{ text: 'Claim Item', message: 'How do I claim a found item?' },
+			{ text: 'Contact Support', message: 'How do I contact support?' }
+		];
+		if (lastUserTopic.includes('report')) {
+			buttons.push({ text: 'More Reporting Tips', message: 'What are tips for reporting?' });
+		} else if (lastUserTopic.includes('track')) {
+			buttons.push({ text: 'Check Status', message: 'How do I check my item’s status?' });
+		}
+		buttons.forEach(btn => {
+			const button = document.createElement('button');
+			button.className = 'chatbot-quick-reply';
+			button.textContent = btn.text;
+			button.onclick = () => sendQuickReply(btn.message);
+			quickReplies.appendChild(button);
+		});
+	}
+
+	function getBotResponse(message) {
+		lastUserTopic = message; // Update context
+		if (message.includes('report') || message.includes('lost item')) {
+			return 'To report a lost item, visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost. Want tips for reporting?';
+		} else if (message.includes('track') || message.includes('status')) {
+			return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
+		} else if (message.includes('claim') || message.includes('found')) {
+			return 'Visit the <a href="claim_item.html">Claim Items</a> page to browse found items and submit a claim with verification details. Need help with the process?';
+		} else if (message.includes('support') || message.includes('contact')) {
+			return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat. Want to try our live chat now?';
+		} else if (message.includes('fee') || message.includes('cost')) {
+			return 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
+		} else if (message.includes('tips') || message.includes('reporting')) {
+			return 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
+		} else if (message.includes('hi') || message.includes('hello')) {
+			return 'Hey there! I’m here to help with lost items. Try asking about reporting, tracking, or claiming items, or click a button below!';
+		} else {
+			return 'Hmm, I’m not sure about that. Try asking about <a href="report_Lost_Items.html">reporting a lost item</a>, <a href="track_your_item.html">tracking</a>, or <a href="contact_support.html">contacting support</a>. Or use the buttons below!';
+		}
+	}
+
+	// Ensure footer is removed if added dynamically
+	window.onload = function() {
+		const footer = document.querySelector('article#main footer');
+		if (footer) footer.remove();
+	};
+</script>
+
+</body>
+</html>

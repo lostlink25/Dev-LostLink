@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Report Lost Item - LostLink</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			.form-container {
+				padding: 20px;
+			}
+			.form-container label {
+				display: block;
+				margin: 10px 0 5px;
+				font-weight: bold;
+				color: #333;
+			}
+			.form-container input, .form-container select, .form-container textarea {
+				width: 100%;
+				padding: 8px;
+				margin-bottom: 15px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				box-sizing: border-box;
+				font-size: 1em;
+			}
+			.form-container button {
+				display: inline-block;
+				padding: 10px 20px;
+				background-color: #007bff;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				text-align: center;
+				text-decoration: none;
+			}
+			.form-container button:hover {
+				background-color: #0056b3;
+			}
+		</style>
+	</head>
+	<body class="Report is-preload">
+		<div id="page-wrapper">
+
+				<!-- Header -->
+				<div id="header">
+					<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="About_Us.html">About Us</a></li>
+							<li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+							<li><a href="track_your_item.html">Track Items</a></li>
+							<li><a href="claim_item.html">Claim Items</a></li>
+                            <li><a href="contact_support.html">Contact Us</a></li>
+						</ul>
+					</nav>
+				</div>
+			<!-- Main -->
+				<div class="wrapper style1">
+
+					<div class="container">
+						<div class="row gtr-200">
+							<div class="col-4 col-12-mobile" id="sidebar">
+								<hr class="first" />
+								<section>
+									<header>
+										<h3><a href="#">About LostLink</a></h3>
+									</header>
+									<p>
+										LostLink helps you report and track items lost at US airports. We work with airport staff to make the process quick and easy.
+									</p>
+									<footer>
+										<a href="About_Us.html" class="button">Learn More</a>
+									</footer>
+								</section>
+								<hr />
+								<section>
+									<header>
+										<h3><a href="#">Tips for Reporting</a></h3>
+									</header>
+									<p>
+										Be as detailed as possible when describing your item, and report it as soon as you can to increase your chances of recovery.
+									</p>
+									<div class="row gtr-50">
+										<div class="col-4">
+											<a href="#" class="image fit"><img src="images/pic10.jpg" alt="Electronics" /></a>
+										</div>
+										<div class="col-8">
+											<h4>Electronics</h4>
+											<p>
+												Include brand, color, and any unique features.
+											</p>
+										</div>
+										<div class="col-4">
+											<a href="#" class="image fit"><img src="images/pic11.jpg" alt="Luggage" /></a>
+										</div>
+										<div class="col-8">
+											<h4>Luggage</h4>
+											<p>
+												Note the size, color, and any tags or stickers.
+											</p>
+										</div>
+										<div class="col-4">
+											<a href="#" class="image fit"><img src="images/pic12.jpg" alt="Clothing" /></a>
+										</div>
+										<div class="col-8">
+											<h4>Clothing</h4>
+											<p>
+												Mention the type, color, and any logos.
+											</p>
+										</div>
+										<div class="col-4">
+											<a href="#" class="image fit"><img src="images/pic13.jpg" alt="Jewelry" /></a>
+										</div>
+										<div class="col-8">
+											<h4>Jewelry</h4>
+											<p>
+												Describe the material, design, and any engravings.
+											</p>
+										</div>
+										<div class="col-4">
+											<a href="#" class="image fit"><img src="images/pic14.jpg" alt="Other Items" /></a>
+										</div>
+										<div class="col-8">
+											<h4>Other Items</h4>
+											<p>
+												Provide as much detail as possible.
+											</p>
+										</div>
+									</div>
+									<footer>
+										<a href="#" class="button">More Tips</a>
+									</footer>
+								</section>
+							</div>
+							<div class="col-8 col-12-mobile imp-mobile" id="content">
+								<article id="main">
+									<header>
+										<h2><a href="#">Report Lost Item</a></h2>
+										<p>
+											Let us help you find your lost item—fill out the form below with as much detail as possible.
+										</p>
+									</header>
+									<div class="form-container">
+										<form action="report_submission.html" method="post">
+											<label for="name">Your Name</label>
+											<input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+											<label for="email">Email Address</label>
+											<input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+											<label for="phone">Phone Number</label>
+											<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+
+											<label for="airport">Airport Where Item Was Lost</label>
+											<select id="airport" name="airport" required>
+												<option value="" disabled selected>Select an airport</option>
+												<option value="LAX">Los Angeles International (LAX)</option>
+												<option value="JFK">John F. Kennedy International (JFK)</option>
+												<option value="ORD">Chicago O'Hare International (ORD)</option>
+												<option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
+												<option value="DFW">Dallas/Fort Worth International (DFW)</option>
+											</select>
+
+											<label for="item-type">Item Type</label>
+											<select id="item-type" name="item-type" required>
+												<option value="" disabled selected>Select item type</option>
+												<option value="electronics">Electronics (phone, laptop, etc.)</option>
+												<option value="clothing">Clothing</option>
+												<option value="luggage">Luggage</option>
+												<option value="jewelry">Jewelry</option>
+												<option value="other">Other</option>
+											</select>
+
+											<label for="description">Item Description</label>
+											<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
+
+											<label for="date-lost">Date Lost</label>
+											<input type="date" id="date-lost" name="date-lost" required>
+
+											<button type="submit">Submit Report</button>
+										</form>
+									</div>
+								</article>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+		<!-- Footer -->
+		<div id="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<!-- Contact -->
+							<section class="contact">
+								<header>
+									<h3>Need Help with a Lost Item?</h3>
+								</header>
+								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+								<ul class="icons">
+									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+								</ul>
+							</section>
+
+						<!-- Copyright -->
+							<div class="copyright">
+								<ul class="menu">
+									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+								</ul>
+							</div>
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
