@@ -272,32 +272,36 @@
 								</ul>
 							</div>
 <!-- Chatbot -->
-<div class="chatbot-button" onclick="toggleChatbot()">
-	<span>🤖</span>
-</div>
-<div class="chatbot-window" id="chatbotWindow">
-	<div class="chatbot-header">
-		LostLink Chatbot
-		<span class="close-btn" onclick="toggleChatbot()">✖</span>
-	</div>
-	<div class="chatbot-messages" id="chatbotMessages">
-		<div class="chatbot-message bot">Hello! How can I assist you with your lost items?</div>
-		<div class="chatbot-quick-replies" id="quickReplies">
-			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I report a lost item?')">Report Lost Item</button>
-			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I track my item?')">Track Item</button>
-			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I claim a found item?')">Claim Item</button>
-			<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I contact support?')">Contact Support</button>
-		</div>
-	</div>
-	<div class="chatbot-input">
-		<input type="text" id="chatbotInput" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') sendMessage()">
-		<button onclick="sendMessage()">Send</button>
-	</div>
-</div>
+									<div class="chatbot-button" onclick="toggleChatbot()">
+										<span>🤖</span>
+									</div>
+									<div class="chatbot-window" id="chatbotWindow">
+										<div class="chatbot-header">
+											LostLink Chatbot
+											<span class="close-btn" onclick="toggleChatbot()">✖</span>
+										</div>
+										<div class="chatbot-messages" id="chatbotMessages">
+											<div class="chatbot-message bot">Hello! How can I assist you with your lost items?</div>
+											<div class="chatbot-quick-replies" id="quickReplies">
+												<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I report a lost item?')">Report Lost Item</button>
+												<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I track my item?')">Track Item</button>
+												<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I claim a found item?')">Claim Item</button>
+												<button class="chatbot-quick-reply" onclick="sendQuickReply('Show me found items')">Browse Found Items</button>
+												<button class="chatbot-quick-reply" onclick="sendQuickReply('How do I contact support?')">Contact Support</button>
+											</div>
+										</div>
+										<div class="chatbot-input">
+											<input type="text" id="chatbotInput" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') sendMessage()">
+											<button onclick="sendMessage()">Send</button>
+										</div>
+									</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-</div>
-					
-					
+		</div>
+
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.dropotron.min.js"></script>
@@ -307,142 +311,178 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-<!-- Tawk.to Live Chat -->
-<script>
-	var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-	(function(){
-		var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-		s1.async=true;
-		s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/default';
-		s1.charset='UTF-8';
-		s1.setAttribute('crossorigin','*');
-		s0.parentNode.insertBefore(s1,s0);
-	})();
-</script>
-<!-- Chatbot Script -->
-<script>
-let lastUserTopic = ''; // Track context for follow-up questions
+			<!-- Tawk.to Live Chat -->
+			<script>
+				var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+				(function(){
+					var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+					s1.async=true;
+					s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/default';
+					s1.charset='UTF-8';
+					s1.setAttribute('crossorigin','*');
+					s0.parentNode.insertBefore(s1,s0);
+				})();
+			</script>
+			<!-- Chatbot Script -->
+			<script>
+				let lastUserTopic = ''; // Track context for follow-up questions
+				let currentFilter = { type: '', date: '' }; // Store current filter state
 
-function toggleChatbot() {
-    const window = document.getElementById('chatbotWindow');
-    window.classList.toggle('open');
-}
+				// Google Sheets API configuration
+				const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc'; // Replace with your Google Sheet ID
+				const API_KEY = '321609158255-7sad841rco4jd97gq8rb4pvemalvl3r4.apps.googleusercontent.com'; // Replace with your Google Sheets API Key
+				const SHEET_NAME = 'Sheet1'; // Name of the sheet with data
 
-function sendQuickReply(message) {
-    const input = document.getElementById('chatbotInput');
-    input.value = message;
-    sendMessage();
-}
+				// Fetch found items from Google Sheets
+				async function fetchFoundItems() {
+					const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!A2:E?key=${API_KEY}`;
+					try {
+						const response = await fetch(url);
+						const data = await response.json();
+						if (!data.values) return [];
 
-function sendMessage() {
-    const input = document.getElementById('chatbotInput');
-    const messages = document.getElementById('chatbotMessages');
-    const quickReplies = document.getElementById('quickReplies');
-    const userMessage = input.value.trim();
-    if (!userMessage) return;
+						// Map sheet data to found items array
+						return data.values.map(row => ({
+							id: row[0],
+							type: row[1],
+							name: row[2],
+							description: row[3],
+							dateFound: row[4]
+						}));
+					} catch (error) {
+						console.error('Error fetching from Google Sheets:', error);
+						return [];
+					}
+				}
 
-    // Add user message to chat window
-    const userDiv = document.createElement('div');
-    userDiv.className = 'chatbot-message user';
-    userDiv.textContent = userMessage;
-    messages.appendChild(userDiv);
+				function toggleChatbot() {
+					const window = document.getElementById('chatbotWindow');
+					window.classList.toggle('open');
+				}
 
-    // Show typing indicator
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'chatbot-message bot typing';
-    typingDiv.textContent = '...';
-    messages.appendChild(typingDiv);
-    messages.scrollTop = messages.scrollHeight;
+				function sendQuickReply(message) {
+					const input = document.getElementById('chatbotInput');
+					input.value = message;
+					sendMessage();
+				}
 
-    // Send message to Zapier webhook
-    fetch('YOUR_ZAPIER_WEBHOOK_URL', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            message: userMessage,
-            timestamp: new Date().toISOString(),
-            source: 'LostLink Chatbot'
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error('Error sending to Zapier:', response.statusText);
-        }
-        return response.json();
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-    });
+				function sendMessage() {
+					const input = document.getElementById('chatbotInput');
+					const messages = document.getElementById('chatbotMessages');
+					const userMessage = input.value.trim();
+					if (!userMessage) return;
 
-    // Simulate typing delay and respond locally
-    setTimeout(() => {
-        typingDiv.remove();
-        const botDiv = document.createElement('div');
-        botDiv.className = 'chatbot-message bot';
-        botDiv.innerHTML = getBotResponse(userMessage.toLowerCase());
-        messages.appendChild(botDiv);
+					// Add user message to chat window
+					const userDiv = document.createElement('div');
+					userDiv.className = 'chatbot-message user';
+					userDiv.textContent = userMessage;
+					messages.appendChild(userDiv);
 
-        // Update quick replies based on context
-        updateQuickReplies();
-        messages.scrollTop = messages.scrollHeight;
-    }, 1000); // 1-second delay for typing effect
+					// Show typing indicator
+					const typingDiv = document.createElement('div');
+					typingDiv.className = 'chatbot-message bot typing';
+					typingDiv.textContent = '...';
+					messages.appendChild(typingDiv);
+					messages.scrollTop = messages.scrollHeight;
 
-    // Clear input
-    input.value = '';
-}
+					// Simulate typing delay and respond
+					setTimeout(async () => {
+						typingDiv.remove();
+						const botDiv = document.createElement('div');
+						botDiv.className = 'chatbot-message bot';
+						botDiv.innerHTML = await getBotResponse(userMessage.toLowerCase());
+						messages.appendChild(botDiv);
 
-function updateQuickReplies() {
-    const quickReplies = document.getElementById('quickReplies');
-    quickReplies.innerHTML = ''; // Clear existing buttons
-    const buttons = [
-        { text: 'Report Lost Item', message: 'How do I report a lost item?' },
-        { text: 'Track Item', message: 'How do I track my item?' },
-        { text: 'Claim Item', message: 'How do I claim a found item?' },
-        { text: 'Contact Support', message: 'How do I contact support?' }
-    ];
-    if (lastUserTopic.includes('report')) {
-        buttons.push({ text: 'More Reporting Tips', message: 'What are tips for reporting?' });
-    } else if (lastUserTopic.includes('track')) {
-        buttons.push({ text: 'Check Status', message: 'How do I check my item’s status?' });
-    }
-    buttons.forEach(btn => {
-        const button = document.createElement('button');
-        button.className = 'chatbot-quick-reply';
-        button.textContent = btn.text;
-        button.onclick = () => sendQuickReply(btn.message);
-        quickReplies.appendChild(button);
-    });
-}
+						// Update quick replies based on context
+						updateQuickReplies();
+						messages.scrollTop = messages.scrollHeight;
+					}, 1000);
 
-function getBotResponse(message) {
-    lastUserTopic = message; // Update context
-    if (message.includes('report') || message.includes('lost item')) {
-        return 'To report a lost item, visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost. Your request has been logged!';
-    } else if (message.includes('track') || message.includes('status')) {
-        return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
-    } else if (message.includes('claim') || message.includes('found')) {
-        return 'Visit the <a href="claim_item.html">Claim Items</a> page to browse found items and submit a claim with verification details. Your request has been logged!';
-    } else if (message.includes('support') || message.includes('contact')) {
-        return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat. Your request has been logged!';
-    } else if (message.includes('fee') || message.includes('cost')) {
-        return 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
-    } else if (message.includes('tips') || message.includes('reporting')) {
-        return 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
-    } else if (message.includes('hi') || message.includes('hello')) {
-        return 'Hey there! I’m here to help with lost items. Try asking about reporting, tracking, or claiming items, or click a button below!';
-    } else {
-        return 'Hmm, I’m not sure about that. Try asking about <a href="report_Lost_Items.html">reporting a lost item</a>, <a href="track_your_item.html">tracking</a>, or <a href="contact_support.html">contacting support</a>. Your request has been logged!';
-    }
-}
+					// Clear input
+					input.value = '';
+				}
 
-// Ensure footer is removed if added dynamically
-window.onload = function() {
-    const footer = document.querySelector('article#main footer');
-    if (footer) footer.remove();
-};
-</script>
+				function updateQuickReplies() {
+					const quickReplies = document.getElementById('quickReplies');
+					quickReplies.innerHTML = '';
+					const buttons = [
+						{ text: 'Report Lost Item', message: 'How do I report a lost item?' },
+						{ text: 'Track Item', message: 'How do I track my item?' },
+						{ text: 'Claim Item', message: 'How do I claim a found item?' },
+						{ text: 'Browse Found Items', message: 'Show me found items' },
+						{ text: 'Contact Support', message: 'How do I contact support?' }
+					];
+					if (lastUserTopic.includes('report')) {
+						buttons.push({ text: 'More Reporting Tips', message: 'What are tips for reporting?' });
+					} else if (lastUserTopic.includes('track')) {
+						buttons.push({ text: 'Check Status', message: 'How do I check my item’s status?' });
+					} else if (lastUserTopic.includes('found items') || lastUserTopic.includes('filter')) {
+						buttons.push({ text: 'Filter by Electronics', message: 'Show electronics items' });
+						buttons.push({ text: 'Filter by Clothing', message: 'Show clothing items' });
+						buttons.push({ text: 'Reset Filters', message: 'Show all found items' });
+					}
+					buttons.forEach(btn => {
+						const button = document.createElement('button');
+						button.className = 'chatbot-quick-reply';
+						button.textContent = btn.text;
+						button.onclick = () => sendQuickReply(btn.message);
+						quickReplies.appendChild(button);
+					});
+				}
 
-</body>
+				async function getBotResponse(message) {
+					lastUserTopic = message;
+
+					// Handle found items and filtering
+					if (message.includes('found items') || message.includes('show all found items') || message.includes('electronics') || message.includes('clothing')) {
+						let filterType = '';
+						if (message.includes('electronics')) {
+							currentFilter.type = 'electronics';
+							filterType = 'electronics';
+						} else if (message.includes('clothing')) {
+							currentFilter.type = 'clothing';
+							filterType = 'clothing';
+						} else if (message.includes('all found items')) {
+							currentFilter.type = '';
+							filterType = 'all';
+						}
+						const items = await fetchFoundItems();
+						const filteredItems = currentFilter.type
+							? items.filter(item => item.type.toLowerCase() === currentFilter.type)
+							: items;
+						if (filteredItems.length === 0) {
+							return `No ${filterType} items found. Try resetting filters or <a href="contact_support.html">contact support</a>.`;
+						}
+						let response = `Found items:<br>`;
+						filteredItems.forEach(item => {
+							response += `- ${item.name}: ${item.description} (Found: ${item.dateFound}) <a href="claim_item.html?id=${item.id}">Claim</a><br>`;
+						});
+						response += `<br>Use quick replies to filter or reset.`;
+						return response;
+					} else if (message.includes('report') || message.includes('lost item')) {
+						return 'To report a lost item, visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
+					} else if (message.includes('track') || message.includes('status')) {
+						return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
+					} else if (message.includes('claim') || message.includes('found')) {
+						return 'Visit the <a href="claim_item.html">Claim Items</a> page to browse found items and submit a claim with verification details.';
+					} else if (message.includes('support') || message.includes('contact')) {
+						return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
+					} else if (message.includes('fee') || message.includes('cost')) {
+						return 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
+					} else if (message.includes('tips') || message.includes('reporting')) {
+						return 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
+					} else if (message.includes('hi') || message.includes('hello')) {
+						return 'Hey there! I’m here to help with lost items. Try asking about reporting, tracking, browsing found items, or claiming items, or click a button below!';
+					} else {
+						return 'Hmm, I’m not sure about that. Try asking about <a href="report_Lost_Items.html">reporting a lost item</a>, <a href="track_your_item.html">tracking</a>, browsing found items, or <a href="contact_support.html">contacting support</a>.';
+					}
+				}
+
+				// Remove footer if present
+				window.onload = function() {
+					const footer = document.querySelector('article#main footer');
+					if (footer) footer.remove();
+				};
+			</script>
+	</body>
 </html>
