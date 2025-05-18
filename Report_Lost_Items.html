@@ -86,7 +86,7 @@
 									</p>
 									<div class="row gtr-50">
 										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic10.jpg" alt="Electronics" /></a>
+											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Electronics" /></a>
 										</div>
 										<div class="col-8">
 											<h4>Electronics</h4>
@@ -95,7 +95,7 @@
 											</p>
 										</div>
 										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic11.jpg" alt="Luggage" /></a>
+											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Luggage" /></a>
 										</div>
 										<div class="col-8">
 											<h4>Luggage</h4>
@@ -104,7 +104,7 @@
 											</p>
 										</div>
 										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic12.jpg" alt="Clothing" /></a>
+											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Clothing" /></a>
 										</div>
 										<div class="col-8">
 											<h4>Clothing</h4>
@@ -113,7 +113,7 @@
 											</p>
 										</div>
 										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic13.jpg" alt="Jewelry" /></a>
+											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Jewelry" /></a>
 										</div>
 										<div class="col-8">
 											<h4>Jewelry</h4>
@@ -122,7 +122,7 @@
 											</p>
 										</div>
 										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic14.jpg" alt="Other Items" /></a>
+											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Other Items" /></a>
 										</div>
 										<div class="col-8">
 											<h4>Other Items</h4>
@@ -222,7 +222,7 @@
 									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 								</ul>
 							</div>
-		<!-- Scripts -->
+				<!-- Scripts -->
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/js/jquery.dropotron.min.js"></script>
 		<script src="assets/js/jquery.scrolly.min.js"></script>
@@ -233,11 +233,13 @@
 		<script src="assets/js/main.js"></script>
 		<script>
 			console.log('Script loaded at:', new Date().toISOString());
-			const form = document.getElementById('lostItemForm');
-			if (!form) {
-				console.error('Form with ID "lostItemForm" not found');
-				alert('Form not found. Please contact support.');
-			} else {
+			try {
+				const form = document.getElementById('lostItemForm');
+				if (!form) {
+					console.error('Form with ID "lostItemForm" not found');
+					alert('Form not found. Please contact support.');
+					return;
+				}
 				console.log('Form found, attaching submit listener');
 				form.addEventListener('submit', async function (e) {
 					e.preventDefault();
@@ -245,18 +247,26 @@
 					alert('Submitting form...');
 
 					// Reset error messages
-					document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+					try {
+						document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+					} catch (err) {
+						console.error('Error resetting error messages:', err.message);
+						alert('Error initializing form: ' + err.message);
+						return;
+					}
 
 					// Get form values
-					const name = document.getElementById('name')?.value.trim();
-					const email = document.getElementById('email')?.value.trim();
-					const phone = document.getElementById('phone')?.value.trim();
+					console.log('Retrieving form values');
+					const name = document.getElementById('name')?.value?.trim();
+					const email = document.getElementById('email')?.value?.trim();
+					const phone = document.getElementById('phone')?.value?.trim();
 					const airport = document.getElementById('airport')?.value;
 					const itemType = document.getElementById('item-type')?.value;
-					const description = document.getElementById('description')?.value.trim();
+					const description = document.getElementById('description')?.value?.trim();
 					const dateLost = document.getElementById('date-lost')?.value;
 
 					// Check for missing elements
+					console.log('Checking for missing elements');
 					if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
 						console.error('Missing form elements:', {
 							name: !!name, email: !!email, phone: !!phone,
@@ -268,6 +278,7 @@
 					}
 
 					// Client-side validation
+					console.log('Validating form inputs');
 					let isValid = true;
 					const errors = [];
 					if (name.length < 2) {
@@ -288,7 +299,8 @@
 					if (description.length < 5) {
 						document.getElementById('descriptionError').style.display = 'block';
 						errors.push('Description must be at least 5 characters');
-						isValid = false;
+						isValid = 'Please correct the following errors:\n- ' + errors.join('\n- ');
+						return;
 					}
 					if (!dateLost) {
 						document.getElementById('dateLostError').style.display = 'block';
@@ -303,6 +315,7 @@
 					}
 
 					// Sanitize inputs to prevent JSON parsing issues
+					console.log('Sanitizing inputs');
 					const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
 					const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
 
@@ -347,7 +360,7 @@
 								description: result.data.description,
 								dateLost: result.data.dateLost
 							}).toString();
-							console.log('Redirecting to:', `/report_submission.html?${queryParams}`);
+							console.log('Redirecting to:', '/report_submission.html?' + queryParams);
 							window.location.replace('/report_submission.html?' + queryParams);
 						} else {
 							console.error('Server error:', result.message);
@@ -358,6 +371,9 @@
 						alert('Submission failed: ' + error.message);
 					}
 				});
+			} catch (error) {
+				console.error('Script initialization error:', error.message);
+				alert('Script initialization failed: ' + error.message);
 			}
 		</script>
 	</body>
