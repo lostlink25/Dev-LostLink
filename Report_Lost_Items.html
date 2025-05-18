@@ -145,51 +145,55 @@
 										</p>
 									</header>
 									<div class="form-container">
-										<form action="report_submission.html" method="post">
-											<label for="name">Your Name</label>
-											<input type="text" id="name" name="name" placeholder="Enter your full name" required>
+										<form id="lostItemForm">
+										<label for="name">Your Name</label>
+										<input type="text" id="name" name="name" placeholder="Enter your full name" required />
+										<span class="error" id="nameError">Please enter a valid name</span>
 
-											<label for="email">Email Address</label>
-											<input type="email" id="email" name="email" placeholder="Enter your email" required>
+										<label for="email">Email Address</label>
+										<input type="email" id="email" name="email" placeholder="Enter your email" required />
+										<span class="error" id="emailError">Please enter a valid email</span>
 
-											<label for="phone">Phone Number</label>
-											<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+										<label for="phone">Phone Number</label>
+										<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
+										<span class="error" id="phoneError">Please enter a valid phone number</span>
 
-											<label for="airport">Airport Where Item Was Lost</label>
-											<select id="airport" name="airport" required>
-												<option value="" disabled selected>Select an airport</option>
-												<option value="LAX">Los Angeles International (LAX)</option>
-												<option value="JFK">John F. Kennedy International (JFK)</option>
-												<option value="ORD">Chicago O'Hare International (ORD)</option>
-												<option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
-												<option value="DFW">Dallas/Fort Worth International (DFW)</option>
-											</select>
+										<label for="airport">Airport Where Item Was Lost</label>
+										<select id="airport" name="airport" required>
+											<option value="" disabled selected>Select an airport</option>
+											<option value="LAX">Los Angeles International (LAX)</option>
+											<option value="JFK">John F. Kennedy International (JFK)</option>
+											<option value="ORD">Chicago O'Hare International (ORD)</option>
+											<option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
+											<option value="DFW">Dallas/Fort Worth International (DFW)</option>
+										</select>
 
-											<label for="item-type">Item Type</label>
-											<select id="item-type" name="item-type" required>
-												<option value="" disabled selected>Select item type</option>
-												<option value="electronics">Electronics (phone, laptop, etc.)</option>
-												<option value="clothing">Clothing</option>
-												<option value="luggage">Luggage</option>
-												<option value="jewelry">Jewelry</option>
-												<option value="other">Other</option>
-											</select>
+										<label for="item-type">Item Type</label>
+										<select id="item-type" name="itemType" required>
+											<option value="" disabled selected>Select item type</option>
+											<option value="electronics">Electronics (phone, laptop, etc.)</option>
+											<option value="clothing">Clothing</option>
+											<option value="luggage">Luggage</option>
+											<option value="jewelry">Jewelry</option>
+											<option value="other">Other</option>
+										</select>
 
-											<label for="description">Item Description</label>
-											<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
+										<label for="description">Item Description</label>
+										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
+										<span class="error" id="descriptionError">Please provide a description</span>
 
-											<label for="date-lost">Date Lost</label>
-											<input type="date" id="date-lost" name="date-lost" required>
+										<label for="date-lost">Date Lost</label>
+										<input type="date" id="date-lost" name="dateLost" required max="2025-05-17" />
+										<span class="error" id="dateLostError">Please select a valid date</span>
 
-											<button type="submit">Submit Report</button>
-										</form>
-									</div>
-								</article>
-							</div>
+										<button type="submit">Submit Report</button>
+									</form>
+								</div>
+							</article>
 						</div>
 					</div>
-
 				</div>
+			</div>
 
 		<!-- Footer -->
 		<div id="footer">
@@ -228,90 +232,100 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script>
-			document.getElementById('lostItemForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    console.log('Form submission started');
+			console.log('Script loaded');
+const form = document.getElementById('lostItemForm');
+if (!form) {
+    console.error('Form with ID "lostItemForm" not found');
+} else {
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        console.log('Form submission started');
 
-    // Reset error messages
-    document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+        // Reset error messages
+        document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
 
-    // Get form values
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const dateLost = document.getElementById('date-lost').value;
+        // Get form values
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const dateLost = document.getElementById('date-lost').value;
 
-    // Client-side validation
-    let isValid = true;
-    if (!name || name.length < 2) {
-        document.getElementById('nameError').style.display = 'block';
-        isValid = false;
-    }
-    if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-        document.getElementById('emailError').style.display = 'block';
-        isValid = false;
-    }
-    if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-        document.getElementById('phoneError').style.display = 'block';
-        isValid = false;
-    }
-    if (!description || description.length < 5) {
-        document.getElementById('descriptionError').style.display = 'block';
-        isValid = false;
-    }
-    if (!dateLost) {
-        document.getElementById('dateLostError').style.display = 'block';
-        isValid = false;
-    }
-
-    if (!isValid) {
-        console.log('Validation failed');
-        return;
-    }
-
-    const formData = {
-        type: 'lostItem',
-        name,
-        email,
-        phone,
-        airport: document.getElementById('airport').value,
-        itemType: document.getElementById('item-type').value,
-        description,
-        dateLost
-    };
-    console.log('Form data:', formData);
-
-    try {
-        const response = await fetch('YOUR_WEB_APP_URL', {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        console.log('Fetch response status:', response.status);
-
-        const result = await response.json();
-        console.log('Server response:', result);
-
-        if (result.status === 'success') {
-            const queryParams = new URLSearchParams({
-                trackingId: result.trackingId,
-                name: result.data.name,
-                email: result.data.email,
-                phone: result.data.phone,
-                airport: result.data.airport,
-                itemType: result.data.itemType,
-                description: result.data.description,
-                dateLost: result.data.dateLost
-            }).toString();
-            console.log('Redirecting to:', `/report_submission.html?${queryParams}`);
-            window.location.href = `/report_submission.html?${queryParams}`;
-        } else {
-            console.error('Server error:', result.message);
-            alert('Error: ' + result.message);
+        // Client-side validation
+        let isValid = true;
+        if (!name || name.length < 2) {
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
         }
-    } catch (error) {
-        console.error('Fetch error:', error.message);
-        alert('Submission failed: ' + error.message);
-    }
-});
+        if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+            document.getElementById('emailError').style.display = 'block';
+            isValid = false;
+        }
+        if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+            document.getElementById('phoneError').style.display = 'block';
+            isValid = false;
+        }
+        if (!description || description.length < 5) {
+            document.getElementById('descriptionError').style.display = 'block';
+            isValid = false;
+        }
+        if (!dateLost) {
+            document.getElementById('dateLostError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            console.log('Validation failed');
+            return;
+        }
+
+        const formData = {
+            type: 'lostItem',
+            name,
+            email,
+            phone,
+            airport: document.getElementById('airport').value,
+            itemType: document.getElementById('item-type').value,
+            description,
+            dateLost
+        };
+        console.log('Form data:', formData);
+
+        try {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzr402tTiPa-Rh9y-MX158tRBGWq6Q7OGZomellbH04N-7U1WhgCcWJtKZcrDAx758RuQ/exec', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            console.log('Fetch response status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Server response:', result);
+
+            if (result.status === 'success') {
+                const queryParams = new URLSearchParams({
+                    trackingId: result.trackingId,
+                    name: result.data.name,
+                    email: result.data.email,
+                    phone: result.data.phone,
+                    airport: result.data.airport,
+                    itemType: result.data.itemType,
+                    description: result.data.description,
+                    dateLost: result.data.dateLost
+                }).toString();
+                console.log('Redirecting to:', `/report_submission.html?${queryParams}`);
+                window.location.href = `/report_submission.html?${queryParams}`;
+            } else {
+                console.error('Server error:', result.message);
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error.message);
+            alert('Submission failed: ' + error.message);
+        }
+    });
+}
