@@ -28,21 +28,27 @@
 
 			<!-- Main -->
 			<div class="wrapper style2">
-				<article id="main" class="container special">
+				<article id="main" class="container special confirmation-container">
 					<header>
 						<h2>Report Submitted</h2>
 						<p>Thank you for reporting your lost item!</p>
 					</header>
 					<section>
-						<p>
-							Your report has been successfully submitted. Our team is now searching for your item, and we’ll notify you via email or phone with any updates.
-						</p>
-						<p>
-							<strong>Next Steps:</strong>
-						</p>
+						<p class="tracking-id">Tracking ID: <span id="trackingId">Not available</span></p>
+						<p>Your report has been successfully submitted. Our team is now searching for your item, and we’ll notify you via email or phone with any updates.</p>
+						<div class="details">
+							<p><strong>Name:</strong> <span id="name">N/A</span></p>
+							<p><strong>Email:</strong> <span id="email">N/A</span></p>
+							<p><strong>Phone:</strong> <span id="phone">N/A</span></p>
+							<p><strong>Airport:</strong> <span id="airport">N/A</span></p>
+							<p><strong>Item Type:</strong> <span id="itemType">N/A</span></p>
+							<p><strong>Description:</strong> <span id="description">N/A</span></p>
+							<p><strong>Date Lost:</strong> <span id="dateLost">N/A</span></p>
+						</div>
+						<p><strong>Next Steps:</strong></p>
 						<ul>
-							<li>Track your item’s status on our <a href="track_your_item.html">Track Items</a> page using tracking ID provided.</li>
-							<li>Check your email for a confirmation and tracking ID.</li>
+							<li>Track your item’s status on our <a href="track_your_item.html">Track Items</a> page using the tracking ID above (e.g., LOST-0001-XYZ).</li>
+							<li>Check your email for a confirmation with your tracking ID.</li>
 							<li>Contact our 24/7 support team via <a href="contact_support.html">Contact Us</a> if you have questions.</li>
 						</ul>
 						<p>
@@ -91,11 +97,16 @@
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
 		<script>
-			window.onload = function() {
-				const footer = document.querySelector('article#main footer');
-				if (footer) footer.remove();
-			};
+			// Get query parameters from URL
+			const urlParams = new URLSearchParams(window.location.search);
+			document.getElementById('trackingId').textContent = urlParams.get('trackingId') || 'Not available';
+			document.getElementById('name').textContent = urlParams.get('name') || 'N/A';
+			document.getElementById('email').textContent = urlParams.get('email') || 'N/A';
+			document.getElementById('phone').textContent = urlParams.get('phone') || 'N/A';
+			document.getElementById('airport').textContent = urlParams.get('airport') || 'N/A';
+			document.getElementById('itemType').textContent = urlParams.get('itemType') || 'N/A';
+			document.getElementById('description').textContent = urlParams.get('description') || 'N/A';
+			document.getElementById('dateLost').textContent = urlParams.get('dateLost') || 'N/A';
 		</script>
-
 	</body>
 </html>
