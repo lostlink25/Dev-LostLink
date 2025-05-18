@@ -248,9 +248,9 @@
             alert('Form not found. Please contact support.');
             throw new Error('Form not found');
         }
-        console.log('Form found, attaching submit listener');
+        console.log('Form found');
 
-        form.addEventListener('submit', async function (e) {
+        $(form).on('submit', function (e) {
             e.preventDefault();
             console.log('Form submission started at:', new Date().toISOString());
             alert('Submitting form...');
@@ -258,7 +258,7 @@
             // Reset error messages
             console.log('Resetting error messages');
             try {
-                document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+                $('.error').css('display', 'none');
             } catch (err) {
                 console.error('Error resetting error messages:', err.message);
                 alert('Error initializing form: ' + err.message);
@@ -267,13 +267,13 @@
 
             // Get form values
             console.log('Retrieving form values');
-            const name = document.getElementById('name')?.value?.trim();
-            const email = document.getElementById('email')?.value?.trim();
-            const phone = document.getElementById('phone')?.value?.trim();
-            const airport = document.getElementById('airport')?.value;
-            const itemType = document.getElementById('item-type')?.value;
-            const description = document.getElementById('description')?.value?.trim();
-            const dateLost = document.getElementById('date-lost')?.value;
+            const name = $('#name').val()?.trim();
+            const email = $('#email').val()?.trim();
+            const phone = $('#phone').val()?.trim();
+            const airport = $('#airport').val();
+            const itemType = $('#item-type').val();
+            const description = $('#description').val()?.trim();
+            const dateLost = $('#date-lost').val();
 
             // Check for missing or empty values
             console.log('Checking for missing or empty values');
@@ -292,27 +292,27 @@
             let isValid = true;
             const errors = [];
             if (name.length < 2) {
-                document.getElementById('nameError').style.display = 'block';
+                $('#nameError').css('display', 'block');
                 errors.push('Name must be at least 2 characters');
                 isValid = false;
             }
             if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-                document.getElementById('emailError').style.display = 'block';
+                $('#emailError').css('display', 'block');
                 errors.push('Invalid email format');
                 isValid = false;
             }
             if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-                document.getElementById('phoneError').style.display = 'block';
+                $('#phoneError').css('display', 'block');
                 errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
                 isValid = false;
             }
             if (description.length < 5) {
-                document.getElementById('descriptionError').style.display = 'block';
+                $('#descriptionError').css('display', 'block');
                 errors.push('Description must be at least 5 characters');
                 isValid = false;
             }
             if (!dateLost) {
-                document.getElementById('dateLostError').style.display = 'block';
+                $('#dateLostError').css('display', 'block');
                 errors.push('Date lost is required');
                 isValid = false;
             }
@@ -341,8 +341,8 @@
             console.log('Sanitized form data:', formData);
 
             try {
-                console.log('Sending fetch to Web App:', 'https://script.google.com/macros/s/AKfycbzci-6oawrqfkxrrvzHn3EKJmmSYj3WbJpcfFafc5AfLPSgpO_GPXySD6KulncmZArSgQ/exec');
-                const response = await fetch('https://script.google.com/macros/s/AKfycbzci-6oawrqfkxrrvzHn3EKJmmSYj3WbJpcfFafc5AfLPSgpO_GPXySD6KulncmZArSgQ/exec', {
+                console.log('Sending fetch to Web App:', 'https://script.google.com/macros/s/AKfycbxMd697VQmuSccY7KNdoxJq78MqC3G_sa_q0AiTOe1VJ9uDSNm8_RU_1m-0x2pGvzaLsg/exec');
+                const response = await fetch('https://script.google.com/macros/s/AKfycbxMd697VQmuSccY7KNdoxJq78MqC3G_sa_q0AiTOe1VJ9uDSNm8_RU_1m-0x2pGvzaLsg/exec', {
                     method: 'POST',
                     body: JSON.stringify(formData),
                     headers: { 'Content-Type': 'application/json' },
@@ -369,8 +369,8 @@
                         description: result.data.description,
                         dateLost: result.data.dateLost
                     }).toString();
-                    console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-                    window.location.assign('/report_submission.html?' + queryParams);
+                    console.log('Redirecting to:', '/Dev-LostLink/report_submission.html?' + queryParams);
+                    window.location.assign('/Dev-LostLink/report_submission.html?' + queryParams);
                 } else {
                     console.error('Server error:', result.message);
                     alert('Submission error: ' + result.message);
