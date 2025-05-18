@@ -245,15 +245,24 @@ if (!form) {
         document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
 
         // Get form values
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const description = document.getElementById('description').value.trim();
-        const dateLost = document.getElementById('date-lost').value;
+        const name = document.getElementById('name')?.value.trim();
+        const email = document.getElementById('email')?.value.trim();
+        const phone = document.getElementById('phone')?.value.trim();
+        const airport = document.getElementById('airport')?.value;
+        const itemType = document.getElementById('item-type')?.value;
+        const description = document.getElementById('description')?.value.trim();
+        const dateLost = document.getElementById('date-lost')?.value;
+
+        // Check for missing elements
+        if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
+            console.error('One or more form elements are missing or undefined');
+            alert('Form error: Please ensure all fields are present');
+            return;
+        }
 
         // Client-side validation
         let isValid = true;
-        if (!name || name.length < 2) {
+        if (name.length < 2) {
             document.getElementById('nameError').style.display = 'block';
             isValid = false;
         }
@@ -265,7 +274,7 @@ if (!form) {
             document.getElementById('phoneError').style.display = 'block';
             isValid = false;
         }
-        if (!description || description.length < 5) {
+        if (description.length < 5) {
             document.getElementById('descriptionError').style.display = 'block';
             isValid = false;
         }
@@ -276,6 +285,7 @@ if (!form) {
 
         if (!isValid) {
             console.log('Validation failed');
+            alert('Please correct the errors in the form');
             return;
         }
 
@@ -284,15 +294,16 @@ if (!form) {
             name,
             email,
             phone,
-            airport: document.getElementById('airport').value,
-            itemType: document.getElementById('item-type').value,
+            airport,
+            itemType,
             description,
             dateLost
         };
         console.log('Form data:', formData);
 
         try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbzr402tTiPa-Rh9y-MX158tRBGWq6Q7OGZomellbH04N-7U1WhgCcWJtKZcrDAx758RuQ/exec', {
+            console.log('Sending fetch to Web App');
+            const response = await fetch('https://script.google.com/macros/s/AKfycbxBmfU4UdVndrdhxP_zyTPc8vLzKlTG9HlcibQ9QQs8VyPlB8qTCy_qnj9IpY8hAIexrA/exec', {
                 method: 'POST',
                 body: JSON.stringify(formData),
                 headers: { 'Content-Type': 'application/json' }
@@ -318,10 +329,10 @@ if (!form) {
                     dateLost: result.data.dateLost
                 }).toString();
                 console.log('Redirecting to:', `/report_submission.html?${queryParams}`);
-                window.location.href = `/report_submission.html?${queryParams}`;
+                window.location.assign('/report_submission.html?' + queryParams);
             } else {
                 console.error('Server error:', result.message);
-                alert('Error: ' + result.message);
+                alert('Submission error: ' + result.message);
             }
         } catch (error) {
             console.error('Fetch error:', error.message);
