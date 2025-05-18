@@ -342,13 +342,16 @@
 
             try {
                 console.log('Sending fetch to Web App:', 'https://script.google.com/macros/s/AKfycby-vay8LDx_iv3wYk8zECDBnv2FSlAL5N90O7XrCsJww78UB21sY2COZe8IDBYyC6ScvQ/exec');
-                const response = await fetch('https://script.google.com/macros/s/AKfycby-vay8LDx_iv3wYk8zECDBnv2FSlAL5N90O7XrCsJww78UB21sY2COZe8IDBYyC6ScvQ/execc', {
+                const response = await fetch('https://script.google.com/macros/s/AKfycby-vay8LDx_iv3wYk8zECDBnv2FSlAL5N90O7XrCsJww78UB21sY2COZe8IDBYyC6ScvQ/exec', {
                     method: 'POST',
                     body: JSON.stringify(formData),
                     headers: { 'Content-Type': 'application/json' },
                     mode: 'cors'
                 });
-                console.log('Fetch response status:', response.status, 'Headers:', response.headers.get('Access-Control-Allow-Origin'), 'at:', new Date().toISOString());
+                console.log('Fetch response status:', response.status, 'Headers:', {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Content-Type': response.headers.get('Content-Type')
+                }, 'at:', new Date().toISOString());
 
                 if (!response.ok) {
                     const errorText = await response.text();
