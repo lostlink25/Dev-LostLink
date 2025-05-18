@@ -229,80 +229,89 @@
 			<script src="assets/js/main.js"></script>
 			<script>
 			document.getElementById('lostItemForm').addEventListener('submit', async function (e) {
-				e.preventDefault();
+    e.preventDefault();
+    console.log('Form submission started');
 
-				// Reset error messages
-				document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+    // Reset error messages
+    document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
 
-				// Basic client-side validation
-				const name = document.getElementById('name').value.trim();
-				const email = document.getElementById('email').value.trim();
-				const phone = document.getElementById('phone').value.trim();
-				const description = document.getElementById('description').value.trim();
-				const dateLost = document.getElementById('date-lost').value;
+    // Get form values
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const dateLost = document.getElementById('date-lost').value;
 
-				let isValid = true;
-				if (!name || name.length < 2) {
-					document.getElementById('nameError').style.display = 'block';
-					isValid = false;
-				}
-				if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-					document.getElementById('emailError').style.display = 'block';
-					isValid = false;
-				}
-				if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-					document.getElementById('phoneError').style.display = 'block';
-					isValid = false;
-				}
-				if (!description || description.length < 5) {
-					document.getElementById('descriptionError').style.display = 'block';
-					isValid = false;
-				}
-				if (!dateLost) {
-					document.getElementById('dateLostError').style.display = 'block';
-					isValid = false;
-				}
+    // Client-side validation
+    let isValid = true;
+    if (!name || name.length < 2) {
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+    }
+    if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+    }
+    if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+        document.getElementById('phoneError').style.display = 'block';
+        isValid = false;
+    }
+    if (!description || description.length < 5) {
+        document.getElementById('descriptionError').style.display = 'block';
+        isValid = false;
+    }
+    if (!dateLost) {
+        document.getElementById('dateLostError').style.display = 'block';
+        isValid = false;
+    }
 
-				if (!isValid) return;
+    if (!isValid) {
+        console.log('Validation failed');
+        return;
+    }
 
-				const formData = {
-					type: 'lostItem',
-					name: name,
-					email: email,
-					phone: phone,
-					airport: document.getElementById('airport').value,
-					itemType: document.getElementById('item-type').value,
-					description: description,
-					dateLost: dateLost
-				};
+    const formData = {
+        type: 'lostItem',
+        name,
+        email,
+        phone,
+        airport: document.getElementById('airport').value,
+        itemType: document.getElementById('item-type').value,
+        description,
+        dateLost
+    };
+    console.log('Form data:', formData);
 
-				try {
-					const response = await fetch('https://script.google.com/macros/s/AKfycbzr402tTiPa-Rh9y-MX158tRBGWq6Q7OGZomellbH04N-7U1WhgCcWJtKZcrDAx758RuQ/exec', {
-						method: 'POST',
-						body: JSON.stringify(formData),
-						headers: { 'Content-Type': 'application/json' }
-					});
+    try {
+        const response = await fetch('YOUR_WEB_APP_URL', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        console.log('Fetch response status:', response.status);
 
-					const result = await response.json();
-					if (result.status === 'success') {
-						const queryParams = new URLSearchParams({
-							trackingId: result.trackingId,
-							name: result.data.name,
-							email: result.data.email,
-							phone: result.data.phone,
-							airport: result.data.airport,
-							itemType: result.data.itemType,
-							description: result.data.description,
-							dateLost: result.data.dateLost
-						}).toString();
-						window.location.href = `/report_submission.html?${queryParams}`;
-					} else {
-						alert('Error: ' + result.message);
-					}
-				} catch (error) {
-					alert('Submission failed: ' + error.message);
-				}
-			});
-		</script>
-	</body>
-</html>
+        const result = await response.json();
+        console.log('Server response:', result);
+
+        if (result.status === 'success') {
+            const queryParams = new URLSearchParams({
+                trackingId: result.trackingId,
+                name: result.data.name,
+                email: result.data.email,
+                phone: result.data.phone,
+                airport: result.data.airport,
+                itemType: result.data.itemType,
+                description: result.data.description,
+                dateLost: result.data.dateLost
+            }).toString();
+            console.log('Redirecting to:', `/report_submission.html?${queryParams}`);
+            window.location.href = `/report_submission.html?${queryParams}`;
+        } else {
+            console.error('Server error:', result.message);
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Fetch error:', error.message);
+        alert('Submission failed: ' + error.message);
+    }
+});
