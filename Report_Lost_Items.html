@@ -223,7 +223,7 @@
 								</ul>
 							</div>
 				<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/jquery.dropotron.min.js"></script>
 <script src="assets/js/jquery.scrolly.min.js"></script>
 <script src="assets/js/jquery.scrollex.min.js"></script>
@@ -257,23 +257,42 @@
 
             // Get form values
             console.log('Retrieving form values');
-            const name = document.getElementById('name')?.value?.trim();
-            const email = document.getElementById('email')?.value?.trim();
-            const phone = document.getElementById('phone')?.value?.trim();
-            const airport = document.getElementById('airport')?.value;
-            const itemType = document.getElementById('item-type')?.value;
-            const description = document.getElementById('description')?.value?.trim();
-            const dateLost = document.getElementById('date-lost')?.value;
+            const nameElement = document.getElementById('name');
+            const emailElement = document.getElementById('email');
+            const phoneElement = document.getElementById('phone');
+            const airportElement = document.getElementById('airport');
+            const itemTypeElement = document.getElementById('item-type');
+            const descriptionElement = document.getElementById('description');
+            const dateLostElement = document.getElementById('date-lost');
 
             // Check for missing elements
             console.log('Checking for missing elements');
-            if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
+            if (!nameElement || !emailElement || !phoneElement || !airportElement || !itemTypeElement || !descriptionElement || !dateLostElement) {
                 console.error('Missing form elements:', {
+                    name: !!nameElement, email: !!emailElement, phone: !!phoneElement,
+                    airport: !!airportElement, itemType: !!itemTypeElement,
+                    description: !!descriptionElement, dateLost: !!dateLostElement
+                });
+                alert('Form error: One or more fields are missing.');
+                return;
+            }
+
+            const name = nameElement.value.trim();
+            const email = emailElement.value.trim();
+            const phone = phoneElement.value.trim();
+            const airport = airportElement.value;
+            const itemType = itemTypeElement.value;
+            const description = descriptionElement.value.trim();
+            const dateLost = dateLostElement.value;
+
+            // Check for empty values
+            if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
+                console.error('Empty form values:', {
                     name: !!name, email: !!email, phone: !!phone,
                     airport: !!airport, itemType: !!itemType,
                     description: !!description, dateLost: !!dateLost
                 });
-                alert('Form error: One or more fields are missing.');
+                alert('Form error: All fields are required.');
                 return;
             }
 
@@ -331,8 +350,8 @@
             console.log('Sanitized form data:', formData);
 
             try {
-                console.log('Sending fetch to Web App:', 'https://script.google.com/macros/s/AKfycbxMd697VQmuSccY7KNdoxJq78MqC3G_sa_q0AiTOe1VJ9uDSNm8_RU_1m-0x2pGvzaLsg/exec');
-                const response = await fetch('https://script.google.com/macros/s/AKfycbxMd697VQmuSccY7KNdoxJq78MqC3G_sa_q0AiTOe1VJ9uDSNm8_RU_1m-0x2pGvzaLsg/exec', {
+                console.log('Sending fetch to Web App:', 'https://script.google.com/macros/s/AKfycbwjjQohYe-Rp1new6te43mJfcp-oEEcEW-KNYBV2djQJtxpx23jCjJyOkQmiLQjeHln3g/exec');
+                const response = await fetch('https://script.google.com/macros/s/AKfycbwjjQohYe-Rp1new6te43mJfcp-oEEcEW-KNYBV2djQJtxpx23jCjJyOkQmiLQjeHln3g/exec', {
                     method: 'POST',
                     body: JSON.stringify(formData),
                     headers: { 'Content-Type': 'application/json' },
