@@ -234,19 +234,29 @@
 <script>
     console.log('Script loaded at:', new Date().toISOString());
     try {
+        console.log('Checking for jQuery');
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery not loaded');
+            alert('Error: jQuery not loaded. Please contact support.');
+            throw new Error('jQuery not loaded');
+        }
+        console.log('jQuery loaded:', jQuery.fn.jquery);
+
         const form = document.getElementById('lostItemForm');
         if (!form) {
             console.error('Form with ID "lostItemForm" not found');
             alert('Form not found. Please contact support.');
-            return;
+            throw new Error('Form not found');
         }
         console.log('Form found, attaching submit listener');
+
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
             console.log('Form submission started at:', new Date().toISOString());
             alert('Submitting form...');
 
             // Reset error messages
+            console.log('Resetting error messages');
             try {
                 document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
             } catch (err) {
@@ -257,37 +267,18 @@
 
             // Get form values
             console.log('Retrieving form values');
-            const nameElement = document.getElementById('name');
-            const emailElement = document.getElementById('email');
-            const phoneElement = document.getElementById('phone');
-            const airportElement = document.getElementById('airport');
-            const itemTypeElement = document.getElementById('item-type');
-            const descriptionElement = document.getElementById('description');
-            const dateLostElement = document.getElementById('date-lost');
+            const name = document.getElementById('name')?.value?.trim();
+            const email = document.getElementById('email')?.value?.trim();
+            const phone = document.getElementById('phone')?.value?.trim();
+            const airport = document.getElementById('airport')?.value;
+            const itemType = document.getElementById('item-type')?.value;
+            const description = document.getElementById('description')?.value?.trim();
+            const dateLost = document.getElementById('date-lost')?.value;
 
-            // Check for missing elements
-            console.log('Checking for missing elements');
-            if (!nameElement || !emailElement || !phoneElement || !airportElement || !itemTypeElement || !descriptionElement || !dateLostElement) {
-                console.error('Missing form elements:', {
-                    name: !!nameElement, email: !!emailElement, phone: !!phoneElement,
-                    airport: !!airportElement, itemType: !!itemTypeElement,
-                    description: !!descriptionElement, dateLost: !!dateLostElement
-                });
-                alert('Form error: One or more fields are missing.');
-                return;
-            }
-
-            const name = nameElement.value.trim();
-            const email = emailElement.value.trim();
-            const phone = phoneElement.value.trim();
-            const airport = airportElement.value;
-            const itemType = itemTypeElement.value;
-            const description = descriptionElement.value.trim();
-            const dateLost = dateLostElement.value;
-
-            // Check for empty values
+            // Check for missing or empty values
+            console.log('Checking for missing or empty values');
             if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
-                console.error('Empty form values:', {
+                console.error('Missing or empty form values:', {
                     name: !!name, email: !!email, phone: !!phone,
                     airport: !!airport, itemType: !!itemType,
                     description: !!description, dateLost: !!dateLost
@@ -357,7 +348,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     mode: 'cors'
                 });
-                console.log('Fetch response status:', response.status, 'at:', new Date().toISOString());
+                console.log('Fetch response status:', response.status, 'Headers:', response.headers.get('Access-Control-Allow-Origin'), 'at:', new Date().toISOString());
 
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -379,7 +370,7 @@
                         dateLost: result.data.dateLost
                     }).toString();
                     console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-                    window.location.replace('/report_submission.html?' + queryParams);
+                    window.location.assign('/report_submission.html?' + queryParams);
                 } else {
                     console.error('Server error:', result.message);
                     alert('Submission error: ' + result.message);
