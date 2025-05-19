@@ -145,50 +145,43 @@
 										</p>
 									</header>
 									<div class="form-container">
-										<form id="lostItemForm">
-										<label for="name">Your Name</label>
-										<input type="text" id="name" name="name" placeholder="Enter your full name" required />
-										<span class="error" id="nameError">Please enter a valid name</span>
-
-										<label for="email">Email Address</label>
-										<input type="email" id="email" name="email" placeholder="Enter your email" required />
-										<span class="error" id="emailError">Please enter a valid email</span>
-
-										<label for="phone">Phone Number</label>
-										<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
-										<span class="error" id="phoneError">Please enter a valid phone number</span>
-
-										<label for="airport">Airport Where Item Was Lost</label>
-										<select id="airport" name="airport" required>
-											<option value="" disabled selected>Select an airport</option>
-											<option value="LAX">Los Angeles International (LAX)</option>
-											<option value="JFK">John F. Kennedy International (JFK)</option>
-											<option value="ORD">Chicago O'Hare International (ORD)</option>
-											<option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
-											<option value="DFW">Dallas/Fort Worth International (DFW)</option>
-										</select>
-
-										<label for="item-type">Item Type</label>
-										<select id="item-type" name="itemType" required>
-											<option value="" disabled selected>Select item type</option>
-											<option value="electronics">Electronics (phone, laptop, etc.)</option>
-											<option value="clothing">Clothing</option>
-											<option value="luggage">Luggage</option>
-											<option value="jewelry">Jewelry</option>
-											<option value="other">Other</option>
-										</select>
-
-										<label for="description">Item Description</label>
-										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
-										<span class="error" id="descriptionError">Please provide a description</span>
-
-										<label for="date-lost">Date Lost</label>
-										<input type="date" id="date-lost" name="dateLost" required max="2025-05-17" />
-										<span class="error" id="dateLostError">Please select a valid date</span>
-
-										<button type="submit">Submit Report</button>
-									</form>
-								</div>
+    <form id="lostItemForm">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required autocomplete="name" />
+        <span class="error" id="nameError">Please enter a valid name</span>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email" />
+        <span class="error" id="emailError">Please enter a valid email</span>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required autocomplete="tel" />
+        <span class="error" id="phoneError">Please enter a valid phone number</span>
+        <label for="airport">Airport Where Item Was Lost</label>
+        <select id="airport" name="airport" required>
+            <option value="" disabled selected>Select an airport</option>
+            <option value="LAX">Los Angeles International (LAX)</option>
+            <option value="JFK">John F. Kennedy International (JFK)</option>
+            <option value="ORD">Chicago O'Hare International (ORD)</option>
+            <option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
+            <option value="DFW">Dallas/Fort Worth International (DFW)</option>
+        </select>
+        <label for="item-type">Item Type</label>
+        <select id="item-type" name="itemType" required>
+            <option value="" disabled selected>Select item type</option>
+            <option value="electronics">Electronics (phone, laptop, etc.)</option>
+            <option value="clothing">Clothing</option>
+            <option value="luggage">Luggage</option>
+            <option value="jewelry">Jewelry</option>
+            <option value="other">Other</option>
+        </select>
+        <label for="description">Item Description</label>
+        <textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
+        <span class="error" id="descriptionError">Please provide a description</span>
+        <label for="date-lost">Date Lost</label>
+        <input type="date" id="date-lost" name="dateLost" required max="2025-05-19" autocomplete="off" />
+        <span class="error" id="dateLostError">Please select a valid date</span>
+        <button type="submit">Submit Report</button>
+    </form>
+</div>
 							</article>
 						</div>
 					</div>
