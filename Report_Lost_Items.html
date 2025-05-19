@@ -147,15 +147,15 @@
 									<div class="form-container">
 										<form id="lostItemForm">
 										<label for="name">Your Name</label>
-										<input type="text" id="name" name="name" placeholder="Enter your full name" required />
+										<input type="text" id="name" name="name" placeholder="Enter your full name" required autocomplete="name" />
 										<span class="error" id="nameError">Please enter a valid name</span>
 
 										<label for="email">Email Address</label>
-										<input type="email" id="email" name="email" placeholder="Enter your email" required />
+										<input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email" />
 										<span class="error" id="emailError">Please enter a valid email</span>
 
 										<label for="phone">Phone Number</label>
-										<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
+										<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required autocomplete="tel" />
 										<span class="error" id="phoneError">Please enter a valid phone number</span>
 
 										<label for="airport">Airport Where Item Was Lost</label>
@@ -183,7 +183,7 @@
 										<span class="error" id="descriptionError">Please provide a description</span>
 
 										<label for="date-lost">Date Lost</label>
-										<input type="date" id="date-lost" name="dateLost" required max="2025-05-17" />
+										<input type="date" id="date-lost" name="dateLost" required max="2025-07-01" autocomplete="off" />
 										<span class="error" id="dateLostError">Please select a valid date</span>
 
 										<button type="submit">Submit Report</button>
@@ -222,7 +222,14 @@
 									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 								</ul>
 							</div>
-				<!-- Scripts -->
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<!-- Scripts -->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/jquery.dropotron.min.js"></script>
 <script src="assets/js/jquery.scrolly.min.js"></script>
@@ -250,137 +257,169 @@
         }
         console.log('Form found');
 
+        // Client-side tracking ID counter (persist in localStorage)
+        let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
+        let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
+
         $(form).on('submit', async function (e) {
             e.preventDefault();
             console.log('Form submission started at:', new Date().toISOString());
             alert('Submitting form...');
 
-            // Reset error messages
-            console.log('Resetting error messages');
             try {
+                // Reset error messages
+                console.log('Resetting error messages');
                 $('.error').css('display', 'none');
-            } catch (err) {
-                console.error('Error resetting error messages:', err.message);
-                alert('Error initializing form: ' + err.message);
-                return;
-            }
 
-            // Get form values
-            console.log('Retrieving form values');
-            const name = $('#name').val()?.trim();
-            const email = $('#email').val()?.trim();
-            const phone = $('#phone').val()?.trim();
-            const airport = $('#airport').val();
-            const itemType = $('#item-type').val();
-            const description = $('#description').val()?.trim();
-            const dateLost = $('#date-lost').val();
+                // Get form values
+                console.log('Retrieving form values');
+                const name = $('#name').val()?.trim();
+                const email = $('#email').val()?.trim();
+                const phone = $('#phone').val()?.trim();
+                const airport = $('#airport').val();
+                const itemType = $('#item-type').val();
+                const description = $('#description').val()?.trim();
+                const dateLost = $('#date-lost').val();
 
-            // Check for missing or empty values
-            console.log('Checking for missing or empty values');
-            if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
-                console.error('Missing or empty form values:', {
-                    name: !!name, email: !!email, phone: !!phone,
-                    airport: !!airport, itemType: !!itemType,
-                    description: !!description, dateLost: !!dateLost
-                });
-                alert('Form error: All fields are required.');
-                return;
-            }
+                // Check for missing or empty values
+                console.log('Checking for missing or empty values');
+                if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
+                    console.error('Missing or empty form values:', {
+                        name: !!name, email: !!email, phone: !!phone,
+                        airport: !!airport, itemType: !!itemType,
+                        description: !!description, dateLost: !!dateLost
+                    });
+                    alert('Form error: All fields are required.');
+                    return;
+                }
 
-            // Client-side validation
-            console.log('Validating form inputs');
-            let isValid = true;
-            const errors = [];
-            if (name.length < 2) {
-                $('#nameError').css('display', 'block');
-                errors.push('Name must be at least 2 characters');
-                isValid = false;
-            }
-            if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-                $('#emailError').css('display', 'block');
-                errors.push('Invalid email format');
-                isValid = false;
-            }
-            if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-                $('#phoneError').css('display', 'block');
-                errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
-                isValid = false;
-            }
-            if (description.length < 5) {
-                $('#descriptionError').css('display', 'block');
-                errors.push('Description must be at least 5 characters');
-                isValid = false;
-            }
-            if (!dateLost) {
-                $('#dateLostError').css('display', 'block');
-                errors.push('Date lost is required');
-                isValid = false;
-            }
+                // Client-side validation
+                console.log('Validating form inputs');
+                let isValid = true;
+                const errors = [];
+                if (name.length < 2) {
+                    $('#nameError').css('display', 'block');
+                    errors.push('Name must be at least 2 characters');
+                    isValid = false;
+                }
+                if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+                    $('#emailError').css('display', 'block');
+                    errors.push('Invalid email format');
+                    isValid = false;
+                }
+                if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+                    $('#phoneError').css('display', 'block');
+                    errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
+                    isValid = false;
+                }
+                if (description.length < 5) {
+                    $('#descriptionError').css('display', 'block');
+                    errors.push('Description must be at least 5 characters');
+                    isValid = false;
+                }
+                if (!dateLost) {
+                    $('#dateLostError').css('display', 'block');
+                    errors.push('Date lost is required');
+                    isValid = false;
+                }
 
-            if (!isValid) {
-                console.log('Validation failed:', errors);
-                alert('Please correct the following errors:\n- ' + errors.join('\n- '));
-                return;
-            }
+                if (!isValid) {
+                    console.log('Validation failed:', errors);
+                    alert('Please correct the following errors:\n- ' + errors.join('\n- '));
+                    return;
+                }
 
-            // Sanitize inputs to prevent JSON parsing issues
-            console.log('Sanitizing inputs');
-            const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
-            const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
+                // Sanitize inputs
+                console.log('Sanitizing inputs');
+                const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
+                const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
 
-            const formData = {
-                type: 'lostItem',
-                name: sanitizedName,
-                email,
-                phone,
-                airport,
-                itemType,
-                description: sanitizedDescription,
-                dateLost
-            };
-            console.log('Sanitized form data:', formData);
+                // Generate tracking ID client-side
+                const today = new Date().toISOString().split('T')[0];
+                if (lastResetDate !== today) {
+                    counter = 0;
+                    lastResetDate = today;
+                    localStorage.setItem('lastResetDate', today);
+                }
+                counter += 1;
+                localStorage.setItem('lostItemCounter', counter.toString());
+                const formattedCounter = ('0000' + counter).slice(-4);
+                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                let randomStr = '';
+                for (let i = 0; i < 3; i++) {
+                    randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
+                }
+                const trackingId = `LOST-${formattedCounter}-${randomStr}`;
 
-            try {
-                console.log('Sending fetch to Web App:', 'https://script.google.com/macros/s/AKfycbz4tJNfKHIq-iJuyYE3IdiazcElPtJURhdgr0eaBHETU-c29BSgiaQYZvnQfNbcmpAGug/exec');
-                const response = await fetch('https://script.google.com/macros/s/AKfycbz4tJNfKHIq-iJuyYE3IdiazcElPtJURhdgr0eaBHETU-c29BSgiaQYZvnQfNbcmpAGug/exec', {
+                const formData = {
+                    name: sanitizedName,
+                    email,
+                    phone,
+                    airport,
+                    itemType,
+                    description: sanitizedDescription,
+                    dateLost,
+                    trackingId
+                };
+                console.log('Form data with tracking ID:', formData);
+
+                // Append to Google Sheet using Sheets API
+                const spreadsheetId = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                const apiKey = 'AIzaSyDJzGlHEPuBdwMosoamE-mXC3PWMvyODcI';
+                const range = 'LostItems!A:I';
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=USER_ENTERED&key=${apiKey}`;
+
+                const values = [
+                    [
+                        new Date().toISOString(),
+                        sanitizedName,
+                        email,
+                        phone,
+                        airport,
+                        itemType,
+                        sanitizedDescription,
+                        dateLost,
+                        trackingId
+                    ]
+                ];
+
+                console.log('Sending data to Sheets API:', url);
+                const response = await fetch(url, {
                     method: 'POST',
-                    body: JSON.stringify(formData),
-                    headers: { 'Content-Type': 'application/json' },
-                    mode: 'cors'
+                    body: JSON.stringify({
+                        values: values
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
-                console.log('Fetch response status:', response.status, 'Headers:', {
-                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
-                    'Content-Type': response.headers.get('Content-Type')
-                }, 'at:', new Date().toISOString());
 
+                console.log('Sheets API response status:', response.status);
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
                 }
 
                 const result = await response.json();
-                console.log('Server response:', result);
+                console.log('Sheets API response:', result);
 
-                if (result.status === 'success') {
-                    const queryParams = new URLSearchParams({
-                        trackingId: result.trackingId,
-                        name: result.data.name,
-                        email: result.data.email,
-                        phone: result.data.phone,
-                        airport: result.data.airport,
-                        itemType: result.data.itemType,
-                        description: result.data.description,
-                        dateLost: result.data.dateLost
-                    }).toString();
-                    console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-                    window.location.assign('/report_submission.html?' + queryParams);
-                } else {
-                    console.error('Server error:', result.message);
-                    alert('Submission error: ' + result.message);
-                }
+                // Redirect to report_submission.html
+                const queryParams = new URLSearchParams({
+                    trackingId,
+                    name: sanitizedName,
+                    email,
+                    phone,
+                    airport,
+                    itemType,
+                    description: sanitizedDescription,
+                    dateLost
+                }).toString();
+                console.log('Redirecting to:', '/report_submission.html?' + queryParams);
+                window.location.assign('/report_submission.html?' + queryParams);
             } catch (error) {
-                console.error('Fetch error:', error.message);
+                console.error('Submission error:', error.message);
                 alert('Submission failed: ' + error.message);
+                return false;
             }
         });
     } catch (error) {
