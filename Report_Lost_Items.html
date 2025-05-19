@@ -372,8 +372,8 @@
                         description: result.data.description,
                         dateLost: result.data.dateLost
                     }).toString();
-                    console.log('Redirecting to:', '/Dev-LostLink/report_submission.html?' + queryParams);
-                    window.location.assign('/Dev-LostLink/report_submission.html?' + queryParams);
+                    console.log('Redirecting to:', '/report_submission.html?' + queryParams);
+                    window.location.assign('/report_submission.html?' + queryParams);
                 } else {
                     console.error('Server error:', result.message);
                     alert('Submission error: ' + result.message);
