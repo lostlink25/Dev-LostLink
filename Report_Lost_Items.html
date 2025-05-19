@@ -411,6 +411,7 @@
 						// Initialize gapi.client and get OAuth token
 						await initGapiClient();
 						const accessToken = await getAccessToken();
+						gapi.client.setToken({ access_token: accessToken });
 
 						// Append to Google Sheet using Sheets API
 						console.log('Sending data to Sheets API');
