@@ -4,6 +4,7 @@
 		<title>Report Lost Item - LostLink</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
@@ -230,6 +231,7 @@
 		</div>
 
 		<!-- Scripts -->
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
 		<script src="https://apis.google.com/js/api.js"></script>
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/js/jquery.dropotron.min.js"></script>
@@ -262,29 +264,45 @@
 				let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
 				let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
 
-				// Google API Client configuration
+				// Google API configuration
 				const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-				const API_KEY = 'AIzaSyDJzGlHEPuBdwMosoamE-mXC3PWMvyODcI';
 				const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
 				const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-				// Initialize gapi
-				function initGapi() {
+				// Initialize gapi.client for Sheets API
+				function initGapiClient() {
 					return new Promise((resolve, reject) => {
-						gapi.load('client:auth2', () => {
+						gapi.load('client', () => {
 							gapi.client.init({
-								apiKey: API_KEY,
-								clientId: CLIENT_ID,
-								scope: SCOPES,
 								discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
 							}).then(() => {
-								console.log('gapi initialized');
+								console.log('gapi client initialized');
 								resolve();
 							}).catch(error => {
-								console.error('gapi initialization error:', error);
+								console.error('gapi client initialization error:', error);
 								reject(error);
 							});
 						});
+					});
+				}
+
+				// Initialize GIS OAuth
+				function getAccessToken() {
+					return new Promise((resolve, reject) => {
+						const client = google.accounts.oauth2.initTokenClient({
+							client_id: CLIENT_ID,
+							scope: SCOPES,
+							callback: (response) => {
+								if (response.error) {
+									console.error('OAuth error:', response.error);
+									reject(new Error(response.error));
+								} else {
+									console.log('Access token received');
+									resolve(response.access_token);
+								}
+							}
+						});
+						client.requestAccessToken();
 					});
 				}
 
@@ -390,11 +408,9 @@
 						};
 						console.log('Form data with tracking ID:', formData);
 
-						// Initialize gapi and authenticate
-						await initGapi();
-						if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-							await gapi.auth2.getAuthInstance().signIn();
-						}
+						// Initialize gapi.client and get OAuth token
+						await initGapiClient();
+						const accessToken = await getAccessToken();
 
 						// Append to Google Sheet using Sheets API
 						console.log('Sending data to Sheets API');
@@ -440,8 +456,8 @@
 						console.log('Redirecting to:', '/report_submission.html?' + queryParams);
 						window.location.assign('/report_submission.html?' + queryParams);
 					} catch (error) {
-						console.error('Submission error:', error.message);
-						alert('Submission failed: ' + error.message);
+						console.error('Submission error:', error.message || error);
+						alert('Submission failed: ' + (error.message || 'Unknown error'));
 						return false;
 					}
 				});
