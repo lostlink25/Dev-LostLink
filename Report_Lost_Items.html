@@ -230,202 +230,225 @@
 		</div>
 
 		<!-- Scripts -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/jquery.dropotron.min.js"></script>
-<script src="assets/js/jquery.scrolly.min.js"></script>
-<script src="assets/js/jquery.scrollex.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
-<script src="assets/js/main.js"></script>
-<script>
-    console.log('Script loaded at:', new Date().toISOString());
-    try {
-        console.log('Checking for jQuery');
-        if (typeof jQuery === 'undefined') {
-            console.error('jQuery not loaded');
-            alert('Error: jQuery not loaded. Please contact support.');
-            throw new Error('jQuery not loaded');
-        }
-        console.log('jQuery loaded:', jQuery.fn.jquery);
+		<script src="https://apis.google.com/js/api.js"></script>
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.dropotron.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<script>
+			console.log('Script loaded at:', new Date().toISOString());
+			try {
+				console.log('Checking for jQuery');
+				if (typeof jQuery === 'undefined') {
+					console.error('jQuery not loaded');
+					alert('Error: jQuery not loaded. Please contact support.');
+					throw new Error('jQuery not loaded');
+				}
+				console.log('jQuery loaded:', jQuery.fn.jquery);
 
-        const form = document.getElementById('lostItemForm');
-        if (!form) {
-            console.error('Form with ID "lostItemForm" not found');
-            alert('Form not found. Please contact support.');
-            throw new Error('Form not found');
-        }
-        console.log('Form found');
+				const form = document.getElementById('lostItemForm');
+				if (!form) {
+					console.error('Form with ID "lostItemForm" not found');
+					alert('Form not found. Please contact support.');
+					throw new Error('Form not found');
+				}
+				console.log('Form found');
 
-        // Client-side tracking ID counter (persist in localStorage)
-        let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
-        let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
+				// Client-side tracking ID counter (persist in localStorage)
+				let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
+				let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
 
-        $(form).on('submit', async function (e) {
-            e.preventDefault();
-            console.log('Form submission started at:', new Date().toISOString());
-            alert('Submitting form...');
+				// Google API Client configuration
+				const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+				const API_KEY = 'AIzaSyDJzGlHEPuBdwMosoamE-mXC3PWMvyODcI';
+				const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+				const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-            try {
-                // Reset error messages
-                console.log('Resetting error messages');
-                $('.error').css('display', 'none');
+				// Initialize gapi
+				function initGapi() {
+					return new Promise((resolve, reject) => {
+						gapi.load('client:auth2', () => {
+							gapi.client.init({
+								apiKey: API_KEY,
+								clientId: CLIENT_ID,
+								scope: SCOPES,
+								discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+							}).then(() => {
+								console.log('gapi initialized');
+								resolve();
+							}).catch(error => {
+								console.error('gapi initialization error:', error);
+								reject(error);
+							});
+						});
+					});
+				}
 
-                // Get form values
-                console.log('Retrieving form values');
-                const name = $('#name').val()?.trim();
-                const email = $('#email').val()?.trim();
-                const phone = $('#phone').val()?.trim();
-                const airport = $('#airport').val();
-                const itemType = $('#item-type').val();
-                const description = $('#description').val()?.trim();
-                const dateLost = $('#date-lost').val();
+				$(form).on('submit', async function (e) {
+					e.preventDefault();
+					console.log('Form submission started at:', new Date().toISOString());
+					alert('Submitting form...');
 
-                // Check for missing or empty values
-                console.log('Checking for missing or empty values');
-                if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
-                    console.error('Missing or empty form values:', {
-                        name: !!name, email: !!email, phone: !!phone,
-                        airport: !!airport, itemType: !!itemType,
-                        description: !!description, dateLost: !!dateLost
-                    });
-                    alert('Form error: All fields are required.');
-                    return;
-                }
+					try {
+						// Reset error messages
+						console.log('Resetting error messages');
+						$('.error').css('display', 'none');
 
-                // Client-side validation
-                console.log('Validating form inputs');
-                let isValid = true;
-                const errors = [];
-                if (name.length < 2) {
-                    $('#nameError').css('display', 'block');
-                    errors.push('Name must be at least 2 characters');
-                    isValid = false;
-                }
-                if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-                    $('#emailError').css('display', 'block');
-                    errors.push('Invalid email format');
-                    isValid = false;
-                }
-                if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-                    $('#phoneError').css('display', 'block');
-                    errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
-                    isValid = false;
-                }
-                if (description.length < 5) {
-                    $('#descriptionError').css('display', 'block');
-                    errors.push('Description must be at least 5 characters');
-                    isValid = false;
-                }
-                if (!dateLost) {
-                    $('#dateLostError').css('display', 'block');
-                    errors.push('Date lost is required');
-                    isValid = false;
-                }
+						// Get form values
+						console.log('Retrieving form values');
+						const name = $('#name').val()?.trim();
+						const email = $('#email').val()?.trim();
+						const phone = $('#phone').val()?.trim();
+						const airport = $('#airport').val();
+						const itemType = $('#item-type').val();
+						const description = $('#description').val()?.trim();
+						const dateLost = $('#date-lost').val();
 
-                if (!isValid) {
-                    console.log('Validation failed:', errors);
-                    alert('Please correct the following errors:\n- ' + errors.join('\n- '));
-                    return;
-                }
+						// Check for missing or empty values
+						console.log('Checking for missing or empty values');
+						if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
+							console.error('Missing or empty form values:', {
+								name: !!name, email: !!email, phone: !!phone,
+								airport: !!airport, itemType: !!itemType,
+								description: !!description, dateLost: !!dateLost
+							});
+							alert('Form error: All fields are required.');
+							return;
+						}
 
-                // Sanitize inputs
-                console.log('Sanitizing inputs');
-                const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
-                const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
+						// Client-side validation
+						console.log('Validating form inputs');
+						let isValid = true;
+						const errors = [];
+						if (name.length < 2) {
+							$('#nameError').css('display', 'block');
+							errors.push('Name must be at least 2 characters');
+							isValid = false;
+						}
+						if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+							$('#emailError').css('display', 'block');
+							errors.push('Invalid email format');
+							isValid = false;
+						}
+						if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+							$('#phoneError').css('display', 'block');
+							errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
+							isValid = false;
+						}
+						if (description.length < 5) {
+							$('#descriptionError').css('display', 'block');
+							errors.push('Description must be at least 5 characters');
+							isValid = false;
+						}
+						if (!dateLost) {
+							$('#dateLostError').css('display', 'block');
+							errors.push('Date lost is required');
+							isValid = false;
+						}
 
-                // Generate tracking ID client-side
-                const today = new Date().toISOString().split('T')[0];
-                if (lastResetDate !== today) {
-                    counter = 0;
-                    lastResetDate = today;
-                    localStorage.setItem('lastResetDate', today);
-                }
-                counter += 1;
-                localStorage.setItem('lostItemCounter', counter.toString());
-                const formattedCounter = ('0000' + counter).slice(-4);
-                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                let randomStr = '';
-                for (let i = 0; i < 3; i++) {
-                    randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
-                }
-                const trackingId = `LOST-${formattedCounter}-${randomStr}`;
+						if (!isValid) {
+							console.log('Validation failed:', errors);
+							alert('Please correct the following errors:\n- ' + errors.join('\n- '));
+							return;
+						}
 
-                const formData = {
-                    name: sanitizedName,
-                    email,
-                    phone,
-                    airport,
-                    itemType,
-                    description: sanitizedDescription,
-                    dateLost,
-                    trackingId
-                };
-                console.log('Form data with tracking ID:', formData);
+						// Sanitize inputs
+						console.log('Sanitizing inputs');
+						const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
+						const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
 
-                // Append to Google Sheet using Sheets API
-                const spreadsheetId = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                const apiKey = 'AIzaSyDJzGlHEPuBdwMosoamE-mXC3PWMvyODcI';
-                const range = 'LostItems!A:I';
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=USER_ENTERED&key=${apiKey}`;
+						// Generate tracking ID client-side
+						const today = new Date().toISOString().split('T')[0];
+						if (lastResetDate !== today) {
+							counter = 0;
+							lastResetDate = today;
+							localStorage.setItem('lastResetDate', today);
+						}
+						counter += 1;
+						localStorage.setItem('lostItemCounter', counter.toString());
+						const formattedCounter = ('0000' + counter).slice(-4);
+						const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+						let randomStr = '';
+						for (let i = 0; i < 3; i++) {
+							randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
+						}
+						const trackingId = `LOST-${formattedCounter}-${randomStr}`;
 
-                const values = [
-                    [
-                        new Date().toISOString(),
-                        sanitizedName,
-                        email,
-                        phone,
-                        airport,
-                        itemType,
-                        sanitizedDescription,
-                        dateLost,
-                        trackingId
-                    ]
-                ];
+						const formData = {
+							name: sanitizedName,
+							email,
+							phone,
+							airport,
+							itemType,
+							description: sanitizedDescription,
+							dateLost,
+							trackingId
+						};
+						console.log('Form data with tracking ID:', formData);
 
-                console.log('Sending data to Sheets API:', url);
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        values: values
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+						// Initialize gapi and authenticate
+						await initGapi();
+						if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+							await gapi.auth2.getAuthInstance().signIn();
+						}
 
-                console.log('Sheets API response status:', response.status);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
-                }
+						// Append to Google Sheet using Sheets API
+						console.log('Sending data to Sheets API');
+						const response = await gapi.client.sheets.spreadsheets.values.append({
+							spreadsheetId: SPREADSHEET_ID,
+							range: 'LostItems!A:I',
+							valueInputOption: 'USER_ENTERED',
+							resource: {
+								values: [
+									[
+										new Date().toISOString(),
+										sanitizedName,
+										email,
+										phone,
+										airport,
+										itemType,
+										sanitizedDescription,
+										dateLost,
+										trackingId
+									]
+								]
+							}
+						});
 
-                const result = await response.json();
-                console.log('Sheets API response:', result);
+						console.log('Sheets API response status:', response.status);
+						if (response.status !== 200) {
+							throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(response.result)}`);
+						}
 
-                // Redirect to report_submission.html
-                const queryParams = new URLSearchParams({
-                    trackingId,
-                    name: sanitizedName,
-                    email,
-                    phone,
-                    airport,
-                    itemType,
-                    description: sanitizedDescription,
-                    dateLost
-                }).toString();
-                console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-                window.location.assign('/report_submission.html?' + queryParams);
-            } catch (error) {
-                console.error('Submission error:', error.message);
-                alert('Submission failed: ' + error.message);
-                return false;
-            }
-        });
-    } catch (error) {
-        console.error('Script initialization error:', error.message);
-        alert('Script initialization failed: ' + error.message);
-    }
-</script>
+						console.log('Sheets API response:', response.result);
+
+						// Redirect to report_submission.html
+						const queryParams = new URLSearchParams({
+							trackingId,
+							name: sanitizedName,
+							email,
+							phone,
+							airport,
+							itemType,
+							description: sanitizedDescription,
+							dateLost
+						}).toString();
+						console.log('Redirecting to:', '/report_submission.html?' + queryParams);
+						window.location.assign('/report_submission.html?' + queryParams);
+					} catch (error) {
+						console.error('Submission error:', error.message);
+						alert('Submission failed: ' + error.message);
+						return false;
+					}
+				});
+			} catch (error) {
+				console.error('Script initialization error:', error.message);
+				alert('Script initialization failed: ' + error.message);
+			}
+		</script>
 </body>
 </html>
