@@ -250,7 +250,7 @@
         }
         console.log('Form found');
 
-        $(form).on('submit', function (e) {
+        $(form).on('submit', async function (e) {
             e.preventDefault();
             console.log('Form submission started at:', new Date().toISOString());
             alert('Submitting form...');
