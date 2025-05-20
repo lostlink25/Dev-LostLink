@@ -1,22 +1,12 @@
 const sheets = require('@googleapis/sheets');
 const { GoogleAuth } = require('google-auth-library');
+const credentials = require('../config.json');
 
 exports.handler = async (event) => {
   try {
     // Validate environment variables
-    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY environment variable is missing');
-    }
     if (!process.env.SPREADSHEET_ID) {
       throw new Error('SPREADSHEET_ID environment variable is missing');
-    }
-
-    // Parse service account key
-    let credentials;
-    try {
-      credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    } catch (error) {
-      throw new Error(`Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY: ${error.message}`);
     }
 
     // Initialize authentication
