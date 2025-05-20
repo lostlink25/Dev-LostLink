@@ -180,7 +180,7 @@
 										</select>
 
 										<label for="description">Item Description</label>
-										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
+										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, breed, size, etc.)" required></textarea>
 										<span class="error" id="descriptionError">Please provide a description</span>
 
 										<label for="date-lost">Date Lost</label>
@@ -266,7 +266,7 @@
 
 				// Google API configuration
 				const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-				const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+				const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID';
 				const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
 				// Initialize gapi.client for Sheets API
@@ -292,10 +292,15 @@
 						const client = google.accounts.oauth2.initTokenClient({
 							client_id: CLIENT_ID,
 							scope: SCOPES,
+							prompt: 'select_account',
 							callback: (response) => {
 								if (response.error) {
 									console.error('OAuth error:', response.error);
-									reject(new Error(response.error));
+									if (response.error === 'access_denied') {
+										reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
+									} else {
+										reject(new Error(response.error));
+									}
 								} else {
 									console.log('Access token received');
 									resolve(response.access_token);
