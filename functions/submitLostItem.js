@@ -1,4 +1,4 @@
-const { google } = require('@googleapis/sheets');
+const sheets = require('@googleapis/sheets');
 const { GoogleAuth } = require('google-auth-library');
 
 exports.handler = async (event) => {
@@ -26,7 +26,7 @@ exports.handler = async (event) => {
     });
 
     // Initialize Sheets API client
-    const sheets = google.sheets({ version: 'v4', auth });
+    const sheetsClient = sheets.sheets({ version: 'v4', auth });
 
     // Parse request body
     let body;
@@ -50,7 +50,7 @@ exports.handler = async (event) => {
         body.name,
         body.email,
         body.phone,
-        body.apple,
+        body.airport,
         body.itemType,
         body.description,
         body.dateLost,
@@ -59,7 +59,7 @@ exports.handler = async (event) => {
     ];
 
     // Append data to sheet
-    await sheets.spreadsheets.values.append({
+    await sheetsClient.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
       range: 'LostItems!A:I',
       valueInputOption: 'USER_ENTERED',
