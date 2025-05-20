@@ -1,476 +1,478 @@
 <!DOCTYPE HTML>
-<html>
-	<head>
-		<title>Report Lost Item - LostLink</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<style>
-			.form-container {
-				padding: 20px;
-			}
-			.form-container label {
-				display: block;
-				margin: 10px 0 5px;
-				font-weight: bold;
-				color: #333;
-			}
-			.form-container input, .form-container select, .form-container textarea {
-				width: 100%;
-				padding: 8px;
-				margin-bottom: 15px;
-				border: 1px solid #ccc;
-				border-radius: 4px;
-				box-sizing: border-box;
-				font-size: 1em;
-			}
-			.form-container button {
-				display: inline-block;
-				padding: 10px 20px;
-				background-color: #007bff;
-				color: white;
-				border: none;
-				border-radius: 4px;
-				cursor: pointer;
-				text-align: center;
-				text-decoration: none;
-			}
-			.form-container button:hover {
-				background-color: #0056b3;
-			}
-		</style>
-	</head>
-	<body class="Report is-preload">
-		<div id="page-wrapper">
+     <html>
+         <head>
+             <title>Report Lost Item - LostLink</title>
+             <meta charset="utf-8" />
+             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+             <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
+             <link rel="stylesheet" href="assets/css/main.css" />
+             <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+             <style>
+                 .form-container {
+                     padding: 20px;
+                 }
+                 .form-container label {
+                     display: block;
+                     margin: 10px 0 5px;
+                     font-weight: bold;
+                     color: #333;
+                 }
+                 .form-container input, .form-container select, .form-container textarea {
+                     width: 100%;
+                     padding: 8px;
+                     margin-bottom: 15px;
+                     border: 1px solid #ccc;
+                     border-radius: 4px;
+                     box-sizing: border-box;
+                     font-size: 1em;
+                 }
+                 .form-container button {
+                     display: inline-block;
+                     padding: 10px 20px;
+                     background-color: #007bff;
+                     color: white;
+                     border: none;
+                     border-radius: 4px;
+                     cursor: pointer;
+                     text-align: center;
+                     text-decoration: none;
+                 }
+                 .form-container button:hover {
+                     background-color: #0056b3;
+                 }
+                 .error {
+                     color: red;
+                     display: none;
+                     font-size: 0.9em;
+                 }
+             </style>
+         </head>
+         <body class="Report is-preload">
+             <div id="page-wrapper">
+                 <!-- Header -->
+                 <div id="header">
+                     <!-- Nav -->
+                     <nav id="nav">
+                         <ul>
+                             <li><a href="index.html">Home</a></li>
+                             <li><a href="About_Us.html">About Us</a></li>
+                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="track_your_item.html">Track Items</a></li>
+                             <li><a href="claim_item.html">Claim Items</a></li>
+                             <li><a href="contact_support.html">Contact Us</a></li>
+                         </ul>
+                     </nav>
+                 </div>
+                 <!-- Main -->
+                 <div class="wrapper style1">
+                     <div class="container">
+                         <div class="row gtr-200">
+                             <div class="col-4 col-12-mobile" id="sidebar">
+                                 <hr class="first" />
+                                 <section>
+                                     <header>
+                                         <h3><a href="#">About LostLink</a></h3>
+                                     </header>
+                                     <p>
+                                         LostLink helps you report and track items lost at US airports. We work with airport staff to make the process quick and easy.
+                                     </p>
+                                     <footer>
+                                         <a href="About_Us.html" class="button">Learn More</a>
+                                     </footer>
+                                 </section>
+                                 <hr />
+                                 <section>
+                                     <header>
+                                         <h3><a href="#">Tips for Reporting</a></h3>
+                                     </header>
+                                     <p>
+                                         Be as detailed as possible when describing your item, and report it as soon as you can to increase your chances of recovery.
+                                     </p>
+                                     <div class="row gtr-50">
+                                         <div class="col-4">
+                                             <a href="#" class="image fit"><img src="images/pic01.jpg" alt="Electronics" /></a>
+                                         </div>
+                                         <div class="col-8">
+                                             <h4>Electronics</h4>
+                                             <p>
+                                                 Include brand, color, and any unique features.
+                                             </p>
+                                         </div>
+                                         <div class="col-4">
+                                             <a href="#" class="image fit"><img src="images/pic01.jpg" alt="Luggage" /></a>
+                                         </div>
+                                         <div class="col-8">
+                                             <h4>Luggage</h4>
+                                             <p>
+                                                 Note the size, color, and any tags or stickers.
+                                             </p>
+                                         </div>
+                                         <div class="col-4">
+                                             <a href="#" class="image fit"><img src="images/pic01.jpg" alt="Clothing" /></a>
+                                         </div>
+                                         <div class="col-8">
+                                             <h4>Clothing</h4>
+                                             <p>
+                                                 Mention the type, color, and any logos.
+                                             </p>
+                                         </div>
+                                         <div class="col-4">
+                                             <a href="#" class="image fit"><img src="images/pic01.jpg" alt="Jewelry" /></a>
+                                         </div>
+                                         <div class="col-8">
+                                             <h4>Jewelry</h4>
+                                             <p>
+                                                 Describe the material, design, and any engravings.
+                                             </p>
+                                         </div>
+                                         <div class="col-4">
+                                             <a href="#" class="image fit"><img src="images/pic01.jpg" alt="Other Items" /></a>
+                                         </div>
+                                         <div class="col-8">
+                                             <h4>Other Items</h4>
+                                             <p>
+                                                 Provide as much detail as possible.
+                                             </p>
+                                         </div>
+                                     </div>
+                                     <footer>
+                                         <a href="#" class="button">More Tips</a>
+                                     </footer>
+                                 </section>
+                             </div>
+                             <div class="col-8 col-12-mobile imp-mobile" id="content">
+                                 <article id="main">
+                                     <header>
+                                         <h2><a href="#">Report Lost Item</a></h2>
+                                         <p>
+                                             Let us help you find your lost item—fill out the form below with as much detail as possible.
+                                         </p>
+                                     </header>
+                                     <div class="form-container">
+                                         <form id="lostItemForm">
+                                             <label for="name">Your Name</label>
+                                             <input type="text" id="name" name="name" placeholder="Enter your full name" required autocomplete="name" />
+                                             <span class="error" id="nameError">Please enter a valid name</span>
 
-				<!-- Header -->
-				<div id="header">
-					<!-- Nav -->
-					<nav id="nav">
-						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li><a href="About_Us.html">About Us</a></li>
-							<li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
-							<li><a href="track_your_item.html">Track Items</a></li>
-							<li><a href="claim_item.html">Claim Items</a></li>
-                            <li><a href="contact_support.html">Contact Us</a></li>
-						</ul>
-					</nav>
-				</div>
-			<!-- Main -->
-				<div class="wrapper style1">
+                                             <label for="email">Email Address</label>
+                                             <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email" />
+                                             <span class="error" id="emailError">Please enter a valid email</span>
 
-					<div class="container">
-						<div class="row gtr-200">
-							<div class="col-4 col-12-mobile" id="sidebar">
-								<hr class="first" />
-								<section>
-									<header>
-										<h3><a href="#">About LostLink</a></h3>
-									</header>
-									<p>
-										LostLink helps you report and track items lost at US airports. We work with airport staff to make the process quick and easy.
-									</p>
-									<footer>
-										<a href="About_Us.html" class="button">Learn More</a>
-									</footer>
-								</section>
-								<hr />
-								<section>
-									<header>
-										<h3><a href="#">Tips for Reporting</a></h3>
-									</header>
-									<p>
-										Be as detailed as possible when describing your item, and report it as soon as you can to increase your chances of recovery.
-									</p>
-									<div class="row gtr-50">
-										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Electronics" /></a>
-										</div>
-										<div class="col-8">
-											<h4>Electronics</h4>
-											<p>
-												Include brand, color, and any unique features.
-											</p>
-										</div>
-										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Luggage" /></a>
-										</div>
-										<div class="col-8">
-											<h4>Luggage</h4>
-											<p>
-												Note the size, color, and any tags or stickers.
-											</p>
-										</div>
-										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Clothing" /></a>
-										</div>
-										<div class="col-8">
-											<h4>Clothing</h4>
-											<p>
-												Mention the type, color, and any logos.
-											</p>
-										</div>
-										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Jewelry" /></a>
-										</div>
-										<div class="col-8">
-											<h4>Jewelry</h4>
-											<p>
-												Describe the material, design, and any engravings.
-											</p>
-										</div>
-										<div class="col-4">
-											<a href="#" class="image fit"><img src="images/pic01.jpg" alt="Other Items" /></a>
-										</div>
-										<div class="col-8">
-											<h4>Other Items</h4>
-											<p>
-												Provide as much detail as possible.
-											</p>
-										</div>
-									</div>
-									<footer>
-										<a href="#" class="button">More Tips</a>
-									</footer>
-								</section>
-							</div>
-							<div class="col-8 col-12-mobile imp-mobile" id="content">
-								<article id="main">
-									<header>
-										<h2><a href="#">Report Lost Item</a></h2>
-										<p>
-											Let us help you find your lost item—fill out the form below with as much detail as possible.
-										</p>
-									</header>
-									<div class="form-container">
-										<form id="lostItemForm">
-										<label for="name">Your Name</label>
-										<input type="text" id="name" name="name" placeholder="Enter your full name" required autocomplete="name" />
-										<span class="error" id="nameError">Please enter a valid name</span>
+                                             <label for="phone">Phone Number</label>
+                                             <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required autocomplete="tel" />
+                                             <span class="error" id="phoneError">Please enter a valid phone number</span>
 
-										<label for="email">Email Address</label>
-										<input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email" />
-										<span class="error" id="emailError">Please enter a valid email</span>
+                                             <label for="airport">Airport Where Item Was Lost</label>
+                                             <select id="airport" name="airport" required>
+                                                 <option value="" disabled selected>Select an airport</option>
+                                                 <option value="LAX">Los Angeles International (LAX)</option>
+                                                 <option value="JFK">John F. Kennedy International (JFK)</option>
+                                                 <option value="ORD">Chicago O'Hare International (ORD)</option>
+                                                 <option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
+                                                 <option value="DFW">Dallas/Fort Worth International (DFW)</option>
+                                             </select>
 
-										<label for="phone">Phone Number</label>
-										<input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required autocomplete="tel" />
-										<span class="error" id="phoneError">Please enter a valid phone number</span>
+                                             <label for="item-type">Item Type</label>
+                                             <select id="item-type" name="itemType" required>
+                                                 <option value="" disabled selected>Select item type</option>
+                                                 <option value="electronics">Electronics (phone, laptop, etc.)</option>
+                                                 <option value="clothing">Clothing</option>
+                                                 <option value="luggage">Luggage</option>
+                                                 <option value="jewelry">Jewelry</option>
+                                                 <option value="other">Other</option>
+                                             </select>
 
-										<label for="airport">Airport Where Item Was Lost</label>
-										<select id="airport" name="airport" required>
-											<option value="" disabled selected>Select an airport</option>
-											<option value="LAX">Los Angeles International (LAX)</option>
-											<option value="JFK">John F. Kennedy International (JFK)</option>
-											<option value="ORD">Chicago O'Hare International (ORD)</option>
-											<option value="ATL">Hartsfield-Jackson Atlanta International (ATL)</option>
-											<option value="DFW">Dallas/Fort Worth International (DFW)</option>
-										</select>
+                                             <label for="description">Item Description</label>
+                                             <textarea id="description" name="description" rows="4" placeholder="Describe the item (color, breed, size, etc.)" required></textarea>
+                                             <span class="error" id="descriptionError">Please provide a description</span>
 
-										<label for="item-type">Item Type</label>
-										<select id="item-type" name="itemType" required>
-											<option value="" disabled selected>Select item type</option>
-											<option value="electronics">Electronics (phone, laptop, etc.)</option>
-											<option value="clothing">Clothing</option>
-											<option value="luggage">Luggage</option>
-											<option value="jewelry">Jewelry</option>
-											<option value="other">Other</option>
-										</select>
+                                             <label for="date-lost">Date Lost</label>
+                                             <input type="date" id="date-lost" name="dateLost" required max="2025-07-01" autocomplete="off" />
+                                             <span class="error" id="dateLostError">Please select a valid date</span>
 
-										<label for="description">Item Description</label>
-										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, breed, size, etc.)" required></textarea>
-										<span class="error" id="descriptionError">Please provide a description</span>
+                                             <button type="submit">Submit Report</button>
+                                         </form>
+                                     </div>
+                                 </article>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
 
-										<label for="date-lost">Date Lost</label>
-										<input type="date" id="date-lost" name="dateLost" required max="2025-07-01" autocomplete="off" />
-										<span class="error" id="dateLostError">Please select a valid date</span>
+             <!-- Footer -->
+             <div id="footer">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-12">
+                             <!-- Contact -->
+                             <section class="contact">
+                                 <header>
+                                     <h3>Need Help with a Lost Item?</h3>
+                                 </header>
+                                 <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+                                 <ul class="icons">
+                                     <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                                     <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                     <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                     <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                     <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                     <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                 </ul>
+                             </section>
 
-										<button type="submit">Submit Report</button>
-									</form>
-								</div>
-							</article>
-						</div>
-					</div>
-				</div>
-			</div>
+                             <!-- Copyright -->
+                             <div class="copyright">
+                                 <ul class="menu">
+                                     <li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
 
-		<!-- Footer -->
-		<div id="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<!-- Contact -->
-							<section class="contact">
-								<header>
-									<h3>Need Help with a Lost Item?</h3>
-								</header>
-								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-								<ul class="icons">
-									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-								</ul>
-							</section>
+             <!-- Scripts -->
+             <script src="https://accounts.google.com/gsi/client" async defer></script>
+             <script src="https://apis.google.com/js/api.js"></script>
+             <script src="assets/js/jquery.min.js"></script>
+             <script src="assets/js/jquery.dropotron.min.js"></script>
+             <script src="assets/js/jquery.scrolly.min.js"></script>
+             <script src="assets/js/jquery.scrollex.min.js"></script>
+             <script src="assets/js/browser.min.js"></script>
+             <script src="assets/js/breakpoints.min.js"></script>
+             <script src="assets/js/util.js"></script>
+             <script src="assets/js/main.js"></script>
+             <script>
+                 console.log('Script loaded at:', new Date().toISOString());
+                 try {
+                     console.log('Checking for jQuery');
+                     if (typeof jQuery === 'undefined') {
+                         console.error('jQuery not loaded');
+                         alert('Error: jQuery not loaded. Please contact support.');
+                         throw new Error('jQuery not loaded');
+                     }
+                     console.log('jQuery loaded:', jQuery.fn.jquery);
 
-						<!-- Copyright -->
-							<div class="copyright">
-								<ul class="menu">
-									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-								</ul>
-							</div>
+                     const form = document.getElementById('lostItemForm');
+                     if (!form) {
+                         console.error('Form with ID "lostItemForm" not found');
+                         alert('Form not found. Please contact support.');
+                         throw new Error('Form not found');
+                     }
+                     console.log('Form found');
 
-					</div>
+                     // Client-side tracking ID counter (persist in localStorage)
+                     let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
+                     let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
 
-				</div>
-			</div>
-		</div>
+                     // Google API configuration
+                     const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-		<!-- Scripts -->
-		<script src="https://accounts.google.com/gsi/client" async defer></script>
-		<script src="https://apis.google.com/js/api.js"></script>
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.dropotron.min.js"></script>
-		<script src="assets/js/jquery.scrolly.min.js"></script>
-		<script src="assets/js/jquery.scrollex.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
-		<script>
-			console.log('Script loaded at:', new Date().toISOString());
-			try {
-				console.log('Checking for jQuery');
-				if (typeof jQuery === 'undefined') {
-					console.error('jQuery not loaded');
-					alert('Error: jQuery not loaded. Please contact support.');
-					throw new Error('jQuery not loaded');
-				}
-				console.log('jQuery loaded:', jQuery.fn.jquery);
+                     // Initialize gapi.client for Sheets API
+                     function initGapiClient() {
+                         return new Promise((resolve, reject) => {
+                             gapi.load('client', () => {
+                                 gapi.client.init({
+                                     discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                                 }).then(() => {
+                                     console.log('gapi client initialized');
+                                     resolve();
+                                 }).catch(error => {
+                                     console.error('gapi client initialization error:', error);
+                                     reject(error);
+                                 });
+                             });
+                         });
+                     }
 
-				const form = document.getElementById('lostItemForm');
-				if (!form) {
-					console.error('Form with ID "lostItemForm" not found');
-					alert('Form not found. Please contact support.');
-					throw new Error('Form not found');
-				}
-				console.log('Form found');
+                     // Initialize GIS OAuth
+                     function getAccessToken() {
+                         return new Promise((resolve, reject) => {
+                             const client = google.accounts.oauth2.initTokenClient({
+                                 client_id: CLIENT_ID,
+                                 scope: SCOPES,
+                                 prompt: 'select_account',
+                                 callback: (response) => {
+                                     if (response.error) {
+                                         console.error('OAuth error:', response.error);
+                                         if (response.error === 'access_denied') {
+                                             reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
+                                         } else {
+                                             reject(new Error(response.error));
+                                         }
+                                     } else {
+                                         console.log('Access token received');
+                                         resolve(response.access_token);
+                                     }
+                                 }
+                             });
+                             client.requestAccessToken();
+                         });
+                     }
 
-				// Client-side tracking ID counter (persist in localStorage)
-				let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
-				let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
+                     $(form).on('submit', async function (e) {
+                         e.preventDefault();
+                         console.log('Form submission started at:', new Date().toISOString());
+                         alert('Submitting form...');
 
-				// Google API configuration
-				const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-				const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID';
-				const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+                         try {
+                             // Reset error messages
+                             console.log('Resetting error messages');
+                             $('.error').css('display', 'none');
 
-				// Initialize gapi.client for Sheets API
-				function initGapiClient() {
-					return new Promise((resolve, reject) => {
-						gapi.load('client', () => {
-							gapi.client.init({
-								discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-							}).then(() => {
-								console.log('gapi client initialized');
-								resolve();
-							}).catch(error => {
-								console.error('gapi client initialization error:', error);
-								reject(error);
-							});
-						});
-					});
-				}
+                             // Get form values
+                             console.log('Retrieving form values');
+                             const name = $('#name').val()?.trim();
+                             const email = $('#email').val()?.trim();
+                             const phone = $('#phone').val()?.trim();
+                             const airport = $('#airport').val();
+                             const itemType = $('#item-type').val();
+                             const description = $('#description').val()?.trim();
+                             const dateLost = $('#date-lost').val();
 
-				// Initialize GIS OAuth
-				function getAccessToken() {
-					return new Promise((resolve, reject) => {
-						const client = google.accounts.oauth2.initTokenClient({
-							client_id: CLIENT_ID,
-							scope: SCOPES,
-							prompt: 'select_account',
-							callback: (response) => {
-								if (response.error) {
-									console.error('OAuth error:', response.error);
-									if (response.error === 'access_denied') {
-										reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
-									} else {
-										reject(new Error(response.error));
-									}
-								} else {
-									console.log('Access token received');
-									resolve(response.access_token);
-								}
-							}
-						});
-						client.requestAccessToken();
-					});
-				}
+                             // Check for missing or empty values
+                             console.log('Checking for missing or empty values');
+                             if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
+                                 console.error('Missing or empty form values:', {
+                                     name: !!name, email: !!email, phone: !!phone,
+                                     airport: !!airport, itemType: !!itemType,
+                                     description: !!description, dateLost: !!dateLost
+                                 });
+                                 alert('Form error: All fields are required.');
+                                 return;
+                             }
 
-				$(form).on('submit', async function (e) {
-					e.preventDefault();
-					console.log('Form submission started at:', new Date().toISOString());
-					alert('Submitting form...');
+                             // Client-side validation
+                             console.log('Validating form inputs');
+                             let isValid = true;
+                             const errors = [];
+                             if (name.length < 2) {
+                                 $('#nameError').css('display', 'block');
+                                 errors.push('Name must be at least 2 characters');
+                                 isValid = false;
+                             }
+                             if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+                                 $('#emailError').css('display', 'block');
+                                 errors.push('Invalid email format');
+                                 isValid = false;
+                             }
+                             if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+                                 $('#phoneError').css('display', 'block');
+                                 errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
+                                 isValid = false;
+                             }
+                             if (description.length < 5) {
+                                 $('#descriptionError').css('display', 'block');
+                                 errors.push('Description must be at least 5 characters');
+                                 isValid = false;
+                             }
+                             if (!dateLost) {
+                                 $('#dateLostError').css('display', 'block');
+                                 errors.push('Date lost is required');
+                                 isValid = false;
+                             }
 
-					try {
-						// Reset error messages
-						console.log('Resetting error messages');
-						$('.error').css('display', 'none');
+                             if (!isValid) {
+                                 console.log('Validation failed:', errors);
+                                 alert('Please correct the following errors:\n- ' + errors.join('\n- '));
+                                 return;
+                             }
 
-						// Get form values
-						console.log('Retrieving form values');
-						const name = $('#name').val()?.trim();
-						const email = $('#email').val()?.trim();
-						const phone = $('#phone').val()?.trim();
-						const airport = $('#airport').val();
-						const itemType = $('#item-type').val();
-						const description = $('#description').val()?.trim();
-						const dateLost = $('#date-lost').val();
+                             // Sanitize inputs
+                             console.log('Sanitizing inputs');
+                             const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
+                             const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
 
-						// Check for missing or empty values
-						console.log('Checking for missing or empty values');
-						if (!name || !email || !phone || !airport || !itemType || !description || !dateLost) {
-							console.error('Missing or empty form values:', {
-								name: !!name, email: !!email, phone: !!phone,
-								airport: !!airport, itemType: !!itemType,
-								description: !!description, dateLost: !!dateLost
-							});
-							alert('Form error: All fields are required.');
-							return;
-						}
+                             // Generate tracking ID client-side
+                             const today = new Date().toISOString().split('T')[0];
+                             if (lastResetDate !== today) {
+                                 counter = 0;
+                                 lastResetDate = today;
+                                 localStorage.setItem('lastResetDate', today);
+                             }
+                             counter += 1;
+                             localStorage.setItem('lostItemCounter', counter.toString());
+                             const formattedCounter = ('0000' + counter).slice(-4);
+                             const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                             let randomStr = '';
+                             for (let i = 0; i < 3; i++) {
+                                 randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
+                             }
+                             const trackingId = `LOST-${formattedCounter}-${randomStr}`;
 
-						// Client-side validation
-						console.log('Validating form inputs');
-						let isValid = true;
-						const errors = [];
-						if (name.length < 2) {
-							$('#nameError').css('display', 'block');
-							errors.push('Name must be at least 2 characters');
-							isValid = false;
-						}
-						if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-							$('#emailError').css('display', 'block');
-							errors.push('Invalid email format');
-							isValid = false;
-						}
-						if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-							$('#phoneError').css('display', 'block');
-							errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
-							isValid = false;
-						}
-						if (description.length < 5) {
-							$('#descriptionError').css('display', 'block');
-							errors.push('Description must be at least 5 characters');
-							isValid = false;
-						}
-						if (!dateLost) {
-							$('#dateLostError').css('display', 'block');
-							errors.push('Date lost is required');
-							isValid = false;
-						}
+                             const formData = {
+                                 name: sanitizedName,
+                                 email,
+                                 phone,
+                                 airport,
+                                 itemType,
+                                 description: sanitizedDescription,
+                                 dateLost,
+                                 trackingId
+                             };
+                             console.log('Form data with tracking ID:', formData);
 
-						if (!isValid) {
-							console.log('Validation failed:', errors);
-							alert('Please correct the following errors:\n- ' + errors.join('\n- '));
-							return;
-						}
+                             // Initialize gapi.client and get OAuth token
+                             await initGapiClient();
+                             const accessToken = await getAccessToken();
+                             gapi.client.setToken({ access_token: accessToken });
 
-						// Sanitize inputs
-						console.log('Sanitizing inputs');
-						const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
-						const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
+                             // Append to Google Sheet using Sheets API
+                             console.log('Sending data to Sheets API');
+                             const response = await gapi.client.sheets.spreadsheets.values.append({
+                                 spreadsheetId: SPREADSHEET_ID,
+                                 range: 'LostItems!A:I',
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: {
+                                     values: [
+                                         [
+                                             new Date().toISOString(),
+                                             sanitizedName,
+                                             email,
+                                             phone,
+                                             airport,
+                                             itemType,
+                                             sanitizedDescription,
+                                             dateLost,
+                                             trackingId
+                                         ]
+                                     ]
+                                 }
+                             });
 
-						// Generate tracking ID client-side
-						const today = new Date().toISOString().split('T')[0];
-						if (lastResetDate !== today) {
-							counter = 0;
-							lastResetDate = today;
-							localStorage.setItem('lastResetDate', today);
-						}
-						counter += 1;
-						localStorage.setItem('lostItemCounter', counter.toString());
-						const formattedCounter = ('0000' + counter).slice(-4);
-						const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-						let randomStr = '';
-						for (let i = 0; i < 3; i++) {
-							randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
-						}
-						const trackingId = `LOST-${formattedCounter}-${randomStr}`;
+                             console.log('Sheets API response status:', response.status);
+                             if (response.status !== 200) {
+                                 throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(response.result)}`);
+                             }
 
-						const formData = {
-							name: sanitizedName,
-							email,
-							phone,
-							airport,
-							itemType,
-							description: sanitizedDescription,
-							dateLost,
-							trackingId
-						};
-						console.log('Form data with tracking ID:', formData);
+                             console.log('Sheets API response:', response.result);
 
-						// Initialize gapi.client and get OAuth token
-						await initGapiClient();
-						const accessToken = await getAccessToken();
-						gapi.client.setToken({ access_token: accessToken });
-
-						// Append to Google Sheet using Sheets API
-						console.log('Sending data to Sheets API');
-						const response = await gapi.client.sheets.spreadsheets.values.append({
-							spreadsheetId: SPREADSHEET_ID,
-							range: 'LostItems!A:I',
-							valueInputOption: 'USER_ENTERED',
-							resource: {
-								values: [
-									[
-										new Date().toISOString(),
-										sanitizedName,
-										email,
-										phone,
-										airport,
-										itemType,
-										sanitizedDescription,
-										dateLost,
-										trackingId
-									]
-								]
-							}
-						});
-
-						console.log('Sheets API response status:', response.status);
-						if (response.status !== 200) {
-							throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(response.result)}`);
-						}
-
-						console.log('Sheets API response:', response.result);
-
-						// Redirect to report_submission.html
-						const queryParams = new URLSearchParams({
-							trackingId,
-							name: sanitizedName,
-							email,
-							phone,
-							airport,
-							itemType,
-							description: sanitizedDescription,
-							dateLost
-						}).toString();
-						console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-						window.location.assign('/report_submission.html?' + queryParams);
-					} catch (error) {
-						console.error('Submission error:', error.message || error);
-						alert('Submission failed: ' + (error.message || 'Unknown error'));
-						return false;
-					}
-				});
-			} catch (error) {
-				console.error('Script initialization error:', error.message);
-				alert('Script initialization failed: ' + error.message);
-			}
-		</script>
-</body>
-</html>
+                             // Redirect to report_submission.html
+                             const queryParams = new URLSearchParams({
+                                 trackingId,
+                                 name: sanitizedName,
+                                 email,
+                                 phone,
+                                 airport,
+                                 itemType,
+                                 description: sanitizedDescription,
+                                 dateLost
+                             }).toString();
+                             console.log('Redirecting to:', '/report_submission.html?' + queryParams);
+                             window.location.assign('/report_submission.html?' + queryParams);
+                         } catch (error) {
+                             console.error('Submission error:', error.message || error);
+                             alert('Submission failed: ' + (error.message || 'Unknown error'));
+                             return false;
+                         }
+                     });
+                 } catch (error) {
+                     console.error('Script initialization error:', error.message);
+                     alert('Script initialization failed: ' + error.message);
+                 }
+             </script>
+         </body>
+     </html>
