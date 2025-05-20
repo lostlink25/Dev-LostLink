@@ -18,6 +18,7 @@
   "homepage": "https://github.com/lostlink25/Dev-LostLink#readme",
   "description": "",
   "dependencies": {
-    "@googleapis/sheets": "^9.7.0"
+    "@googleapis/sheets": "^9.7.0",
+    "google-auth-library": "^9.15.1"
   }
 }
