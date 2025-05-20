@@ -1,0 +1,7 @@
+{
+  "name": "lostlink",
+  "version": "1.0.0",
+  "dependencies": {
+    "node-sass": "^9.0.0"
+  }
+}
