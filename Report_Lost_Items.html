@@ -4,7 +4,6 @@
 		<title>Report Lost Item - LostLink</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
@@ -180,7 +179,7 @@
 										</select>
 
 										<label for="description">Item Description</label>
-										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
+										<textarea id="description" name="description" rows="4" placeholder="Describe the item (color, breed, size, etc.)" required></textarea>
 										<span class="error" id="descriptionError">Please provide a description</span>
 
 										<label for="date-lost">Date Lost</label>
@@ -231,8 +230,6 @@
 		</div>
 
 		<!-- Scripts -->
-		<script src="https://accounts.google.com/gsi/client" async defer></script>
-		<script src="https://apis.google.com/js/api.js"></script>
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/js/jquery.dropotron.min.js"></script>
 		<script src="assets/js/jquery.scrolly.min.js"></script>
@@ -263,48 +260,6 @@
 				// Client-side tracking ID counter (persist in localStorage)
 				let counter = parseInt(localStorage.getItem('lostItemCounter') || '0', 10);
 				let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
-
-				// Google API configuration
-				const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-				const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-				const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-
-				// Initialize gapi.client for Sheets API
-				function initGapiClient() {
-					return new Promise((resolve, reject) => {
-						gapi.load('client', () => {
-							gapi.client.init({
-								discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-							}).then(() => {
-								console.log('gapi client initialized');
-								resolve();
-							}).catch(error => {
-								console.error('gapi client initialization error:', error);
-								reject(error);
-							});
-						});
-					});
-				}
-
-				// Initialize GIS OAuth
-				function getAccessToken() {
-					return new Promise((resolve, reject) => {
-						const client = google.accounts.oauth2.initTokenClient({
-							client_id: CLIENT_ID,
-							scope: SCOPES,
-							callback: (response) => {
-								if (response.error) {
-									console.error('OAuth error:', response.error);
-									reject(new Error(response.error));
-								} else {
-									console.log('Access token received');
-									resolve(response.access_token);
-								}
-							}
-						});
-						client.requestAccessToken();
-					});
-				}
 
 				$(form).on('submit', async function (e) {
 					e.preventDefault();
@@ -408,54 +363,40 @@
 						};
 						console.log('Form data with tracking ID:', formData);
 
-						// Initialize gapi.client and get OAuth token
-						await initGapiClient();
-						const accessToken = await getAccessToken();
-						gapi.client.setToken({ access_token: accessToken });
-
-						// Append to Google Sheet using Sheets API
-						console.log('Sending data to Sheets API');
-						const response = await gapi.client.sheets.spreadsheets.values.append({
-							spreadsheetId: SPREADSHEET_ID,
-							range: 'LostItems!A:I',
-							valueInputOption: 'USER_ENTERED',
-							resource: {
-								values: [
-									[
-										new Date().toISOString(),
-										sanitizedName,
-										email,
-										phone,
-										airport,
-										itemType,
-										sanitizedDescription,
-										dateLost,
-										trackingId
-									]
-								]
-							}
+						// Send to Netlify Function
+						console.log('Sending data to Netlify Function: /submitLostItem');
+						const response = await fetch('/.netlify/functions/submitLostItem', {
+							method: 'POST',
+							body: JSON.stringify(formData),
+							headers: { 'Content-Type': 'application/json' }
 						});
 
-						console.log('Sheets API response status:', response.status);
-						if (response.status !== 200) {
-							throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(response.result)}`);
+						console.log('Function response status:', response.status);
+						if (!response.ok) {
+							const errorText = await response.text();
+							throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
 						}
 
-						console.log('Sheets API response:', response.result);
+						const result = await response.json();
+						console.log('Function response:', result);
 
-						// Redirect to report_submission.html
-						const queryParams = new URLSearchParams({
-							trackingId,
-							name: sanitizedName,
-							email,
-							phone,
-							airport,
-							itemType,
-							description: sanitizedDescription,
-							dateLost
-						}).toString();
-						console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-						window.location.assign('/report_submission.html?' + queryParams);
+						if (result.status === 'success') {
+							const queryParams = new URLSearchParams({
+								trackingId: result.trackingId,
+								name: sanitizedName,
+								email,
+								phone,
+								airport,
+								itemType,
+								description: sanitizedDescription,
+								dateLost
+							}).toString();
+							console.log('Redirecting to:', '/report_submission.html?' + queryParams);
+							window.location.assign('/report_submission.html?' + queryParams);
+						} else {
+							console.error('Server error:', result.message);
+							alert('Submission error: ' + result.message);
+						}
 					} catch (error) {
 						console.error('Submission error:', error.message || error);
 						alert('Submission failed: ' + (error.message || 'Unknown error'));
