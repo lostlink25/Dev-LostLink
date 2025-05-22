@@ -3,7 +3,7 @@
          <head>
              <title>LostLink - Staff Portal</title>
              <meta charset="utf-8" />
-             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
              <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
              <link rel="stylesheet" href="assets/css/main.css" />
              <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
@@ -23,6 +23,7 @@
                      border: 1px solid #ccc;
                      padding: 10px;
                      text-align: left;
+                     white-space: nowrap; /* Prevent text wrapping */
                  }
                  .dashboard th {
                      background-color: #1976D2;
@@ -97,6 +98,29 @@
                  .logout-button:hover {
                      background-color: #ef8376;
                  }
+                 /* Mobile responsive table scrolling */
+                 .table-container {
+                     overflow-x: auto;
+                     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                     width: 100%;
+                 }
+                 .dashboard table {
+                     min-width: 800px; /* Ensure table is wide enough to require scrolling on mobile */
+                 }
+                 @media screen and (max-width: 768px) {
+                     .dashboard th, .dashboard td {
+                         font-size: 0.8em; /* Smaller text on mobile */
+                         padding: 8px;
+                     }
+                     .dashboard-controls {
+                         flex-direction: column;
+                         align-items: stretch;
+                     }
+                     .dashboard-controls input, .dashboard-controls select {
+                         width: 100%;
+                         box-sizing: border-box;
+                     }
+                 }
              </style>
          </head>
          <body class="is-preload">
@@ -145,22 +169,24 @@
                                          <option value="other">Other</option>
                                      </select>
                                  </div>
-                                 <table id="lostItemsTable">
-                                     <thead>
-                                         <tr>
-                                             <th data-sort="timestamp">Timestamp</th>
-                                             <th data-sort="name">Name</th>
-                                             <th data-sort="email">Email</th>
-                                             <th data-sort="phone">Phone</th>
-                                             <th data-sort="airport">Airport</th>
-                                             <th data-sort="itemType">Item Type</th>
-                                             <th data-sort="description">Description</th>
-                                             <th data-sort="dateLost">Date Lost</th>
-                                             <th data-sort="trackingId">Tracking ID</th>
-                                         </tr>
-                                     </thead>
-                                     <tbody></tbody>
-                                 </table>
+                                 <div class="table-container">
+                                     <table id="lostItemsTable">
+                                         <thead>
+                                             <tr>
+                                                 <th data-sort="timestamp">Timestamp</th>
+                                                 <th data-sort="name">Name</th>
+                                                 <th data-sort="email">Email</th>
+                                                 <th data-sort="phone">Phone</th>
+                                                 <th data-sort="airport">Airport</th>
+                                                 <th data-sort="itemType">Item Type</th>
+                                                 <th data-sort="description">Description</th>
+                                                 <th data-sort="dateLost">Date Lost</th>
+                                                 <th data-sort="trackingId">Tracking ID</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody></tbody>
+                                     </table>
+                                 </div>
                                  <div class="pagination" id="lostPagination"></div>
                                  <h3>Found Items</h3>
                                  <div class="dashboard-controls">
@@ -188,23 +214,25 @@
                                          <option value="Returned">Returned</option>
                                      </select>
                                  </div>
-                                 <table id="foundItemsTable">
-                                     <thead>
-                                         <tr>
-                                             <th data-sort="timestamp">Timestamp</th>
-                                             <th data-sort="trackingID">Tracking ID</th>
-                                             <th data-sort="itemType">Item Type</th>
-                                             <th data-sort="airport">Airport</th>
-                                             <th data-sort="description">Description</th>
-                                             <th data-sort="dateFound">Date Found</th>
-                                             <th data-sort="location">Location</th>
-                                             <th data-sort="status">Status</th>
-                                             <th data-sort="reporter">Reporter</th>
-                                             <th data-sort="reporterType">Reporter Type</th>
-                                         </tr>
-                                     </thead>
-                                     <tbody></tbody>
-                                 </table>
+                                 <div class="table-container">
+                                     <table id="foundItemsTable">
+                                         <thead>
+                                             <tr>
+                                                 <th data-sort="timestamp">Timestamp</th>
+                                                 <th data-sort="trackingID">Tracking ID</th>
+                                                 <th data-sort="itemType">Item Type</th>
+                                                 <th data-sort="airport">Airport</th>
+                                                 <th data-sort="description">Description</th>
+                                                 <th data-sort="dateFound">Date Found</th>
+                                                 <th data-sort="location">Location</th>
+                                                 <th data-sort="status">Status</th>
+                                                 <th data-sort="reporter">Reporter</th>
+                                                 <th data-sort="reporterType">Reporter Type</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody></tbody>
+                                     </table>
+                                 </div>
                                  <div class="pagination" id="foundPagination"></div>
                                  <button class="logout-button" onclick="logout()">Logout</button>
                                  <p class="error" id="dataError"></p>
