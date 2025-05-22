@@ -97,6 +97,28 @@
                  .chatbot-input button:hover {
                      background: #ef8376;
                  }
+                 .chatbot-quick-replies {
+                     margin-top: 10px;
+                     display: flex;
+                     flex-wrap: wrap;
+                     gap: 5px;
+                 }
+                 .chatbot-quick-reply {
+                     background: #df7366;
+                     color: #fff;
+                     border: none;
+                     padding: 5px 10px;
+                     border-radius: 5px;
+                     cursor: pointer;
+                     font-size: 0.8em;
+                     -moz-transition: background-color 0.35s ease-in-out;
+                     -webkit-transition: background-color 0.35s ease-in-out;
+                     -ms-transition: background-color 0.35s ease-in-out;
+                     transition: background-color 0.35s ease-in-out;
+                 }
+                 .chatbot-quick-reply:hover {
+                     background: #ef8376;
+                 }
                  .error {
                      color: red;
                      font-size: 0.9em;
@@ -146,7 +168,7 @@
                  <section class="carousel">
                      <div class="reel">
                          <article>
-                             <a href="Report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+                             <a href="report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
                              <header>
                                  <h3><a href="Report_Lost_Items.html">Report Lost Items</a></h3>
                              </header>
@@ -208,7 +230,7 @@
                              <article class="col-4 col-12-mobile special">
                                  <a href="Report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="Report Lost Items" /></a>
                                  <header>
-                                     <h3><a href="Report_Lost_Items.html">Report Lost Items</a></h3>
+                                     <h3><a href="report_Lost_Items.html">Report Lost Items</a></h3>
                                  </header>
                                  <p>Quickly submit details about your lost item to initiate the recovery process. Provide descriptions, locations, and images to help us find it faster.</p>
                              </article>
@@ -270,6 +292,13 @@
                                      </div>
                                      <div class="chatbot-messages" id="chatbotMessages">
                                          <div class="chatbot-message bot">Hello! How can I assist you with your lost items?</div>
+                                         <div class="chatbot-quick-replies" id="quickReplies">
+                                             <button class="chatbot-quick-reply" onclick="sendQuickReply('How do I report a lost item?')">Report Lost Item</button>
+                                             <button class="chatbot-quick-reply" onclick="sendQuickReply('How do I track my item?')">Track Item</button>
+                                             <button class="chatbot-quick-reply" onclick="sendQuickReply('How do I claim a found item?')">Claim Item</button>
+                                             <button class="chatbot-quick-reply" onclick="sendQuickReply('I found an item')">Report Found Item</button>
+                                             <button class="chatbot-quick-reply" onclick="sendQuickReply('How do I contact support?')">Contact Support</button>
+                                         </div>
                                      </div>
                                      <div class="chatbot-input">
                                          <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()" />
@@ -295,7 +324,6 @@
              <script src="assets/js/util.js"></script>
              <script src="assets/js/main.js"></script>
              <script>
-                 // Chatbot functionality
                  let chatState = 'initial';
                  let lastUserTopic = '';
                  const formData = {
@@ -305,16 +333,18 @@
                      description: '',
                      foundDate: '',
                      foundLocation: '',
-                     reportedBy: ''
+                     reportedBy: '',
+                     reporterType: ''
                  };
                  const validItemTypes = ['electronics', 'clothing', 'luggage', 'jewelry', 'other'];
                  const validAirports = ['LAX', 'JFK', 'ORD', 'ATL', 'DFW'];
+                 const validReporterTypes = ['staff', 'other'];
 
                  // Google API configuration
-                     const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                     const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-					 
+                 const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+                 const SPREADSHEET_ID = 'YOUR_FOUND_ITEMS_SPREADSHEET_ID';
+                 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
                  // Initialize gapi.client for Sheets API
                  function initGapiClient() {
                      return new Promise((resolve, reject) => {
@@ -362,7 +392,7 @@
                      const messages = document.getElementById('chatbotMessages');
                      const message = document.createElement('div');
                      message.className = `chatbot-message ${sender}`;
-                     message.textContent = text;
+                     message.innerHTML = text;
                      messages.appendChild(message);
                      messages.scrollTop = messages.scrollHeight;
                  }
@@ -385,7 +415,7 @@
                          console.log('Submitting found item to Sheets API');
                          const response = await gapi.client.sheets.spreadsheets.values.append({
                              spreadsheetId: SPREADSHEET_ID,
-                             range: 'FoundItems!A:I',
+                             range: 'FoundItems!A:J',
                              valueInputOption: 'USER_ENTERED',
                              resource: {
                                  values: [
@@ -399,7 +429,8 @@
                                          formData.foundLocation,
                                          'Available',
                                          formData.reportedBy,
-                                         formData.itemId
+                                         formData.itemId,
+                                         formData.reporterType
                                      ]
                                  ]
                              }
@@ -411,12 +442,14 @@
                          }
 
                          appendMessage('Found item reported successfully! Item ID: ' + formData.itemId, 'bot');
+                         updateQuickReplies();
                          chatState = 'initial';
                          Object.keys(formData).forEach(key => formData[key] = '');
                      } catch (error) {
                          console.error('Submission error:', error.message || error);
-                         appendMessage('Failed to submit found item. Please try again.', 'bot');
+                         appendMessage('Failed to submit found item. Please try again or contact support.', 'bot');
                          showError('Submission failed: ' + (error.message || 'Unknown error'));
+                         updateQuickReplies();
                      }
                  }
 
@@ -426,48 +459,102 @@
                      window.classList.toggle('open');
                  }
 
+                 // Send quick reply
+                 function sendQuickReply(message) {
+                     const input = document.getElementById('chatbotInput');
+                     input.value = message;
+                     sendMessage();
+                 }
+
+                 // Update quick replies
+                 function updateQuickReplies() {
+                     const quickReplies = document.getElementById('quickReplies');
+                     quickReplies.innerHTML = '';
+                     const buttons = [
+                         { text: 'Report Lost Item', message: 'How do I report a lost item?' },
+                         { text: 'Track Item', message: 'How do I track my item?' },
+                         { text: 'Claim Item', message: 'How do I claim a found item?' },
+                         { text: 'Report Found Item', message: 'I found an item' },
+                         { text: 'Contact Support', message: 'How do I contact support?' }
+                     ];
+                     if (lastUserTopic.includes('report') && !lastUserTopic.includes('found')) {
+                         buttons.push({ text: 'More Reporting Tips', message: 'What are tips for reporting?' });
+                     } else if (lastUserTopic.includes('track')) {
+                         buttons.push({ text: 'Check Status', message: 'How do I check my item’s status?' });
+                     }
+                     buttons.forEach(btn => {
+                         const button = document.createElement('button');
+                         button.className = 'chatbot-quick-reply';
+                         button.textContent = btn.text;
+                         button.onclick = () => sendQuickReply(btn.message);
+                         quickReplies.appendChild(button);
+                     });
+                 }
+
                  // Handle user message
+                 async function getBotResponse(message) {
+                     lastUserTopic = message.toLowerCase();
+
+                     if (message.includes('report') && message.includes('lost item')) {
+                         return 'To report a lost item, please visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
+                     } else if (message.includes('track') || message.includes('status')) {
+                         return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
+                     } else if (message.includes('claim') || message.includes('found item') && !message.includes('i found')) {
+                         return 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
+                     } else if (message.includes('support') || message.includes('contact')) {
+                         return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
+                     } else if (message.includes('fee') || message.includes('cost')) {
+                         return 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
+                     } else if (message.includes('tips') || message.includes('reporting')) {
+                         return 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
+                     } else if (message.includes('hi') || message.includes('hello')) {
+                         return 'Hey there! I’m here to help with lost items. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below!';
+                     } else if (message.includes('i found') || message.includes('report found')) {
+                         chatState = 'reporterType';
+                         return 'Great! Let’s report a found item. Are you reporting as airport staff or someone else? (Type "staff" or "other")';
+                     } else {
+                         return 'Hmm, I’m not sure about that. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below.';
+                     }
+                 }
+
+                 // Handle chatbot message
                  function sendMessage() {
                      const input = document.getElementById('chatbotInput');
-                     const message = input.value.trim();
-                     if (!message) return;
+                     const messages = document.getElementById('chatbotMessages');
+                     const userMessage = input.value.trim();
+                     if (!userMessage) return;
 
-                     appendMessage(message, 'user');
+                     appendMessage(userMessage, 'user');
                      input.value = '';
 
                      // Show typing indicator
                      const typingDiv = document.createElement('div');
                      typingDiv.className = 'chatbot-message bot typing';
                      typingDiv.textContent = '...';
-                     document.getElementById('chatbotMessages').appendChild(typingDiv);
-                     document.getElementById('chatbotMessages').scrollTop = document.getElementById('chatbotMessages').scrollHeight;
+                     messages.appendChild(typingDiv);
+                     messages.scrollTop = messages.scrollHeight;
 
-                     setTimeout(() => {
+                     setTimeout(async () => {
                          typingDiv.remove();
                          let response;
 
                          switch (chatState) {
                              case 'initial':
-                                 if (message.toLowerCase().includes('report found') || message.toLowerCase().includes('found item')) {
-                                     response = 'Great! Let’s report a found item. Please provide the Item ID (e.g., LOST-0001-XYZ).';
+                                 response = await getBotResponse(userMessage);
+                                 break;
+                             case 'reporterType':
+                                 const reporterType = userMessage.toLowerCase();
+                                 if (validReporterTypes.includes(reporterType)) {
+                                     formData.reporterType = reporterType.charAt(0).toUpperCase() + reporterType.slice(1);
+                                     response = 'Thanks! Please provide the Item ID of the found item (e.g., LOST-0001-XYZ).';
                                      chatState = 'itemId';
-                                 } else if (message.toLowerCase().includes('report') || message.toLowerCase().includes('lost item')) {
-                                     response = 'To report a lost item, visit our <a href="Report_Lost_Items.html">Report Lost Items</a> page and fill out the form.';
-                                 } else if (message.toLowerCase().includes('track') || message.toLowerCase().includes('status')) {
-                                     response = 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address.';
-                                 } else if (message.toLowerCase().includes('claim') || message.toLowerCase().includes('found')) {
-                                     response = 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
-                                 } else if (message.toLowerCase().includes('support') || message.toLowerCase().includes('contact')) {
-                                     response = 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
-                                 } else if (message.toLowerCase().includes('hi') || message.toLowerCase().includes('hello')) {
-                                     response = 'Hey there! I’m here to help with lost items. Try asking about reporting a lost item, tracking, claiming, or contact support.';
                                  } else {
-                                     response = 'Hmm, I’m not sure about that. Try asking about reporting a lost item, tracking, claiming, or contacting support.';
+                                     response = 'Please specify if you are "staff" or "other". Try again.';
                                  }
                                  break;
                              case 'itemId':
-                                 if (message.match(/^LOST-\d{4}-[A-Z]{3}$/)) {
-                                     formData.itemId = message;
+                                 if (userMessage.match(/^LOST-\d{4}-[A-Z]{3}$/)) {
+                                     formData.itemId = userMessage;
                                      response = 'Got the Item ID. What type of item is it? (electronics, clothing, luggage, jewelry, other)';
                                      chatState = 'itemType';
                                  } else {
@@ -475,7 +562,7 @@
                                  }
                                  break;
                              case 'itemType':
-                                 const itemType = message.toLowerCase();
+                                 const itemType = userMessage.toLowerCase();
                                  if (validItemTypes.includes(itemType)) {
                                      formData.itemType = itemType;
                                      response = 'Thanks! Which airport was it found at? (LAX, JFK, ORD, ATL, DFW)';
@@ -485,7 +572,7 @@
                                  }
                                  break;
                              case 'airport':
-                                 const airport = message.toUpperCase();
+                                 const airport = userMessage.toUpperCase();
                                  if (validAirports.includes(airport)) {
                                      formData.airport = airport;
                                      response = 'Got it. Please provide a description of the item (e.g., color, brand, unique features).';
@@ -495,8 +582,8 @@
                                  }
                                  break;
                              case 'description':
-                                 if (message.length >= 5) {
-                                     formData.description = message.replace(/[\n\r"\\]/g, ' ').trim();
+                                 if (userMessage.length >= 5) {
+                                     formData.description = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
                                      response = 'When was the item found? (e.g., 2025-05-22)';
                                      chatState = 'foundDate';
                                  } else {
@@ -504,8 +591,8 @@
                                  }
                                  break;
                              case 'foundDate':
-                                 if (message.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                                     formData.foundDate = message;
+                                 if (userMessage.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                                     formData.foundDate = userMessage;
                                      response = 'Where was the item found? (e.g., Terminal 3, Gate 12)';
                                      chatState = 'foundLocation';
                                  } else {
@@ -513,26 +600,27 @@
                                  }
                                  break;
                              case 'foundLocation':
-                                 if (message.length >= 5) {
-                                     formData.foundLocation = message.replace(/[\n\r"\\]/g, ' ').trim();
-                                     response = 'Who is reporting this item? (e.g., your name or role, like LAX Staff)';
+                                 if (userMessage.length >= 5) {
+                                     formData.foundLocation = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
+                                     response = 'Who is reporting this item? (e.g., your name, email, or role like LAX Staff)';
                                      chatState = 'reportedBy';
                                  } else {
                                      response = 'Location must be at least 5 characters. Try again.';
                                  }
                                  break;
                              case 'reportedBy':
-                                 if (message.length >= 2) {
-                                     formData.reportedBy = message.replace(/[\n\r"\\]/g, ' ').trim();
+                                 if (userMessage.length >= 2) {
+                                     formData.reportedBy = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
                                      submitFoundItem();
                                      return;
                                  } else {
-                                     response = 'Reporter name must be at least 2 characters. Try again.';
+                                     response = 'Reporter identifier must be at least 2 characters. Try again.';
                                  }
                                  break;
                          }
 
                          appendMessage(response, 'bot');
+                         updateQuickReplies();
                          document.getElementById('chatbotMessages').scrollTop = document.getElementById('chatbotMessages').scrollHeight;
                      }, 1000);
                  }
@@ -541,6 +629,7 @@
                  window.onload = function() {
                      const footer = document.querySelector('article#main footer');
                      if (footer) footer.remove();
+                     updateQuickReplies();
                  };
              </script>
          </body>
