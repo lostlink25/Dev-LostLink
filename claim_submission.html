@@ -1,23 +1,109 @@
 <!DOCTYPE HTML>
      <html>
          <head>
-             <title>LostLink - Claim Submitted</title>
+             <title>LostLink - Claim Submissions</title>
              <meta charset="utf-8" />
-             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+             <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
              <link rel="stylesheet" href="assets/css/main.css" />
              <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
              <style>
-                 .confirmation-container {
+                 .submission-section {
                      padding: 20px;
-                     text-align: center;
                  }
-                 .confirmation-container h3 {
+                 .dashboard table {
+                     width: 100%;
+                     border-collapse: collapse;
+                     margin-top: 20px;
+                 }
+                 .dashboard th, .dashboard td {
+                     border: 1px solid #ccc;
+                     padding: 10px;
+                     text-align: left;
+                     white-space: nowrap;
+                 }
+                 .dashboard th {
+                     background-color: #1976D2;
+                     color: white;
+                     font-weight: bold;
+                     cursor: pointer;
+                 }
+                 .dashboard th:hover {
+                     background-color: #1565C0;
+                 }
+                 .dashboard tr:nth-child(even) {
+                     background-color: #f9f9f9;
+                 }
+                 .dashboard-controls {
                      margin-bottom: 20px;
+                     display: flex;
+                     gap: 10px;
+                     flex-wrap: wrap;
+                     align-items: center;
                  }
-                 .confirmation-container p {
-                     margin: 10px 0;
+                 .dashboard-controls input, .dashboard-controls select {
+                     padding: 8px;
+                     border: 1px solid #ccc;
+                     border-radius: 4px;
+                     font-size: 0.9em;
+                 }
+                 .pagination {
+                     margin-top: 10px;
+                     display: flex;
+                     gap: 5px;
+                     justify-content: center;
+                 }
+                 .pagination button {
+                     padding: 5px 10px;
+                     border: 1px solid #ccc;
+                     background-color: #fff;
+                     cursor: pointer;
+                     border-radius: 4px;
+                 }
+                 .pagination button.active {
+                     background-color: #df7366;
+                     color: white;
+                     border-color: #df7366;
+                 }
+                 .pagination button:hover:not(.disabled) {
+                     background-color: #ef8376;
+                     color: white;
+                 }
+                 .pagination button.disabled {
+                     cursor: not-allowed;
+                     opacity: 0.5;
+                 }
+                 .error {
+                     color: red;
+                     display: none;
+                     font-size: 0.9em;
+                     text-align: center;
+                     margin-top: 20px;
+                 }
+                 .table-container {
+                     overflow-x: auto;
+                     -webkit-overflow-scrolling: touch;
+                     width: 100%;
+                 }
+                 .dashboard table {
+                     min-width: 800px;
+                 }
+                 @media screen and (max-width: 768px) {
+                     .dashboard th, .dashboard td {
+                         font-size: 0.8em;
+                         padding: 8px;
+                     }
+                     .dashboard-controls {
+                         flex-direction: column;
+                         align-items: stretch;
+                     }
+                     .dashboard-controls input, .dashboard-controls select {
+                         width: 100%;
+                         box-sizing: border-box;
+                     }
                  }
              </style>
+             <script src="https://apis.google.com/js/api.js"></script>
          </head>
          <body class="is-preload">
              <div id="page-wrapper">
@@ -28,9 +114,10 @@
                          <ul>
                              <li><a href="index.html">Home</a></li>
                              <li><a href="About_Us.html">About Us</a></li>
-                             <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
                              <li><a href="track_your_item.html">Track Items</a></li>
                              <li><a href="claim_item.html">Claim Items</a></li>
+                             <li><a href="claim_submission.html">Claim Submissions</a></li>
                              <li><a href="contact_support.html">Contact Us</a></li>
                          </ul>
                      </nav>
@@ -40,20 +127,40 @@
                  <div class="wrapper style2">
                      <article id="main" class="container special">
                          <header>
-                             <h2>Claim Submitted</h2>
-                             <p>Your claim has been successfully submitted. We will contact you soon.</p>
+                             <h2>Claim Submissions</h2>
+                             <p>View and manage all claim submissions (Staff Only)</p>
                          </header>
-                         <section class="confirmation-container">
-                             <h3>Claim Details</h3>
-                             <p><strong>Claim ID:</strong> <span id="claimId"></span></p>
-                             <p><strong>Item ID:</strong> <span id="itemId"></span></p>
-                             <p><strong>Name:</strong> <span id="name"></span></p>
-                             <p><strong>Email:</strong> <span id="email"></span></p>
-                             <p><strong>Phone:</strong> <span id="phone"></span></p>
-                             <p><strong>Description:</strong> <span id="description"></span></p>
-                             <p>
-                                 Please keep your Claim ID for reference. You can track your claim status on the <a href="track_your_item.html">Track Items</a> page or contact our <a href="contact_support.html">support team</a> for assistance.
-                             </p>
+                         <section class="submission-section">
+                             <div class="dashboard" id="dashboard">
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="claimSearch" placeholder="Search claims..." />
+                                     <select id="claimStatusFilter">
+                                         <option value="">All Claim Statuses</option>
+                                         <option value="Pending">Pending</option>
+                                         <option value="Confirmed">Confirmed</option>
+                                     </select>
+                                 </div>
+                                 <div class="table-container">
+                                     <table id="claimItemsTable">
+                                         <thead>
+                                             <tr>
+                                                 <th data-sort="lostTrackingId">Lost Tracking ID</th>
+                                                 <th data-sort="foundTrackingID">Found Tracking ID</th>
+                                                 <th data-sort="itemType">Item Type</th>
+                                                 <th data-sort="airport">Airport</th>
+                                                 <th data-sort="descriptionSimilarity">Description Similarity</th>
+                                                 <th data-sort="matchConfidence">Match Confidence</th>
+                                                 <th data-sort="claimStatus">Claim Status</th>
+                                                 <th data-sort="claimedBy">Claimed By</th>
+                                                 <th data-sort="claimDate">Claim Date</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody></tbody>
+                                     </table>
+                                 </div>
+                                 <div class="pagination" id="claimPagination"></div>
+                                 <p class="error" id="dataError"></p>
+                             </div>
                          </section>
                      </article>
                  </div>
@@ -62,54 +169,233 @@
                  <div id="footer">
                      <div class="container">
                          <div class="row">
-                             <div class="col-12">
-                                 <!-- Contact -->
-                                 <section class="contact">
-                                     <header>
-                                         <h3>Need Help with a Lost Item?</h3>
-                                     </header>
-                                     <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-                                     <ul class="icons">
-                                         <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-                                         <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                                         <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-                                         <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-                                         <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-                                         <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-                                     </ul>
-                                 </section>
-
-                                 <!-- Copyright -->
-                                 <div class="copyright">
-                                     <ul class="menu">
-                                         <li>© LostLink. All rights reserved.</li>
-                                         <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-                                     </ul>
-                                 </div>
+                             <section class="contact">
+                                 <header>
+                                     <h3>Have Questions?</h3>
+                                 </header>
+                                 <p>Our support team is here to assist you with tracking or recovering your lost items.</p>
+                                 <ul class="icons">
+                                     <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                     <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                     <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                     <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                     <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                     <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                 </ul>
+                             </section>
+                             <div class="copyright">
+                                 <ul class="menu">
+                                     <li>© LostLink. All rights reserved.</li>
+                                     <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                 </ul>
                              </div>
                          </div>
                      </div>
                  </div>
+             </div>
 
-                 <!-- Scripts -->
-                 <script src="assets/js/jquery.min.js"></script>
-                 <script src="assets/js/jquery.dropotron.min.js"></script>
-                 <script src="assets/js/jquery.scrolly.min.js"></script>
-                 <script src="assets/js/jquery.scrollex.min.js"></script>
-                 <script src="assets/js/browser.min.js"></script>
-                 <script src="assets/js/breakpoints.min.js"></script>
-                 <script src="assets/js/util.js"></script>
-                 <script src="assets/js/main.js"></script>
-                 <script>
+             <!-- Scripts -->
+             <script src="assets/js/jquery.min.js"></script>
+             <script src="assets/js/jquery.dropotron.min.js"></script>
+             <script src="assets/js/jquery.scrolly.min.js"></script>
+             <script src="assets/js/jquery.scrollex.min.js"></script>
+             <script src="assets/js/browser.min.js"></script>
+             <script src="assets/js/breakpoints.min.js"></script>
+             <script src="assets/js/util.js"></script>
+             <script src="assets/js/main.js"></script>
+             <script>
+                 console.log('Script loaded at:', new Date().toISOString());
+                 try {
+                     console.log('Checking for jQuery');
+                     if (typeof jQuery === 'undefined') {
+                         console.error('jQuery not loaded');
+                         alert('Error: jQuery not loaded. Please contact support.');
+                         throw new Error('jQuery not loaded');
+                     }
+                     console.log('jQuery loaded:', jQuery.fn.jquery);
+
+                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     let claimItemsData = [];
+                     let claimSortDirection = {};
+                     const ROWS_PER_PAGE = 10;
+
+                     function initGapiClient() {
+                         console.log('Initializing Google API client');
+                         return new Promise((resolve, reject) => {
+                             gapi.load('client', () => {
+                                 gapi.client.init({
+                                     discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                                 }).then(() => {
+                                     console.log('gapi client initialized');
+                                     resolve();
+                                 }).catch(error => {
+                                     console.error('gapi client initialization error:', error);
+                                     reject(error);
+                                 });
+                             });
+                         });
+                     }
+
+                     function sortTable(tableId, column, data, tbody, sortDirection, page) {
+                         console.log(`Sorting ${tableId} by ${column}`);
+                         const index = {
+                             lostTrackingId: 0, foundTrackingID: 1, itemType: 2, airport: 3,
+                             descriptionSimilarity: 4, matchConfidence: 5, claimStatus: 6,
+                             claimedBy: 7, claimDate: 8
+                         };
+                         sortDirection[column] = !sortDirection[column];
+                         data.sort((a, b) => {
+                             let valA = a[index[column]] || '';
+                             let valB = b[index[column]] || '';
+                             if (column === 'claimDate') {
+                                 valA = new Date(valA).getTime();
+                                 valB = new Date(valB).getTime();
+                             } else if (column === 'descriptionSimilarity' || column === 'matchConfidence') {
+                                 valA = parseFloat(valA) || 0;
+                                 valB = parseFloat(valB) || 0;
+                             }
+                             if (sortDirection[column]) {
+                                 return valA > valB ? 1 : -1;
+                             } else {
+                                 return valA < valB ? 1 : -1;
+                             }
+                         });
+                         renderTable(tableId, data, tbody, page);
+                     }
+
+                     function renderTable(tableId, data, tbody, page) {
+                         console.log(`Rendering ${tableId} with ${data.length} items, page ${page}`);
+                         tbody.empty();
+                         const start = (page - 1) * ROWS_PER_PAGE;
+                         const end = start + ROWS_PER_PAGE;
+                         const paginatedData = data.slice(start, end);
+                         if (paginatedData.length === 0) {
+                             tbody.append('<tr><td colspan="9">No claims found.</td></tr>');
+                         } else {
+                             paginatedData.forEach(item => {
+                                 const row = `
+                                     <tr>
+                                         ${item.map(val => `<td>${val || ''}</td>`).join('')}
+                                     </tr>
+                                 `;
+                                 tbody.append(row);
+                             });
+                         }
+                         renderPagination(tableId, data, page);
+                     }
+
+                     function renderPagination(tableId, data, page) {
+                         console.log(`Rendering pagination for ${tableId}, page ${page}`);
+                         const pagination = $('#claimPagination');
+                         pagination.empty();
+                         const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
+                         for (let i = 1; i <= pageCount; i++) {
+                             const button = `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                             pagination.append(button);
+                         }
+                         pagination.find('button').click(function() {
+                             const newPage = parseInt($(this).data('page'), 10);
+                             const filteredData = filterTable(tableId, claimItemsData, '#claimSearch', {
+                                 claimStatus: '#claimStatusFilter'
+                             });
+                             renderTable(tableId, filteredData, $('#claimItemsTable tbody'), newPage);
+                         });
+                     }
+
+                     function filterTable(tableId, data, searchInput, filters) {
+                         console.log(`Filtering ${tableId}, search: ${$(searchInput).val()}`);
+                         let filteredData = [...data];
+                         const searchTerm = $(searchInput).val().toLowerCase();
+                         if (searchTerm) {
+                             filteredData = filteredData.filter(row =>
+                                 row.some(cell => cell && cell.toLowerCase().includes(searchTerm))
+                             );
+                         }
+                         Object.keys(filters).forEach(key => {
+                             const value = $(filters[key]).val();
+                             if (value) {
+                                 const index = { claimStatus: 6 };
+                                 filteredData = filteredData.filter(row => row[index[key]] === value);
+                             }
+                         });
+                         return filteredData;
+                     }
+
+                     async function loadDashboard() {
+                         console.log('Loading dashboard');
+                         try {
+                             const accessToken = localStorage.getItem('staffAccessToken');
+                             const expiresAt = parseInt(localStorage.getItem('staffTokenExpiresAt') || '0', 10);
+                             console.log('Checking token:', {
+                                 token: accessToken ? accessToken.substring(0, 20) + '...' : 'Not set',
+                                 expiresAt: expiresAt ? new Date(expiresAt).toISOString() : 'Not set',
+                                 isExpired: expiresAt <= Date.now()
+                             });
+                             if (!accessToken || expiresAt <= Date.now()) {
+                                 console.log('No valid token or token expired, redirecting to login_staff.html');
+                                 localStorage.removeItem('staffAccessToken');
+                                 localStorage.removeItem('staffTokenExpiresAt');
+                                 $('#dataError').text('Session expired. Please sign in again.').css('display', 'block');
+                                 setTimeout(() => window.location.assign('login_staff.html'), 2000);
+                                 return;
+                             }
+
+                             console.log('Initializing gapi client');
+                             await initGapiClient();
+                             console.log('Setting access token');
+                             gapi.client.setToken({ access_token: accessToken });
+
+                             console.log('Fetching claim items');
+                             const claimResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: SPREADSHEET_ID,
+                                 range: 'ClaimItems!A2:I'
+                             });
+                             claimItemsData = claimResponse.result.values || [];
+                             console.log('Claim items fetched:', claimItemsData.length, 'Sample:', claimItemsData[0] || 'Empty');
+
+                             $('#dashboard').show();
+                             $('#dataError').hide();
+
+                             const claimTbody = $('#claimItemsTable tbody');
+                             renderTable('claimItemsTable', claimItemsData, claimTbody, 1);
+
+                             $('#claimItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('claimItemsTable', column, claimItemsData, claimTbody, claimSortDirection, 1);
+                             });
+
+                             $('#claimSearch, #claimStatusFilter').on('input change', () => {
+                                 const filteredData = filterTable('claimItemsTable', claimItemsData, '#claimSearch', {
+                                     claimStatus: '#claimStatusFilter'
+                                 });
+                                 renderTable('claimItemsTable', filteredData, claimTbody, 1);
+                             });
+                         } catch (error) {
+                             console.error('Error loading dashboard:', error.message, error);
+                             let errorMessage = 'Failed to load claims: ' + error.message;
+                             if (error.status === 401 || error.status === 403) {
+                                 errorMessage = 'Invalid or unauthorized token. Please sign in again.';
+                             } else if (error.status === 404) {
+                                 errorMessage = 'Spreadsheet not found. Check Spreadsheet IDs.';
+                             }
+                             $('#dataError').text(errorMessage).css('display', 'block');
+                             console.log('Clearing token and redirecting to login_staff.html');
+                             localStorage.removeItem('staffAccessToken');
+                             localStorage.removeItem('staffTokenExpiresAt');
+                             setTimeout(() => window.location.assign('login_staff.html'), 2000);
+                         }
+                     }
+
                      document.addEventListener('DOMContentLoaded', () => {
-                         const params = new URLSearchParams(window.location.search);
-                         document.getElementById('claimId').textContent = params.get('claimId') || 'N/A';
-                         document.getElementById('itemId').textContent = params.get('itemId') || 'N/A';
-                         document.getElementById('name').textContent = params.get('name') || 'N/A';
-                         document.getElementById('email').textContent = params.get('email') || 'N/A';
-                         document.getElementById('phone').textContent = params.get('phone') || 'N/A';
-                         document.getElementById('description').textContent = params.get('description') || 'N/A';
+                         console.log('DOM loaded, initializing dashboard');
+                         $('#dashboard').hide();
+                         $('#dataError').hide();
+                         loadDashboard();
                      });
-                 </script>
-             </body>
-         </html>
+                 } catch (error) {
+                     console.error('Script initialization error:', error.message);
+                     $('#dataError').text('Initialization failed: ' + error.message).css('display', 'block');
+                 }
+             </script>
+         </body>
+     </html>

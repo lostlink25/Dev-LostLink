@@ -23,7 +23,7 @@
                      border: 1px solid #ccc;
                      padding: 10px;
                      text-align: left;
-                     white-space: nowrap; /* Prevent text wrapping */
+                     white-space: nowrap;
                  }
                  .dashboard th {
                      background-color: #1976D2;
@@ -98,18 +98,17 @@
                  .logout-button:hover {
                      background-color: #ef8376;
                  }
-                 /* Mobile responsive table scrolling */
                  .table-container {
                      overflow-x: auto;
-                     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                     -webkit-overflow-scrolling: touch;
                      width: 100%;
                  }
                  .dashboard table {
-                     min-width: 800px; /* Ensure table is wide enough to require scrolling on mobile */
+                     min-width: 800px;
                  }
                  @media screen and (max-width: 768px) {
                      .dashboard th, .dashboard td {
-                         font-size: 0.8em; /* Smaller text on mobile */
+                         font-size: 0.8em;
                          padding: 8px;
                      }
                      .dashboard-controls {
@@ -120,6 +119,17 @@
                          width: 100%;
                          box-sizing: border-box;
                      }
+                 }
+                 .confirm-button {
+                     padding: 5px 10px;
+                     background-color: #28a745;
+                     color: white;
+                     border: none;
+                     border-radius: 4px;
+                     cursor: pointer;
+                 }
+                 .confirm-button:hover {
+                     background-color: #218838;
                  }
              </style>
          </head>
@@ -234,6 +244,33 @@
                                      </table>
                                  </div>
                                  <div class="pagination" id="foundPagination"></div>
+                                 <h3>Potential Matches</h3>
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="matchSearch" placeholder="Search matches..." />
+                                     <select id="matchStatusFilter">
+                                         <option value="">All Claim Statuses</option>
+                                         <option value="Pending">Pending</option>
+                                         <option value="Confirmed">Confirmed</option>
+                                     </select>
+                                 </div>
+                                 <div class="table-container">
+                                     <table id="matchItemsTable">
+                                         <thead>
+                                             <tr>
+                                                 <th data-sort="lostTrackingId">Lost Tracking ID</th>
+                                                 <th data-sort="foundTrackingID">Found Tracking ID</th>
+                                                 <th data-sort="itemType">Item Type</th>
+                                                 <th data-sort="airport">Airport</th>
+                                                 <th data-sort="descriptionSimilarity">Description Similarity</th>
+                                                 <th data-sort="matchConfidence">Match Confidence</th>
+                                                 <th data-sort="claimStatus">Claim Status</th>
+                                                 <th>Action</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody></tbody>
+                                     </table>
+                                 </div>
+                                 <div class="pagination" id="matchPagination"></div>
                                  <button class="logout-button" onclick="logout()">Logout</button>
                                  <p class="error" id="dataError"></p>
                              </div>
@@ -295,8 +332,10 @@
                      const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
                      let lostItemsData = [];
                      let foundItemsData = [];
+                     let matchItemsData = [];
                      let lostSortDirection = {};
                      let foundSortDirection = {};
+                     let matchSortDirection = {};
                      const ROWS_PER_PAGE = 10;
 
                      function initGapiClient() {
@@ -316,6 +355,146 @@
                          });
                      }
 
+                     function computeLevenshteinDistance(str1, str2) {
+                         const m = str1.length, n = str2.length;
+                         const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+                         for (let i = 0; i <= m; i++) dp[i][0] = i;
+                         for (let j = 0; j <= n; j++) dp[0][j] = j;
+                         for (let i = 1; i <= m; i++) {
+                             for (let j = 1; j <= n; j++) {
+                                 dp[i][j] = Math.min(
+                                     dp[i - 1][j] + 1,
+                                     dp[i][j - 1] + 1,
+                                     dp[i - 1][j - 1] + (str1[i - 1] === str2[j - 1] ? 0 : 1)
+                                 );
+                             }
+                         }
+                         return dp[m][n];
+                     }
+
+                     function computeSimilarity(str1, str2) {
+                         const maxLen = Math.max(str1.length, str2.length);
+                         if (maxLen === 0) return 100;
+                         const distance = computeLevenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
+                         return ((maxLen - distance) / maxLen) * 100;
+                     }
+
+                     function computeMatches(lostItems, foundItems) {
+                         const matches = [];
+                         lostItems.forEach(lost => {
+                             const lostTrackingId = lost[8];
+                             const lostItemType = lost[5];
+                             const lostAirport = lost[4];
+                             const lostDescription = lost[6];
+                             foundItems.forEach(found => {
+                                 const foundTrackingID = found[1];
+                                 const foundItemType = found[2];
+                                 const foundAirport = found[3];
+                                 const foundDescription = found[4];
+                                 const foundStatus = found[7];
+                                 if (foundStatus !== 'Available') return;
+                                 if (lostItemType === foundItemType && lostAirport === foundAirport) {
+                                     const descriptionSimilarity = computeSimilarity(lostDescription, foundDescription);
+                                     const matchConfidence = 80 + (descriptionSimilarity / 5); // Base 80% for exact matches, plus description boost
+                                     if (matchConfidence >= 70) {
+                                         matches.push([
+                                             lostTrackingId,
+                                             foundTrackingID,
+                                             lostItemType,
+                                             lostAirport,
+                                             descriptionSimilarity.toFixed(2),
+                                             matchConfidence.toFixed(2),
+                                             'Pending',
+                                             '',
+                                             ''
+                                         ]);
+                                     }
+                                 }
+                             });
+                         });
+                         return matches;
+                     }
+
+                     async function saveMatches(matches) {
+                         try {
+                             console.log('Saving matches to ClaimItems sheet');
+                             const response = await gapi.client.sheets.spreadsheets.values.append({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'ClaimItems!A:I',
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: { values: matches }
+                             });
+                             console.log('Matches saved, API response status:', response.status);
+                             return response.status === 200;
+                         } catch (error) {
+                             console.error('Error saving matches:', error);
+                             return false;
+                         }
+                     }
+
+                     async function confirmMatch(lostTrackingId, foundTrackingID, claimantDetails) {
+                         try {
+                             console.log('Confirming match:', { lostTrackingId, foundTrackingID, claimantDetails });
+                             const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'FoundItems!A:J'
+                             });
+                             const foundRows = foundResponse.result.values || [];
+                             let foundRowIndex = -1;
+                             for (let i = 1; i < foundRows.length; i++) {
+                                 if (foundRows[i][1] === foundTrackingID) {
+                                     foundRowIndex = i + 1;
+                                     break;
+                                 }
+                             }
+                             if (foundRowIndex === -1) {
+                                 throw new Error('Found item not found.');
+                             }
+
+                             await gapi.client.sheets.spreadsheets.values.update({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: `FoundItems!H${foundRowIndex}`,
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: { values: [['Claimed']] }
+                             });
+
+                             const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'ClaimItems!A:I'
+                             });
+                             const matchRows = matchResponse.result.values || [];
+                             let matchRowIndex = -1;
+                             for (let i = 1; i < matchRows.length; i++) {
+                                 if (matchRows[i][0] === lostTrackingId && matchRows[i][1] === foundTrackingID) {
+                                     matchRowIndex = i + 1;
+                                     break;
+                                 }
+                             }
+                             if (matchRowIndex === -1) {
+                                 throw new Error('Match not found in ClaimItems.');
+                             }
+
+                             await gapi.client.sheets.spreadsheets.values.update({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: `ClaimItems!G${matchRowIndex}:I${matchRowIndex}`,
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: {
+                                     values: [[
+                                         'Confirmed',
+                                         claimantDetails,
+                                         new Date().toISOString()
+                                     ]]
+                                 }
+                             });
+
+                             console.log('Match confirmed successfully');
+                             return true;
+                         } catch (error) {
+                             console.error('Error confirming match:', error);
+                             return false;
+                         }
+                     }
+
                      function sortTable(tableId, column, data, tbody, sortDirection, page) {
                          console.log(`Sorting ${tableId} by ${column}`);
                          const index = {
@@ -326,6 +505,10 @@
                              found: {
                                  timestamp: 0, trackingID: 1, itemType: 2, airport: 3, description: 4,
                                  dateFound: 5, location: 6, status: 7, reporter: 8, reporterType: 9
+                             },
+                             match: {
+                                 lostTrackingId: 0, foundTrackingID: 1, itemType: 2, airport: 3,
+                                 descriptionSimilarity: 4, matchConfidence: 5, claimStatus: 6
                              }
                          }[tableId.split('ItemsTable')[0].toLowerCase()];
                          sortDirection[column] = !sortDirection[column];
@@ -335,6 +518,9 @@
                              if (column === 'timestamp' || column === 'dateLost' || column === 'dateFound') {
                                  valA = new Date(valA).getTime();
                                  valB = new Date(valB).getTime();
+                             } else if (column === 'descriptionSimilarity' || column === 'matchConfidence') {
+                                 valA = parseFloat(valA) || 0;
+                                 valB = parseFloat(valB) || 0;
                              }
                              if (sortDirection[column]) {
                                  return valA > valB ? 1 : -1;
@@ -352,10 +538,21 @@
                          const end = start + ROWS_PER_PAGE;
                          const paginatedData = data.slice(start, end);
                          if (paginatedData.length === 0) {
-                             tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : 10}">No items found.</td></tr>`);
+                             tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : tableId === 'foundItemsTable' ? 10 : 8}">No items found.</td></tr>`);
                          } else {
                              paginatedData.forEach(item => {
-                                 const row = `
+                                 const row = tableId === 'matchItemsTable' ? `
+                                     <tr>
+                                         <td>${item[0] || ''}</td>
+                                         <td>${item[1] || ''}</td>
+                                         <td>${item[2] || ''}</td>
+                                         <td>${item[3] || ''}</td>
+                                         <td>${item[4] || ''}%</td>
+                                         <td>${item[5] || ''}%</td>
+                                         <td>${item[6] || ''}</td>
+                                         <td>${item[6] === 'Pending' ? `<button class="confirm-button" onclick="confirmMatchWithDetails('${item[0]}', '${item[1]}')">Confirm</button>` : '-'}</td>
+                                     </tr>
+                                 ` : `
                                      <tr>
                                          ${item.map(val => `<td>${val || ''}</td>`).join('')}
                                      </tr>
@@ -368,7 +565,7 @@
 
                      function renderPagination(tableId, data, page) {
                          console.log(`Rendering pagination for ${tableId}, page ${page}`);
-                         const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : 'foundPagination'}`);
+                         const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : tableId === 'foundItemsTable' ? 'foundPagination' : 'matchPagination'}`);
                          pagination.empty();
                          const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
                          for (let i = 1; i <= pageCount; i++) {
@@ -379,15 +576,17 @@
                              const newPage = parseInt($(this).data('page'), 10);
                              const filteredData = filterTable(
                                  tableId,
-                                 tableId === 'lostItemsTable' ? lostItemsData : foundItemsData,
-                                 `#${tableId === 'lostItemsTable' ? 'lostSearch' : 'foundSearch'}`,
+                                 tableId === 'lostItemsTable' ? lostItemsData : tableId === 'foundItemsTable' ? foundItemsData : matchItemsData,
+                                 `#${tableId === 'lostItemsTable' ? 'lostSearch' : tableId === 'foundItemsTable' ? 'foundSearch' : 'matchSearch'}`,
                                  tableId === 'lostItemsTable' ? {
                                      airport: '#lostAirportFilter',
                                      itemType: '#lostItemTypeFilter'
-                                 } : {
+                                 } : tableId === 'foundItemsTable' ? {
                                      airport: '#foundAirportFilter',
                                      itemType: '#foundItemTypeFilter',
                                      status: '#foundStatusFilter'
+                                 } : {
+                                     claimStatus: '#matchStatusFilter'
                                  }
                              );
                              renderTable(tableId, filteredData, $(`#${tableId} tbody`), newPage);
@@ -408,12 +607,28 @@
                              if (value) {
                                  const index = {
                                      lost: { airport: 4, itemType: 5 },
-                                     found: { airport: 3, itemType: 2, status: 7 }
+                                     found: { airport: 3, itemType: 2, status: 7 },
+                                     match: { claimStatus: 6 }
                                  }[tableId.split('ItemsTable')[0].toLowerCase()];
                                  filteredData = filteredData.filter(row => row[index[key]] === value);
                              }
                          });
                          return filteredData;
+                     }
+
+                     async function confirmMatchWithDetails(lostTrackingId, foundTrackingID) {
+                         const claimantDetails = prompt('Enter claimant details (e.g., name or email):');
+                         if (!claimantDetails || claimantDetails.length < 2) {
+                             alert('Claimant details must be at least 2 characters.');
+                             return;
+                         }
+                         const success = await confirmMatch(lostTrackingId, foundTrackingID, claimantDetails);
+                         if (success) {
+                             alert('Match confirmed successfully!');
+                             loadDashboard(); // Refresh dashboard
+                         } else {
+                             alert('Failed to confirm match. Please try again.');
+                         }
                      }
 
                      async function loadDashboard() {
@@ -456,6 +671,24 @@
                              foundItemsData = foundResponse.result.values || [];
                              console.log('Found items fetched:', foundItemsData.length, 'Sample:', foundItemsData[0] || 'Empty');
 
+                             console.log('Computing matches');
+                             matchItemsData = computeMatches(lostItemsData, foundItemsData);
+                             console.log('Matches computed:', matchItemsData.length, 'Sample:', matchItemsData[0] || 'Empty');
+
+                             console.log('Fetching existing matches');
+                             const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'ClaimItems!A2:I'
+                             });
+                             const existingMatches = matchResponse.result.values || [];
+                             matchItemsData = matchItemsData.filter(newMatch => {
+                                 return !existingMatches.some(existing => existing[0] === newMatch[0] && existing[1] === newMatch[1]);
+                             }).concat(existingMatches);
+
+                             if (matchItemsData.length > 0) {
+                                 await saveMatches(matchItemsData.filter(m => m[6] === 'Pending'));
+                             }
+
                              $('#dashboard').show();
                              $('#dataError').hide();
 
@@ -465,6 +698,9 @@
                              const foundTbody = $('#foundItemsTable tbody');
                              renderTable('foundItemsTable', foundItemsData, foundTbody, 1);
 
+                             const matchTbody = $('#matchItemsTable tbody');
+                             renderTable('matchItemsTable', matchItemsData, matchTbody, 1);
+
                              $('#lostItemsTable th').click(function() {
                                  const column = $(this).data('sort');
                                  sortTable('lostItemsTable', column, lostItemsData, lostTbody, lostSortDirection, 1);
@@ -473,6 +709,11 @@
                              $('#foundItemsTable th').click(function() {
                                  const column = $(this).data('sort');
                                  sortTable('foundItemsTable', column, foundItemsData, foundTbody, foundSortDirection, 1);
+                             });
+
+                             $('#matchItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('matchItemsTable', column, matchItemsData, matchTbody, matchSortDirection, 1);
                              });
 
                              $('#lostSearch, #lostAirportFilter, #lostItemTypeFilter').on('input change', () => {
@@ -490,6 +731,13 @@
                                      status: '#foundStatusFilter'
                                  });
                                  renderTable('foundItemsTable', filteredData, foundTbody, 1);
+                             });
+
+                             $('#matchSearch, #matchStatusFilter').on('input change', () => {
+                                 const filteredData = filterTable('matchItemsTable', matchItemsData, '#matchSearch', {
+                                     claimStatus: '#matchStatusFilter'
+                                 });
+                                 renderTable('matchItemsTable', filteredData, matchTbody, 1);
                              });
                          } catch (error) {
                              console.error('Error loading dashboard:', error.message, error);

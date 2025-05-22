@@ -228,7 +228,7 @@
                          </header>
                          <div class="row">
                              <article class="col-4 col-12-mobile special">
-                                 <a href="report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="Report Lost Items" /></a>
+                                 <a href="Report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="Report Lost Items" /></a>
                                  <header>
                                      <h3><a href="Report_Lost_Items.html">Report Lost Items</a></h3>
                                  </header>
@@ -338,6 +338,7 @@
             <script>
          let chatState = 'initial';
          let lastUserTopic = '';
+         let potentialMatches = [];
          const formData = {
              itemType: '',
              airport: '',
@@ -345,16 +346,19 @@
              foundDate: '',
              foundLocation: '',
              reportedBy: '',
-             reporterType: ''
+             reporterType: '',
+             trackingId: '',
+             claimantDetails: ''
          };
          const validItemTypes = ['electronics', 'clothing', 'luggage', 'jewelry', 'other'];
          const validAirports = ['LAX', 'JFK', 'ORD', 'ATL', 'DFW'];
          const validReporterTypes = ['staff', 'other'];
 
          // Google API configuration
-                     const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                     const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+         const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+         const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+         const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
          // Initialize gapi.client for Sheets API
          function initGapiClient() {
@@ -420,6 +424,32 @@
              return `FOUND-${formattedCounter}-${randomStr}`;
          }
 
+         // Compute Levenshtein Distance for similarity
+         function computeLevenshteinDistance(str1, str2) {
+             const m = str1.length, n = str2.length;
+             const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+             for (let i = 0; i <= m; i++) dp[i][0] = i;
+             for (let j = 0; j <= n; j++) dp[0][j] = j;
+             for (let i = 1; i <= m; i++) {
+                 for (let j = 1; j <= n; j++) {
+                     dp[i][j] = Math.min(
+                         dp[i - 1][j] + 1,
+                         dp[i][j - 1] + 1,
+                         dp[i - 1][j - 1] + (str1[i - 1] === str2[j - 1] ? 0 : 1)
+                     );
+                 }
+             }
+             return dp[m][n];
+         }
+
+         // Compute similarity score
+         function computeSimilarity(str1, str2) {
+             const maxLen = Math.max(str1.length, str2.length);
+             if (maxLen === 0) return 100;
+             const distance = computeLevenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
+             return ((maxLen - distance) / maxLen) * 100;
+         }
+
          // Append message to chatbot
          function appendMessage(text, sender) {
              const messages = document.getElementById('chatbotMessages');
@@ -448,33 +478,33 @@
                  const trackingId = generateTrackingId();
                  console.log('Submitting found item to Sheets API');
                  const response = await gapi.client.sheets.spreadsheets.values.append({
-    spreadsheetId: SPREADSHEET_ID,
-    range: 'FoundItems!A:J',
-    valueInputOption: 'USER_ENTERED',
-    resource: {
-        values: [
-            [
-                new Date().toISOString(),
-                trackingId,
-                formData.itemType,
-                formData.airport,
-                formData.description,
-                formData.foundDate,
-                formData.foundLocation,
-                'Available',
-                formData.reportedBy,
-                formData.reporterType
-            ]
-        ]
-    }
-});
+                     spreadsheetId: SPREADSHEET_ID,
+                     range: 'FoundItems!A:J',
+                     valueInputOption: 'USER_ENTERED',
+                     resource: {
+                         values: [
+                             [
+                                 new Date().toISOString(),
+                                 trackingId,
+                                 formData.itemType,
+                                 formData.airport,
+                                 formData.description,
+                                 formData.foundDate,
+                                 formData.foundLocation,
+                                 'Available',
+                                 formData.reportedBy,
+                                 formData.reporterType
+                             ]
+                         ]
+                     }
+                 });
 
                  console.log('Sheets API response status:', response.status);
                  if (response.status !== 200) {
                      throw new Error(`HTTP error! Status: ${response.status}`);
                  }
 
-                 appendMessage('Thank you, your report has been submitted', 'bot');
+                 appendMessage(`Thank you, your report has been submitted`, 'bot');
                  updateQuickReplies();
                  chatState = 'initial';
                  Object.keys(formData).forEach(key => formData[key] = '');
@@ -483,6 +513,148 @@
                  appendMessage('Failed to submit found item. Please try again or contact support.', 'bot');
                  showError('Submission failed: ' + (error.message || 'Unknown error'));
                  updateQuickReplies();
+             }
+         }
+
+         // Find potential matches for a found item
+         async function findMatches(trackingId) {
+             try {
+                 await initGapiClient();
+                 const accessToken = await getAccessToken();
+                 gapi.client.setToken({ access_token: accessToken });
+
+                 console.log('Fetching found item:', trackingId);
+                 const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
+                     spreadsheetId: SPREADSHEET_ID,
+                     range: 'FoundItems!A:J'
+                 });
+                 const foundRows = foundResponse.result.values || [];
+                 let foundItem = null;
+                 for (let i = 1; i < foundRows.length; i++) {
+                     if (foundRows[i][1] === trackingId && foundRows[i][7] === 'Available') {
+                         foundItem = foundRows[i];
+                         break;
+                     }
+                 }
+                 if (!foundItem) {
+                     throw new Error('TrackingID not found or item is not available.');
+                 }
+
+                 console.log('Fetching lost items');
+                 const lostResponse = await gapi.client.sheets.spreadsheets.values.get({
+                     spreadsheetId: LOST_SPREADSHEET_ID,
+                     range: 'LostItems!A2:I'
+                 });
+                 const lostItems = lostResponse.result.values || [];
+
+                 const matches = [];
+                 const foundItemType = foundItem[2];
+                 const foundAirport = foundItem[3];
+                 const foundDescription = foundItem[4];
+                 lostItems.forEach(lost => {
+                     const lostTrackingId = lost[8];
+                     const lostItemType = lost[5];
+                     const lostAirport = lost[4];
+                     const lostDescription = lost[6];
+                     if (lostItemType === foundItemType && lostAirport === foundAirport) {
+                         const similarity = computeSimilarity(lostDescription, foundDescription);
+                         const confidence = 80 + (similarity / 5);
+                         if (confidence >= 70) {
+                             matches.push({
+                                 lostTrackingId,
+                                 similarity: similarity.toFixed(2),
+                                 confidence: confidence.toFixed(2)
+                             });
+                         }
+                     }
+                 });
+
+                 return matches;
+             } catch (error) {
+                 console.error('Error finding matches:', error);
+                 throw error;
+             }
+         }
+
+         // Claim an item in Google Sheet
+         async function claimItem() {
+             try {
+                 await initGapiClient();
+                 const accessToken = await getAccessToken();
+                 gapi.client.setToken({ access_token: accessToken });
+
+                 console.log('Fetching found items to locate TrackingID:', formData.trackingId);
+                 const response = await gapi.client.sheets.spreadsheets.values.get({
+                     spreadsheetId: SPREADSHEET_ID,
+                     range: 'FoundItems!A:J'
+                 });
+
+                 const rows = response.result.values || [];
+                 if (rows.length <= 1) {
+                     throw new Error('No items found in the sheet.');
+                 }
+
+                 let rowIndex = -1;
+                 for (let i = 1; i < rows.length; i++) {
+                     if (rows[i][1] === formData.trackingId && rows[i][7] === 'Available') {
+                         rowIndex = i + 1;
+                         break;
+                     }
+                 }
+
+                 if (rowIndex === -1) {
+                     throw new Error('TrackingID not found or item is not available.');
+                 }
+
+                 console.log(`Updating Status to Claimed for TrackingID: ${formData.trackingId} at row ${rowIndex}`);
+                 const updateResponse = await gapi.client.sheets.spreadsheets.values.update({
+                     spreadsheetId: SPREADSHEET_ID,
+                     range: `FoundItems!H${rowIndex}`,
+                     valueInputOption: 'USER_ENTERED',
+                     resource: {
+                         values: [['Claimed']]
+                     }
+                 });
+
+                 console.log('Update API response status:', updateResponse.status);
+                 if (updateResponse.status !== 200) {
+                     throw new Error(`HTTP error! Status: ${updateResponse.status}`);
+                 }
+
+                 if (potentialMatches.length > 0) {
+                     console.log('Saving match to ClaimItems');
+                     const match = potentialMatches[0]; // Use the first match for simplicity
+                     await gapi.client.sheets.spreadsheets.values.append({
+                         spreadsheetId: SPREADSHEET_ID,
+                         range: 'ClaimItems!A:I',
+                         valueInputOption: 'USER_ENTERED',
+                         resource: {
+                             values: [[
+                                 match.lostTrackingId,
+                                 formData.trackingId,
+                                 rows[rowIndex - 1][2], // ItemType
+                                 rows[rowIndex - 1][3], // Airport
+                                 match.similarity,
+                                 match.confidence,
+                                 'Confirmed',
+                                 formData.claimantDetails,
+                                 new Date().toISOString()
+                             ]]
+                         }
+                     });
+                 }
+
+                 appendMessage(`Item ${formData.trackingId} has been claimed successfully for ${formData.claimantDetails}.`, 'bot');
+                 updateQuickReplies();
+                 chatState = 'initial';
+                 potentialMatches = [];
+                 Object.keys(formData).forEach(key => formData[key] = '');
+             } catch (error) {
+                 console.error('Claim error:', error.message || error);
+                 appendMessage('Failed to claim item. Please check the TrackingID or try again.', 'bot');
+                 showError('Claim failed: ' + (error.message || 'Unknown error'));
+                 updateQuickReplies();
+                 potentialMatches = [];
              }
          }
 
@@ -506,7 +678,7 @@
              const buttons = [
                  { text: 'Report Lost Item', message: 'How do I report a lost item?' },
                  { text: 'Track Item', message: 'How do I track my item?' },
-                 { text: 'Claim Item', message: 'How do I claim a found item?' },
+                 { text: 'Claim Item', message: 'How do I claim an item?' },
                  { text: 'Report Found Item', message: 'I found an item' },
                  { text: 'Contact Support', message: 'How do I contact support?' }
              ];
@@ -532,8 +704,9 @@
                  return 'To report a lost item, please visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
              } else if (message.toLowerCase().includes('track') || message.toLowerCase().includes('status')) {
                  return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
-             } else if (message.toLowerCase().includes('claim') || (message.toLowerCase().includes('found item') && !message.toLowerCase().includes('i found'))) {
-                 return 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
+             } else if (message.toLowerCase().includes('claim') || message.toLowerCase().includes('how do i claim an item')) {
+                 chatState = 'claimTrackingId';
+                 return 'Great! Let’s claim an item. Please provide the TrackingID of the item you wish to claim.';
              } else if (message.toLowerCase().includes('support') || message.toLowerCase().includes('contact')) {
                  return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
              } else if (message.toLowerCase().includes('fee') || message.toLowerCase().includes('cost')) {
@@ -639,6 +812,35 @@
                              return;
                          } else {
                              response = 'Reporter identifier must be at least 2 characters. Try again.';
+                         }
+                         break;
+                     case 'claimTrackingId':
+                         if (userMessage.length >= 5) {
+                             formData.trackingId = userMessage.trim();
+                             try {
+                                 potentialMatches = await findMatches(formData.trackingId);
+                                 if (potentialMatches.length > 0) {
+                                     const matchList = potentialMatches.map(m => `Lost TrackingID: ${m.lostTrackingId} (Confidence: ${m.confidence}%)`).join('<br>');
+                                     response = `Found ${potentialMatches.length} potential match(es):<br>${matchList}<br>Please provide the claimant’s details (e.g., name or email) to proceed with the claim.`;
+                                 } else {
+                                     response = 'No potential matches found for this TrackingID. Please provide the claimant’s details to proceed with the claim.';
+                                 }
+                                 chatState = 'claimantDetails';
+                             } catch (error) {
+                                 response = 'Failed to find matches. Please provide the claimant’s details to proceed with the claim anyway.';
+                                 chatState = 'claimantDetails';
+                             }
+                         } else {
+                             response = 'TrackingID must be at least 5 characters. Try again.';
+                         }
+                         break;
+                     case 'claimantDetails':
+                         if (userMessage.length >= 2) {
+                             formData.claimantDetails = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
+                             claimItem();
+                             return;
+                         } else {
+                             response = 'Claimant details must be at least 2 characters. Try again.';
                          }
                          break;
                  }

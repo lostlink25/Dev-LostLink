@@ -3,49 +3,86 @@
          <head>
              <title>LostLink - Claim Item</title>
              <meta charset="utf-8" />
-             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
              <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
              <link rel="stylesheet" href="assets/css/main.css" />
              <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
              <style>
-                 .form-container {
+                 .claim-section {
                      padding: 20px;
+                     max-width: 600px;
+                     margin: 0 auto;
                  }
-                 .form-container label {
+                 .form-group {
+                     margin-bottom: 15px;
+                 }
+                 .form-group label {
                      display: block;
-                     margin: 10px 0 5px;
+                     margin-bottom: 5px;
                      font-weight: bold;
-                     color: #333;
                  }
-                 .form-container input, .form-container textarea {
+                 .form-group input, .form-group select {
                      width: 100%;
                      padding: 8px;
-                     margin-bottom: 15px;
                      border: 1px solid #ccc;
                      border-radius: 4px;
                      box-sizing: border-box;
-                     font-size: 1em;
                  }
-                 .form-container button {
+                 .matches-container {
+                     margin-top: 10px;
+                     padding: 10px;
+                     border: 1px solid #ccc;
+                     border-radius: 4px;
+                     max-height: 150px;
+                     overflow-y: auto;
+                 }
+                 .match-item {
+                     padding: 5px;
+                     border-bottom: 1px solid #eee;
+                 }
+                 .match-item:last-child {
+                     border-bottom: none;
+                 }
+                 .submit-button {
                      display: inline-block;
                      padding: 10px 20px;
-                     background-color: #007bff;
+                     background-color: #df7366;
                      color: white;
                      border: none;
                      border-radius: 4px;
                      cursor: pointer;
-                     text-align: center;
-                     text-decoration: none;
+                     font-size: 1em;
                  }
-                 .form-container button:hover {
-                     background-color: #0056b3;
+                 .submit-button:hover {
+                     background-color: #ef8376;
+                 }
+                 .error, .success {
+                     display: none;
+                     text-align: center;
+                     margin-top: 20px;
+                     font-size: 0.9em;
                  }
                  .error {
                      color: red;
-                     display: none;
-                     font-size: 0.9em;
+                 }
+                 .success {
+                     color: green;
+                 }
+                 @media screen and (max-width: 768px) {
+                     .claim-section {
+                         padding: 10px;
+                     }
+                     .form-group input, .form-group select {
+                         font-size: 0.9em;
+                     }
+                     .submit-button {
+                         width: 100%;
+                         padding: 12px;
+                     }
                  }
              </style>
+             <script src="https://accounts.google.com/gsi/client" async defer></script>
+             <script src="https://apis.google.com/js/api.js"></script>
          </head>
          <body class="is-preload">
              <div id="page-wrapper">
@@ -56,9 +93,10 @@
                          <ul>
                              <li><a href="index.html">Home</a></li>
                              <li><a href="About_Us.html">About Us</a></li>
-                             <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
                              <li><a href="track_your_item.html">Track Items</a></li>
                              <li><a href="claim_item.html">Claim Items</a></li>
+                             <li><a href="claim_submission.html">Claim Submissions</a></li>
                              <li><a href="contact_support.html">Contact Us</a></li>
                          </ul>
                      </nav>
@@ -68,60 +106,31 @@
                  <div class="wrapper style2">
                      <article id="main" class="container special">
                          <header>
-                             <h2>Claim Your Item</h2>
-                             <p>Submit a claim to recover an item you believe is yours.</p>
+                             <h2>Claim an Item</h2>
+                             <p>Staff can claim a found item by providing the Tracking ID and claimant details, with potential matches suggested.</p>
                          </header>
-                         <section>
-                             <h3>Claim Process</h3>
-                             <p>
-                                 To claim a found item, provide the Item ID from the <a href="view_found_items.html">View Found Items</a> page, your contact details, and a detailed description of the item, including any unique identifiers (e.g., engravings, stickers, or contents). Our team will verify your claim and contact you with next steps, which may include visiting the airport’s Lost and Found office.
-                             </p>
-                             <div class="form-container">
-                                 <form id="claimItemForm">
-                                     <div class="row gtr-50">
-                                         <div class="col-6 col-12-mobile">
-                                             <label for="item_id">Item ID</label>
-                                             <input type="text" name="item_id" id="item_id" placeholder="Enter Item ID (e.g., LOST-0001-XYZ)" required />
-                                             <span class="error" id="itemIdError">Please enter a valid Item ID</span>
-                                         </div>
-                                         <div class="col-6 col-12-mobile">
-                                             <label for="name">Full Name</label>
-                                             <input type="text" name="name" id="name" placeholder="Your Full Name" required />
-                                             <span class="error" id="nameError">Please enter a valid name</span>
-                                         </div>
-                                         <div class="col-6 col-12-mobile">
-                                             <label for="email">Email</label>
-                                             <input type="email" name="email" id="email" placeholder="Your Email Address" required />
-                                             <span class="error" id="emailError">Please enter a valid email</span>
-                                         </div>
-                                         <div class="col-6 col-12-mobile">
-                                             <label for="phone">Phone Number</label>
-                                             <input type="tel" name="phone" id="phone" placeholder="Your Phone Number" required />
-                                             <span class="error" id="phoneError">Please enter a valid phone number</span>
-                                         </div>
-                                         <div class="col-12">
-                                             <label for="description">Item Description</label>
-                                             <textarea name="description" id="description" placeholder="Describe the item, including any unique features or contents" rows="6" required></textarea>
-                                             <span class="error" id="descriptionError">Please provide a description</span>
-                                         </div>
-                                         <div class="col-12">
-                                             <button type="submit">Submit Claim</button>
-                                         </div>
-                                     </div>
-                                 </form>
-                             </div>
-                         </section>
-                         <section>
-                             <h3>Important Notes</h3>
-                             <ul>
-                                 <li>Ensure the Item ID matches the item you’re claiming.</li>
-                                 <li>Provide as much detail as possible to expedite verification.</li>
-                                 <li>You may be required to present identification or proof of ownership.</li>
-                                 <li>Claims are processed within 3–5 business days.</li>
-                             </ul>
-                             <p>
-                                 For assistance, please <a href="contact_support.html">contact our support team</a>.
-                             </p>
+                         <section class="claim-section">
+                             <form id="claimForm">
+                                 <div class="form-group">
+                                     <label for="trackingId">Found Tracking ID</label>
+                                     <input type="text" id="trackingId" name="trackingId" placeholder="Enter Tracking ID (e.g., FOUND-0001-ABC)" required />
+                                 </div>
+                                 <div class="form-group">
+                                     <label for="lostTrackingId">Select Matching Lost Tracking ID (if any)</label>
+                                     <select id="lostTrackingId" name="lostTrackingId">
+                                         <option value="">No Match</option>
+                                     </select>
+                                     <div class="matches-container" id="matchesContainer"></div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label for="claimantDetails">Claimant Details</label>
+                                     <input type="text" id="claimantDetails" name="claimantDetails" placeholder="Enter claimant name or email" required />
+                                 </div>
+                                 <button type="submit" class="submit-button">Claim Item</button>
+                             </form>
+                             <p class="error" id="claimError"></p>
+                             <p class="success" id="claimSuccess"></p>
+                             <p><a href="contact_support.html">Need help? Contact support.</a></p>
                          </section>
                      </article>
                  </div>
@@ -130,271 +139,318 @@
                  <div id="footer">
                      <div class="container">
                          <div class="row">
-                             <div class="col-12">
-                                 <!-- Contact -->
-                                 <section class="contact">
-                                     <header>
-                                         <h3>Need Help with a Lost Item?</h3>
-                                     </header>
-                                     <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-                                     <ul class="icons">
-                                         <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-                                         <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                                         <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-                                         <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-                                         <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-                                         <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-                                     </ul>
-                                 </section>
-
-                                 <!-- Copyright -->
-                                 <div class="copyright">
-                                     <ul class="menu">
-                                         <li>© LostLink. All rights reserved.</li>
-                                         <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-                                     </ul>
-                                 </div>
+                             <section class="contact">
+                                 <header>
+                                     <h3>Have Questions?</h3>
+                                 </header>
+                                 <p>Our support team is here to assist you with tracking or recovering your lost items.</p>
+                                 <ul class="icons">
+                                     <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                     <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                     <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                     <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                     <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                     <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                 </ul>
+                             </section>
+                             <div class="copyright">
+                                 <ul class="menu">
+                                     <li>© LostLink. All rights reserved.</li>
+                                     <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                 </ul>
                              </div>
                          </div>
                      </div>
                  </div>
+             </div>
 
-                 <!-- Scripts -->
-                 <script src="https://accounts.google.com/gsi/client" async defer></script>
-                 <script src="https://apis.google.com/js/api.js"></script>
-                 <script src="assets/js/jquery.min.js"></script>
-                 <script src="assets/js/jquery.dropotron.min.js"></script>
-                 <script src="assets/js/jquery.scrolly.min.js"></script>
-                 <script src="assets/js/jquery.scrollex.min.js"></script>
-                 <script src="assets/js/browser.min.js"></script>
-                 <script src="assets/js/breakpoints.min.js"></script>
-                 <script src="assets/js/util.js"></script>
-                 <script src="assets/js/main.js"></script>
-                 <script>
-                     console.log('Script loaded at:', new Date().toISOString());
-                     try {
-                         console.log('Checking for jQuery');
-                         if (typeof jQuery === 'undefined') {
-                             console.error('jQuery not loaded');
-                             alert('Error: jQuery not loaded. Please contact support.');
-                             throw new Error('jQuery not loaded');
-                         }
-                         console.log('jQuery loaded:', jQuery.fn.jquery);
+             <!-- Scripts -->
+             <script src="assets/js/jquery.min.js"></script>
+             <script src="assets/js/jquery.dropotron.min.js"></script>
+             <script src="assets/js/jquery.scrolly.min.js"></script>
+             <script src="assets/js/jquery.scrollex.min.js"></script>
+             <script src="assets/js/browser.min.js"></script>
+             <script src="assets/js/breakpoints.min.js"></script>
+             <script src="assets/js/util.js"></script>
+             <script src="assets/js/main.js"></script>
+             <script>
+                 console.log('Script loaded at:', new Date().toISOString());
+                 try {
+                     console.log('Checking for jQuery');
+                     if (typeof jQuery === 'undefined') {
+                         console.error('jQuery not loaded');
+                         alert('Error: jQuery not loaded. Please contact support.');
+                         throw new Error('jQuery not loaded');
+                     }
+                     console.log('jQuery loaded:', jQuery.fn.jquery);
 
-                         const form = document.getElementById('claimItemForm');
-                         if (!form) {
-                             console.error('Form with ID "claimItemForm" not found');
-                             alert('Form not found. Please contact support.');
-                             throw new Error('Form not found');
-                         }
-                         console.log('Form found');
-
-                         // Client-side claim ID counter (persist in localStorage)
-                         let counter = parseInt(localStorage.getItem('claimItemCounter') || '0', 10);
-                         let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
-
-                         // Google API configuration
                      const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
                      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-                         // Initialize gapi.client for Sheets API
-                         function initGapiClient() {
-                             return new Promise((resolve, reject) => {
-                                 gapi.load('client', () => {
-                                     gapi.client.init({
-                                         discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-                                     }).then(() => {
-                                         console.log('gapi client initialized');
-                                         resolve();
-                                     }).catch(error => {
-                                         console.error('gapi client initialization error:', error);
-                                         reject(error);
-                                     });
+                     function initGapiClient() {
+                         console.log('Initializing Google API client');
+                         return new Promise((resolve, reject) => {
+                             gapi.load('client', () => {
+                                 gapi.client.init({
+                                     discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                                 }).then(() => {
+                                     console.log('gapi client initialized');
+                                     resolve();
+                                 }).catch(error => {
+                                     console.error('gapi client initialization error:', error);
+                                     reject(error);
                                  });
                              });
-                         }
+                         });
+                     }
 
-                         // Initialize GIS OAuth
-                         function getAccessToken() {
-                             return new Promise((resolve, reject) => {
+                     function getAccessToken() {
+                         console.log('Initiating Google Sign-In');
+                         return new Promise((resolve, reject) => {
+                             try {
                                  const client = google.accounts.oauth2.initTokenClient({
                                      client_id: CLIENT_ID,
                                      scope: SCOPES,
                                      prompt: 'select_account',
                                      callback: (response) => {
+                                         console.log('OAuth callback received:', JSON.stringify(response));
                                          if (response.error) {
-                                             console.error('OAuth error:', response.error);
+                                             console.error('OAuth error:', response.error, response.error_description);
                                              if (response.error === 'access_denied') {
-                                                 reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
+                                                 reject(new Error('Access denied: Please use an authorized staff account.'));
                                              } else {
-                                                 reject(new Error(response.error));
+                                                 reject(new Error(`OAuth error: ${response.error} - ${response.error_description || 'No description'}`));
                                              }
+                                         } else if (!response.access_token) {
+                                             console.error('No access token in response');
+                                             reject(new Error('No access token received from Google Sign-In.'));
                                          } else {
-                                             console.log('Access token received');
+                                             console.log('Access token received:', response.access_token.substring(0, 20) + '...');
                                              resolve(response.access_token);
                                          }
                                      }
                                  });
+                                 console.log('Requesting access token');
                                  client.requestAccessToken();
-                             });
-                         }
-
-                         $(form).on('submit', async function (e) {
-                             e.preventDefault();
-                             console.log('Form submission started at:', new Date().toISOString());
-                             alert('Submitting claim...');
-
-                             try {
-                                 // Reset error messages
-                                 console.log('Resetting error messages');
-                                 $('.error').css('display', 'none');
-
-                                 // Get form values
-                                 console.log('Retrieving form values');
-                                 const itemId = $('#item_id').val()?.trim();
-                                 const name = $('#name').val()?.trim();
-                                 const email = $('#email').val()?.trim();
-                                 const phone = $('#phone').val()?.trim();
-                                 const description = $('#description').val()?.trim();
-
-                                 // Check for missing or empty values
-                                 console.log('Checking for missing or empty values');
-                                 if (!itemId || !name || !email || !phone || !description) {
-                                     console.error('Missing or empty form values:', {
-                                         itemId: !!itemId, name: !!name, email: !!email,
-                                         phone: !!phone, description: !!description
-                                     });
-                                     alert('Form error: All fields are required.');
-                                     return;
-                                 }
-
-                                 // Client-side validation
-                                 console.log('Validating form inputs');
-                                 let isValid = true;
-                                 const errors = [];
-                                 if (!itemId.match(/^LOST-\d{4}-[A-Z]{3}$/)) {
-                                     $('#itemIdError').css('display', 'block');
-                                     errors.push('Item ID must follow format LOST-XXXX-YYY (e.g., LOST-0001-XYZ)');
-                                     isValid = false;
-                                 }
-                                 if (name.length < 2) {
-                                     $('#nameError').css('display', 'block');
-                                     errors.push('Name must be at least 2 characters');
-                                     isValid = false;
-                                 }
-                                 if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-                                     $('#emailError').css('display', 'block');
-                                     errors.push('Invalid email format');
-                                     isValid = false;
-                                 }
-                                 if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-                                     $('#phoneError').css('display', 'block');
-                                     errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
-                                     isValid = false;
-                                 }
-                                 if (description.length < 5) {
-                                     $('#descriptionError').css('display', 'block');
-                                     errors.push('Description must be at least 5 characters');
-                                     isValid = false;
-                                 }
-
-                                 if (!isValid) {
-                                     console.log('Validation failed:', errors);
-                                     alert('Please correct the following errors:\n- ' + errors.join('\n- '));
-                                     return;
-                                 }
-
-                                 // Sanitize inputs
-                                 console.log('Sanitizing inputs');
-                                 const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
-                                 const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
-
-                                 // Generate Claim ID client-side
-                                 const today = new Date().toISOString().split('T')[0];
-                                 if (lastResetDate !== today) {
-                                     counter = 0;
-                                     lastResetDate = today;
-                                     localStorage.setItem('lastResetDate', today);
-                                 }
-                                 counter += 1;
-                                 localStorage.setItem('claimItemCounter', counter.toString());
-                                 const formattedCounter = ('0000' + counter).slice(-4);
-                                 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                                 let randomStr = '';
-                                 for (let i = 0; i < 3; i++) {
-                                     randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
-                                 }
-                                 const claimId = `CLAIM-${formattedCounter}-${randomStr}`;
-
-                                 const formData = {
-                                     itemId,
-                                     name: sanitizedName,
-                                     email,
-                                     phone,
-                                     description: sanitizedDescription,
-                                     claimStatus: 'Pending',
-                                     claimDate: today,
-                                     claimId
-                                 };
-                                 console.log('Form data with Claim ID:', formData);
-
-                                 // Initialize gapi.client and get OAuth token
-                                 await initGapiClient();
-                                 const accessToken = await getAccessToken();
-                                 gapi.client.setToken({ access_token: accessToken });
-
-                                 // Append to Google Sheet using Sheets API
-                                 console.log('Sending data to Sheets API');
-                                 const response = await gapi.client.sheets.spreadsheets.values.append({
-                                     spreadsheetId: SPREADSHEET_ID,
-                                     range: 'ItemClaims!A:I',
-                                     valueInputOption: 'USER_ENTERED',
-                                     resource: {
-                                         values: [
-                                             [
-                                                 new Date().toISOString(),
-                                                 itemId,
-                                                 sanitizedName,
-                                                 email,
-                                                 phone,
-                                                 sanitizedDescription,
-                                                 'Pending',
-                                                 today,
-                                                 claimId
-                                             ]
-                                         ]
-                                     }
-                                 });
-
-                                 console.log('Sheets API response status:', response.status);
-                                 if (response.status !== 200) {
-                                     throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(response.result)}`);
-                                 }
-
-                                 console.log('Sheets API response:', response.result);
-
-                                 // Redirect to confirmation page (create claim_submission.html separately)
-                                 const queryParams = new URLSearchParams({
-                                     claimId,
-                                     itemId,
-                                     name: sanitizedName,
-                                     email,
-                                     phone,
-                                     description: sanitizedDescription
-                                 }).toString();
-                                 console.log('Redirecting to:', '/claim_submission.html?' + queryParams);
-                                 window.location.assign('/claim_submission.html?' + queryParams);
                              } catch (error) {
-                                 console.error('Submission error:', error.message || error);
-                                 alert('Submission failed: ' + (error.message || 'Unknown error'));
-                                 return false;
+                                 console.error('Error initializing Google Sign-In:', error);
+                                 reject(new Error(`Failed to initialize Google Sign-In: ${error.message}`));
                              }
                          });
-                     } catch (error) {
-                         console.error('Script initialization error:', error.message);
-                         alert('Script initialization failed: ' + error.message);
                      }
-                 </script>
-             </body>
-         </html>
+
+                     function computeLevenshteinDistance(str1, str2) {
+                         const m = str1.length, n = str2.length;
+                         const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+                         for (let i = 0; i <= m; i++) dp[i][0] = i;
+                         for (let j = 0; j <= n; j++) dp[0][j] = j;
+                         for (let i = 1; i <= m; i++) {
+                             for (let j = 1; j <= n; j++) {
+                                 dp[i][j] = Math.min(
+                                     dp[i - 1][j] + 1,
+                                     dp[i][j - 1] + 1,
+                                     dp[i - 1][j - 1] + (str1[i - 1] === str2[j - 1] ? 0 : 1)
+                                 );
+                             }
+                         }
+                         return dp[m][n];
+                     }
+
+                     function computeSimilarity(str1, str2) {
+                         const maxLen = Math.max(str1.length, str2.length);
+                         if (maxLen === 0) return 100;
+                         const distance = computeLevenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
+                         return ((maxLen - distance) / maxLen) * 100;
+                     }
+
+                     async function findMatches(trackingId) {
+                         try {
+                             await initGapiClient();
+                             const accessToken = await getAccessToken();
+                             gapi.client.setToken({ access_token: accessToken });
+
+                             console.log('Fetching found item:', trackingId);
+                             const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'FoundItems!A:J'
+                             });
+                             const foundRows = foundResponse.result.values || [];
+                             let foundItem = null;
+                             for (let i = 1; i < foundRows.length; i++) {
+                                 if (foundRows[i][1] === trackingId && foundRows[i][7] === 'Available') {
+                                     foundItem = foundRows[i];
+                                     break;
+                                 }
+                             }
+                             if (!foundItem) {
+                                 throw new Error('TrackingID not found or item is not available.');
+                             }
+
+                             console.log('Fetching lost items');
+                             const lostResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: LOST_SPREADSHEET_ID,
+                                 range: 'LostItems!A2:I'
+                             });
+                             const lostItems = lostResponse.result.values || [];
+
+                             const matches = [];
+                             const foundItemType = foundItem[2];
+                             const foundAirport = foundItem[3];
+                             const foundDescription = foundItem[4];
+                             lostItems.forEach(lost => {
+                                 const lostTrackingId = lost[8];
+                                 const lostItemType = lost[5];
+                                 const lostAirport = lost[4];
+                                 const lostDescription = lost[6];
+                                 if (lostItemType === foundItemType && lostAirport === foundAirport) {
+                                     const similarity = computeSimilarity(lostDescription, foundDescription);
+                                     const confidence = 80 + (similarity / 5);
+                                     if (confidence >= 70) {
+                                         matches.push({
+                                             lostTrackingId,
+                                             similarity: similarity.toFixed(2),
+                                             confidence: confidence.toFixed(2)
+                                         });
+                                     }
+                                 }
+                             });
+
+                             return matches;
+                         } catch (error) {
+                             console.error('Error finding matches:', error);
+                             throw error;
+                         }
+                     }
+
+                     async function claimItem(trackingId, lostTrackingId, claimantDetails) {
+                         try {
+                             await initGapiClient();
+                             const accessToken = await getAccessToken();
+                             gapi.client.setToken({ access_token: accessToken });
+
+                             console.log('Fetching found items to locate TrackingID:', trackingId);
+                             const response = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'FoundItems!A:J'
+                             });
+
+                             const rows = response.result.values || [];
+                             if (rows.length <= 1) {
+                                 throw new Error('No items found in the sheet.');
+                             }
+
+                             let rowIndex = -1;
+                             for (let i = 1; i < rows.length; i++) {
+                                 if (rows[i][1] === trackingId && rows[i][7] === 'Available') {
+                                     rowIndex = i + 1;
+                                     break;
+                                 }
+                             }
+
+                             if (rowIndex === -1) {
+                                 throw new Error('TrackingID not found or item is not available.');
+                             }
+
+                             console.log(`Updating Status to Claimed for TrackingID: ${trackingId} at row ${rowIndex}`);
+                             const updateResponse = await gapi.client.sheets.spreadsheets.values.update({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: `FoundItems!H${rowIndex}`,
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: {
+                                     values: [['Claimed']]
+                                 }
+                             });
+
+                             console.log('Update API response status:', updateResponse.status);
+                             if (updateResponse.status !== 200) {
+                                 throw new Error(`HTTP error! Status: ${updateResponse.status}`);
+                             }
+
+                             if (lostTrackingId) {
+                                 console.log('Saving match to ClaimItems');
+                                 await gapi.client.sheets.spreadsheets.values.append({
+                                     spreadsheetId: FOUND_SPREADSHEET_ID,
+                                     range: 'ClaimItems!A:I',
+                                     valueInputOption: 'USER_ENTERED',
+                                     resource: {
+                                         values: [[
+                                             lostTrackingId,
+                                             trackingId,
+                                             rows[rowIndex - 1][2], // ItemType
+                                             rows[rowIndex - 1][3], // Airport
+                                             'N/A', // DescriptionSimilarity (simplified)
+                                             'N/A', // MatchConfidence (simplified)
+                                             'Confirmed',
+                                             claimantDetails,
+                                             new Date().toISOString()
+                                         ]]
+                                     }
+                                 });
+                             }
+
+                             $('#claimSuccess').text(`Item ${trackingId} has been claimed successfully for ${claimantDetails}${lostTrackingId ? ' with match ' + lostTrackingId : ''}.`).css('display', 'block');
+                             $('#claimError').hide();
+                             $('#claimForm').trigger('reset');
+                             $('#lostTrackingId').empty().append('<option value="">No Match</option>');
+                             $('#matchesContainer').empty();
+                         } catch (error) {
+                             console.error('Claim error:', error.message || error);
+                             $('#claimError').text('Failed to claim item: ' + (error.message || 'Unknown error')).css('display', 'block');
+                             $('#claimSuccess').hide();
+                         }
+                     }
+
+                     document.addEventListener('DOMContentLoaded', () => {
+                         console.log('DOM loaded, initializing form');
+                         $('#claimError').hide();
+                         $('#claimSuccess').hide();
+
+                         $('#trackingId').on('input', async function() {
+                             const trackingId = $(this).val().trim();
+                             const matchesContainer = $('#matchesContainer');
+                             const lostTrackingIdSelect = $('#lostTrackingId');
+                             matchesContainer.empty();
+                             lostTrackingIdSelect.empty().append('<option value="">No Match</option>');
+
+                             if (trackingId.length >= 5) {
+                                 try {
+                                     const matches = await findMatches(trackingId);
+                                     if (matches.length > 0) {
+                                         matches.forEach(match => {
+                                             const matchDiv = `<div class="match-item">Lost TrackingID: ${match.lostTrackingId} (Confidence: ${match.confidence}%)</div>`;
+                                             matchesContainer.append(matchDiv);
+                                             lostTrackingIdSelect.append(`<option value="${match.lostTrackingId}">${match.lostTrackingId} (${match.confidence}%)</option>`);
+                                         });
+                                     } else {
+                                         matchesContainer.text('No potential matches found.');
+                                     }
+                                 } catch (error) {
+                                     matchesContainer.text('Error finding matches: ' + (error.message || 'Unknown error'));
+                                 }
+                             }
+                         });
+
+                         $('#claimForm').on('submit', function(e) {
+                             e.preventDefault();
+                             const trackingId = $('#trackingId').val().trim();
+                             const lostTrackingId = $('#lostTrackingId').val();
+                             const claimantDetails = $('#claimantDetails').val().trim();
+
+                             if (trackingId.length < 5 || claimantDetails.length < 2) {
+                                 $('#claimError').text('TrackingID must be at least 5 characters and Claimant Details at least 2 characters.').css('display', 'block');
+                                 $('#claimSuccess').hide();
+                                 return;
+                             }
+
+                             claimItem(trackingId, lostTrackingId || null, claimantDetails);
+                         });
+                     });
+                 } catch (error) {
+                     console.error('Script initialization error:', error.message);
+                     $('#claimError').text('Initialization failed: ' + error.message).css('display', 'block');
+                 }
+             </script>
+         </body>
+     </html>
