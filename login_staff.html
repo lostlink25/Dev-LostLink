@@ -1,40 +1,41 @@
 <!DOCTYPE HTML>
      <html>
-         <head>
-             <title>LostLink - Staff Login</title>
-             <meta charset="utf-8" />
-             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-             <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
-             <link rel="stylesheet" href="assets/css/main.css" />
-             <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-             <style>
-                 .login-section {
-                     text-align: center;
-                     padding: 20px;
-                 }
-                 .login-button {
-                     display: inline-block;
-                     padding: 10px 20px;
-                     background-color: #df7366;
-                     color: white;
-                     border: none;
-                     border-radius: 4px;
-                     cursor: pointer;
-                     text-decoration: none;
-                     font-size: 1em;
-                 }
-                 .login-button:hover {
-                     background-color: #ef8376;
-                 }
-                 .error {
-                     color: red;
-                     display: none;
-                     font-size: 0.9em;
-                     text-align: center;
-                     margin-top: 20px;
-                 }
-             </style>
-         </head>
+ <head>
+    <title>LostLink - Staff Login</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com; object-src 'none'; base-uri 'self';" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        .login-section {
+            text-align: center;
+            padding: 20px;
+        }
+        .login-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #df7366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        .login-button:hover {
+            background-color: #ef8376;
+        }
+        .error {
+            color: red;
+            display: none;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
          <body class="is-preload">
              <div id="page-wrapper">
                  <!-- Header -->

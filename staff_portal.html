@@ -28,9 +28,52 @@
                      background-color: #1976D2;
                      color: white;
                      font-weight: bold;
+                     cursor: pointer;
+                 }
+                 .dashboard th:hover {
+                     background-color: #1565C0;
                  }
                  .dashboard tr:nth-child(even) {
                      background-color: #f9f9f9;
+                 }
+                 .dashboard-controls {
+                     margin-bottom: 20px;
+                     display: flex;
+                     gap: 10px;
+                     flex-wrap: wrap;
+                     align-items: center;
+                 }
+                 .dashboard-controls input, .dashboard-controls select {
+                     padding: 8px;
+                     border: 1px solid #ccc;
+                     border-radius: 4px;
+                     font-size: 0.9em;
+                 }
+                 .pagination {
+                     margin-top: 10px;
+                     display: flex;
+                     gap: 5px;
+                     justify-content: center;
+                 }
+                 .pagination button {
+                     padding: 5px 10px;
+                     border: 1px solid #ccc;
+                     background-color: #fff;
+                     cursor: pointer;
+                     border-radius: 4px;
+                 }
+                 .pagination button.active {
+                     background-color: #df7366;
+                     color: white;
+                     border-color: #df7366;
+                 }
+                 .pagination button:hover:not(.disabled) {
+                     background-color: #ef8376;
+                     color: white;
+                 }
+                 .pagination button.disabled {
+                     cursor: not-allowed;
+                     opacity: 0.5;
                  }
                  .error {
                      color: red;
@@ -65,7 +108,7 @@
                          <ul>
                              <li><a href="index.html">Home</a></li>
                              <li><a href="About_Us.html">About Us</a></li>
-                             <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
                              <li><a href="track_your_item.html">Track Items</a></li>
                              <li><a href="claim_item.html">Claim Items</a></li>
                              <li><a href="contact_support.html">Contact Us</a></li>
@@ -78,44 +121,90 @@
                      <article id="main" class="container special">
                          <header>
                              <h2>Staff Portal</h2>
-                             <p>View reported lost and found items (Staff Only)</p>
+                             <p>Manage reported lost and found items (Staff Only)</p>
                          </header>
                          <section class="portal-container">
                              <div class="dashboard" id="dashboard">
                                  <h3>Lost Items</h3>
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="lostSearch" placeholder="Search lost items..." />
+                                     <select id="lostAirportFilter">
+                                         <option value="">All Airports</option>
+                                         <option value="LAX">LAX</option>
+                                         <option value="JFK">JFK</option>
+                                         <option value="ORD">ORD</option>
+                                         <option value="ATL">ATL</option>
+                                         <option value="DFW">DFW</option>
+                                     </select>
+                                     <select id="lostItemTypeFilter">
+                                         <option value="">All Item Types</option>
+                                         <option value="electronics">Electronics</option>
+                                         <option value="clothing">Clothing</option>
+                                         <option value="luggage">Luggage</option>
+                                         <option value="jewelry">Jewelry</option>
+                                         <option value="other">Other</option>
+                                     </select>
+                                 </div>
                                  <table id="lostItemsTable">
                                      <thead>
                                          <tr>
-                                             <th>Timestamp</th>
-                                             <th>Name</th>
-                                             <th>Email</th>
-                                             <th>Phone</th>
-                                             <th>Airport</th>
-                                             <th>Item Type</th>
-                                             <th>Description</th>
-                                             <th>Date Lost</th>
-                                             <th>Tracking ID</th>
+                                             <th data-sort="timestamp">Timestamp</th>
+                                             <th data-sort="name">Name</th>
+                                             <th data-sort="email">Email</th>
+                                             <th data-sort="phone">Phone</th>
+                                             <th data-sort="airport">Airport</th>
+                                             <th data-sort="itemType">Item Type</th>
+                                             <th data-sort="description">Description</th>
+                                             <th data-sort="dateLost">Date Lost</th>
+                                             <th data-sort="trackingId">Tracking ID</th>
                                          </tr>
                                      </thead>
                                      <tbody></tbody>
                                  </table>
+                                 <div class="pagination" id="lostPagination"></div>
                                  <h3>Found Items</h3>
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="foundSearch" placeholder="Search found items..." />
+                                     <select id="foundAirportFilter">
+                                         <option value="">All Airports</option>
+                                         <option value="LAX">LAX</option>
+                                         <option value="JFK">JFK</option>
+                                         <option value="ORD">ORD</option>
+                                         <option value="ATL">ATL</option>
+                                         <option value="DFW">DFW</option>
+                                     </select>
+                                     <select id="foundItemTypeFilter">
+                                         <option value="">All Item Types</option>
+                                         <option value="electronics">Electronics</option>
+                                         <option value="clothing">Clothing</option>
+                                         <option value="luggage">Luggage</option>
+                                         <option value="jewelry">Jewelry</option>
+                                         <option value="other">Other</option>
+                                     </select>
+                                     <select id="foundStatusFilter">
+                                         <option value="">All Statuses</option>
+                                         <option value="Available">Available</option>
+                                         <option value="Claimed">Claimed</option>
+                                         <option value="Returned">Returned</option>
+                                     </select>
+                                 </div>
                                  <table id="foundItemsTable">
                                      <thead>
                                          <tr>
-                                             <th>Tracking ID</th>
-                                             <th>Item Type</th>
-                                             <th>Airport</th>
-                                             <th>Description</th>
-                                             <th>Found Date</th>
-                                             <th>Location</th>
-                                             <th>Status</th>
-                                             <th>Reported By</th>
-                                             <th>Reporter Type</th>
+                                             <th data-sort="trackingId">Tracking ID</th>
+                                             <th data-sort="itemType">Item Type</th>
+                                             <th data-sort="airport">Airport</th>
+                                             <th data-sort="description">Description</th>
+                                             <th data-sort="foundDate">Found Date</th>
+                                             <th data-sort="foundLocation">Location</th>
+                                             <th data-sort="status">Status</th>
+                                             <th data-sort="reportedBy">Reported By</th>
+                                             <th data-sort="reporterType">Reporter Type</th>
                                          </tr>
                                      </thead>
                                      <tbody></tbody>
                                  </table>
+                                 <div class="pagination" id="foundPagination"></div>
                                  <button class="logout-button" onclick="logout()">Logout</button>
                                  <p class="error" id="dataError">Failed to load items. Please try again.</p>
                              </div>
@@ -175,6 +264,11 @@
 
                      const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
                      const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     let lostItemsData = [];
+                     let foundItemsData = [];
+                     let lostSortDirection = {};
+                     let foundSortDirection = {};
+                     const ROWS_PER_PAGE = 10;
 
                      function initGapiClient() {
                          return new Promise((resolve, reject) => {
@@ -192,10 +286,109 @@
                          });
                      }
 
+                     function sortTable(tableId, column, data, tbody, sortDirection, page) {
+                         const index = {
+                             lost: {
+                                 timestamp: 0, name: 1, email: 2, phone: 3, airport: 4,
+                                 itemType: 5, description: 6, dateLost: 7, trackingId: 8
+                             },
+                             found: {
+                                 trackingId: 0, itemType: 1, airport: 2, description: 3,
+                                 foundDate: 4, foundLocation: 5, status: 6, reportedBy: 7, reporterType: 8
+                             }
+                         }[tableId.split('ItemsTable')[0].toLowerCase()];
+                         sortDirection[column] = !sortDirection[column];
+                         data.sort((a, b) => {
+                             let valA = a[index[column]] || '';
+                             let valB = b[index[column]] || '';
+                             if (column === 'timestamp' || column === 'dateLost' || column === 'foundDate') {
+                                 valA = new Date(valA).getTime();
+                                 valB = new Date(valB).getTime();
+                             }
+                             if (sortDirection[column]) {
+                                 return valA > valB ? 1 : -1;
+                             } else {
+                                 return valA < valB ? 1 : -1;
+                             }
+                         });
+                         renderTable(tableId, data, tbody, page);
+                     }
+
+                     function renderTable(tableId, data, tbody, page) {
+                         tbody.empty();
+                         const start = (page - 1) * ROWS_PER_PAGE;
+                         const end = start + ROWS_PER_PAGE;
+                         const paginatedData = data.slice(start, end);
+                         if (paginatedData.length === 0) {
+                             tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : 9}">No items found.</td></tr>`);
+                         } else {
+                             paginatedData.forEach(item => {
+                                 const row = `
+                                     <tr>
+                                         ${item.map(val => `<td>${val || ''}</td>`).join('')}
+                                     </tr>
+                                 `;
+                                 tbody.append(row);
+                             });
+                         }
+                         renderPagination(tableId, data, page);
+                     }
+
+                     function renderPagination(tableId, data, page) {
+                         const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : 'foundPagination'}`);
+                         pagination.empty();
+                         const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
+                         for (let i = 1; i <= pageCount; i++) {
+                             const button = `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                             pagination.append(button);
+                         }
+                         pagination.find('button').click(function() {
+                             const newPage = parseInt($(this).data('page'), 10);
+                             const filteredData = filterTable(
+                                 tableId,
+                                 tableId === 'lostItemsTable' ? lostItemsData : foundItemsData,
+                                 `#${tableId === 'lostItemsTable' ? 'lostSearch' : 'foundSearch'}`,
+                                 tableId === 'lostItemsTable' ? {
+                                     airport: '#lostAirportFilter',
+                                     itemType: '#lostItemTypeFilter'
+                                 } : {
+                                     airport: '#foundAirportFilter',
+                                     itemType: '#foundItemTypeFilter',
+                                     status: '#foundStatusFilter'
+                                 }
+                             );
+                             renderTable(tableId, filteredData, $(`#${tableId} tbody`), newPage);
+                         });
+                     }
+
+                     function filterTable(tableId, data, searchInput, filters) {
+                         let filteredData = [...data];
+                         const searchTerm = $(searchInput).val().toLowerCase();
+                         if (searchTerm) {
+                             filteredData = filteredData.filter(row =>
+                                 row.some(cell => cell && cell.toLowerCase().includes(searchTerm))
+                             );
+                         }
+                         Object.keys(filters).forEach(key => {
+                             const value = $(filters[key]).val();
+                             if (value) {
+                                 const index = {
+                                     lost: { airport: 4, itemType: 5 },
+                                     found: { airport: 2, itemType: 1, status: 6 }
+                                 }[tableId.split('ItemsTable')[0].toLowerCase()];
+                                 filteredData = filteredData.filter(row => row[index[key]] === value);
+                             }
+                         });
+                         return filteredData;
+                     }
+
                      async function loadDashboard() {
                          try {
                              const accessToken = localStorage.getItem('staffAccessToken');
-                             if (!accessToken) {
+                             const expiresAt = parseInt(localStorage.getItem('staffTokenExpiresAt') || '0', 10);
+                             if (!accessToken || expiresAt <= Date.now()) {
+                                 localStorage.removeItem('staffAccessToken');
+                                 localStorage.removeItem('staffTokenExpiresAt');
                                  window.location.assign('login_staff.html');
                                  return;
                              }
@@ -208,74 +401,63 @@
                                  spreadsheetId: LOST_SPREADSHEET_ID,
                                  range: 'LostItems!A2:I'
                              });
-                             const lostItems = lostResponse.result.values || [];
-                             console.log('Lost items:', lostItems);
+                             lostItemsData = lostResponse.result.values || [];
+                             console.log('Lost items:', lostItemsData);
 
                              console.log('Fetching found items');
                              const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
                                  spreadsheetId: FOUND_SPREADSHEET_ID,
                                  range: 'FoundItems!A2:I'
                              });
-                             const foundItems = foundResponse.result.values || [];
-                             console.log('Found items:', foundItems);
+                             foundItemsData = foundResponse.result.values || [];
+                             console.log('Found items:', foundItemsData);
 
                              $('#dashboard').show();
 
                              const lostTbody = $('#lostItemsTable tbody');
-                             lostTbody.empty();
-                             if (lostItems.length === 0) {
-                                 lostTbody.append('<tr><td colspan="9">No lost items found.</td></tr>');
-                             } else {
-                                 lostItems.forEach(item => {
-                                     const row = `
-                                         <tr>
-                                             <td>${item[0] || ''}</td>
-                                             <td>${item[1] || ''}</td>
-                                             <td>${item[2] || ''}</td>
-                                             <td>${item[3] || ''}</td>
-                                             <td>${item[4] || ''}</td>
-                                             <td>${item[5] || ''}</td>
-                                             <td>${item[6] || ''}</td>
-                                             <td>${item[7] || ''}</td>
-                                             <td>${item[8] || ''}</td>
-                                         </tr>
-                                     `;
-                                     lostTbody.append(row);
-                                 });
-                             }
+                             renderTable('lostItemsTable', lostItemsData, lostTbody, 1);
 
                              const foundTbody = $('#foundItemsTable tbody');
-                             foundTbody.empty();
-                             if (foundItems.length === 0) {
-                                 foundTbody.append('<tr><td colspan="9">No found items found.</td></tr>');
-                             } else {
-                                 foundItems.forEach(item => {
-                                     const row = `
-                                         <tr>
-                                             <td>${item[0] || ''}</td>
-                                             <td>${item[1] || ''}</td>
-                                             <td>${item[2] || ''}</td>
-                                             <td>${item[3] || ''}</td>
-                                             <td>${item[4] || ''}</td>
-                                             <td>${item[5] || ''}</td>
-                                             <td>${item[6] || ''}</td>
-                                             <td>${item[7] || ''}</td>
-                                             <td>${item[8] || ''}</td>
-                                         </tr>
-                                     `;
-                                     foundTbody.append(row);
+                             renderTable('foundItemsTable', foundItemsData, foundTbody, 1);
+
+                             $('#lostItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('lostItemsTable', column, lostItemsData, lostTbody, lostSortDirection, 1);
+                             });
+
+                             $('#foundItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('foundItemsTable', column, foundItemsData, foundTbody, foundSortDirection, 1);
+                             });
+
+                             $('#lostSearch, #lostAirportFilter, #lostItemTypeFilter').on('input change', () => {
+                                 const filteredData = filterTable('lostItemsTable', lostItemsData, '#lostSearch', {
+                                     airport: '#lostAirportFilter',
+                                     itemType: '#lostItemTypeFilter'
                                  });
-                             }
+                                 renderTable('lostItemsTable', filteredData, lostTbody, 1);
+                             });
+
+                             $('#foundSearch, #foundAirportFilter, #foundItemTypeFilter, #foundStatusFilter').on('input change', () => {
+                                 const filteredData = filterTable('foundItemsTable', foundItemsData, '#foundSearch', {
+                                     airport: '#foundAirportFilter',
+                                     itemType: '#foundItemTypeFilter',
+                                     status: '#foundStatusFilter'
+                                 });
+                                 renderTable('foundItemsTable', filteredData, foundTbody, 1);
+                             });
                          } catch (error) {
                              console.error('Error loading dashboard:', error.message);
                              $('#dataError').css('display', 'block');
                              localStorage.removeItem('staffAccessToken');
+                             localStorage.removeItem('staffTokenExpiresAt');
                              window.location.assign('login_staff.html');
                          }
                      }
 
                      function logout() {
                          localStorage.removeItem('staffAccessToken');
+                         localStorage.removeItem('staffTokenExpiresAt');
                          window.location.assign('login_staff.html');
                      }
 
