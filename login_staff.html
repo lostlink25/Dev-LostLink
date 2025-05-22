@@ -118,6 +118,31 @@
         <script src="assets/js/util.js"></script>
         <script src="assets/js/main.js"></script>
         <script>
+            // Define signIn function globally
+            function signIn() {
+                console.log('Sign-in button clicked');
+                try {
+                    getAccessToken().then(accessToken => {
+                        console.log('Storing access token in localStorage');
+                        const expiresAt = Date.now() + 3600 * 1000; // 1 hour expiration
+                        localStorage.setItem('staffAccessToken', accessToken);
+                        localStorage.setItem('staffTokenExpiresAt', expiresAt);
+                        console.log('Verifying localStorage:', {
+                            token: localStorage.getItem('staffAccessToken') ? 'Set' : 'Not set',
+                            expiresAt: localStorage.getItem('staffTokenExpiresAt')
+                        });
+                        console.log('Redirecting to staff_portal.html');
+                        window.location.assign('staff_portal.html');
+                    }).catch(error => {
+                        console.error('Sign-in failed:', error.message);
+                        $('#loginError').text(error.message).css('display', 'block');
+                    });
+                } catch (error) {
+                    console.error('Error in signIn:', error.message);
+                    $('#loginError').text('Sign-in error: ' + error.message).css('display', 'block');
+                }
+            }
+
             console.log('Script loaded at:', new Date().toISOString());
             try {
                 console.log('Checking for jQuery');
@@ -164,26 +189,6 @@
                             reject(new Error(`Failed to initialize Google Sign-In: ${error.message}`));
                         }
                     });
-                }
-
-                async function signIn() {
-                    console.log('Sign-in button clicked');
-                    try {
-                        const accessToken = await getAccessToken();
-                        console.log('Storing access token in localStorage');
-                        const expiresAt = Date.now() + 3600 * 1000; // 1 hour expiration
-                        localStorage.setItem('staffAccessToken', accessToken);
-                        localStorage.setItem('staffTokenExpiresAt', expiresAt);
-                        console.log('Verifying localStorage:', {
-                            token: localStorage.getItem('staffAccessToken') ? 'Set' : 'Not set',
-                            expiresAt: localStorage.getItem('staffTokenExpiresAt')
-                        });
-                        console.log('Redirecting to staff_portal.html');
-                        window.location.assign('staff_portal.html');
-                    } catch (error) {
-                        console.error('Sign-in failed:', error.message);
-                        $('#loginError').text(error.message).css('display', 'block');
-                    }
                 }
 
                 document.addEventListener('DOMContentLoaded', () => {
