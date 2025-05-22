@@ -142,9 +142,11 @@
                          <ul>
                              <li><a href="index.html">Home</a></li>
                              <li><a href="About_Us.html">About Us</a></li>
-                             <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
                              <li><a href="track_your_item.html">Track Items</a></li>
                              <li><a href="claim_item.html">Claim Items</a></li>
+                             <li><a href="claim_submission.html">Claim Submissions</a></li>
+                             <li><a href="staff_portal.html">Staff Portal</a></li>
                              <li><a href="contact_support.html">Contact Us</a></li>
                          </ul>
                      </nav>
@@ -395,7 +397,7 @@
                                  if (foundStatus !== 'Available') return;
                                  if (lostItemType === foundItemType && lostAirport === foundAirport) {
                                      const descriptionSimilarity = computeSimilarity(lostDescription, foundDescription);
-                                     const matchConfidence = 80 + (descriptionSimilarity / 5); // Base 80% for exact matches, plus description boost
+                                     const matchConfidence = 80 + (descriptionSimilarity / 5);
                                      if (matchConfidence >= 70) {
                                          matches.push([
                                              lostTrackingId,
@@ -416,8 +418,9 @@
                      }
 
                      async function saveMatches(matches) {
+                         if (matches.length === 0) return true;
                          try {
-                             console.log('Saving matches to ClaimItems sheet');
+                             console.log('Saving matches to ClaimItems sheet:', matches.length);
                              const response = await gapi.client.sheets.spreadsheets.values.append({
                                  spreadsheetId: FOUND_SPREADSHEET_ID,
                                  range: 'ClaimItems!A:I',
@@ -625,7 +628,7 @@
                          const success = await confirmMatch(lostTrackingId, foundTrackingID, claimantDetails);
                          if (success) {
                              alert('Match confirmed successfully!');
-                             loadDashboard(); // Refresh dashboard
+                             loadDashboard();
                          } else {
                              alert('Failed to confirm match. Please try again.');
                          }
@@ -671,22 +674,29 @@
                              foundItemsData = foundResponse.result.values || [];
                              console.log('Found items fetched:', foundItemsData.length, 'Sample:', foundItemsData[0] || 'Empty');
 
-                             console.log('Computing matches');
-                             matchItemsData = computeMatches(lostItemsData, foundItemsData);
-                             console.log('Matches computed:', matchItemsData.length, 'Sample:', matchItemsData[0] || 'Empty');
-
                              console.log('Fetching existing matches');
                              const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
                                  spreadsheetId: FOUND_SPREADSHEET_ID,
                                  range: 'ClaimItems!A2:I'
                              });
-                             const existingMatches = matchResponse.result.values || [];
-                             matchItemsData = matchItemsData.filter(newMatch => {
-                                 return !existingMatches.some(existing => existing[0] === newMatch[0] && existing[1] === newMatch[1]);
-                             }).concat(existingMatches);
+                             matchItemsData = matchResponse.result.values || [];
+                             console.log('Existing matches fetched:', matchItemsData.length, 'Sample:', matchItemsData[0] || 'Empty');
 
-                             if (matchItemsData.length > 0) {
-                                 await saveMatches(matchItemsData.filter(m => m[6] === 'Pending'));
+                             console.log('Computing new matches');
+                             const newMatches = computeMatches(lostItemsData, foundItemsData);
+                             console.log('New matches computed:', newMatches.length, 'Sample:', newMatches[0] || 'Empty');
+
+                             const uniqueNewMatches = newMatches.filter(newMatch => {
+                                 return !matchItemsData.some(existing => 
+                                     existing[0] === newMatch[0] && 
+                                     existing[1] === newMatch[1]
+                                 );
+                             });
+                             console.log('Unique new matches:', uniqueNewMatches.length);
+
+                             if (uniqueNewMatches.length > 0) {
+                                 await saveMatches(uniqueNewMatches);
+                                 matchItemsData = [...uniqueNewMatches, ...matchItemsData];
                              }
 
                              $('#dashboard').show();
