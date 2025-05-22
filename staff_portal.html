@@ -1,499 +1,501 @@
 <!DOCTYPE HTML>
-<html>
-    <head>
-        <title>LostLink - Staff Portal</title>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
-        <link rel="stylesheet" href="assets/css/main.css" />
-        <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-        <style>
-            .portal-container {
-                padding: 20px;
-            }
-            .dashboard {
-                display: none;
-            }
-            .dashboard table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-            .dashboard th, .dashboard td {
-                border: 1px solid #ccc;
-                padding: 10px;
-                text-align: left;
-            }
-            .dashboard th {
-                background-color: #1976D2;
-                color: white;
-                font-weight: bold;
-                cursor: pointer;
-            }
-            .dashboard th:hover {
-                background-color: #1565C0;
-            }
-            .dashboard tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
-            .dashboard-controls {
-                margin-bottom: 20px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                align-items: center;
-            }
-            .dashboard-controls input, .dashboard-controls select {
-                padding: 8px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 0.9em;
-            }
-            .pagination {
-                margin-top: 10px;
-                display: flex;
-                gap: 5px;
-                justify-content: center;
-            }
-            .pagination button {
-                padding: 5px 10px;
-                border: 1px solid #ccc;
-                background-color: #fff;
-                cursor: pointer;
-                border-radius: 4px;
-            }
-            .pagination button.active {
-                background-color: #df7366;
-                color: white;
-                border-color: #df7366;
-            }
-            .pagination button:hover:not(.disabled) {
-                background-color: #ef8376;
-                color: white;
-            }
-            .pagination button.disabled {
-                cursor: not-allowed;
-                opacity: 0.5;
-            }
-            .error {
-                color: red;
-                display: none;
-                font-size: 0.9em;
-                text-align: center;
-                margin-top: 20px;
-            }
-            .logout-button {
-                display: inline-block;
-                padding: 10px 20px;
-                background-color: #df7366;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                text-decoration: none;
-                font-size: 1em;
-                margin-top: 20px;
-            }
-            .logout-button:hover {
-                background-color: #ef8376;
-            }
-        </style>
-    </head>
-    <body class="is-preload">
-        <div id="page-wrapper">
-            <!-- Header -->
-            <div id="header">
-                <!-- Nav -->
-                <nav id="nav">
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="About_Us.html">About Us</a></li>
-                        <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
-                        <li><a href="track_your_item.html">Track Items</a></li>
-                        <li><a href="claim_item.html">Claim Items</a></li>
-                        <li><a href="contact_support.html">Contact Us</a></li>
-                    </ul>
-                </nav>
-            </div>
+     <html>
+         <head>
+             <title>LostLink - Staff Portal</title>
+             <meta charset="utf-8" />
+             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+             <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
+             <link rel="stylesheet" href="assets/css/main.css" />
+             <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+             <style>
+                 .portal-container {
+                     padding: 20px;
+                 }
+                 .dashboard {
+                     display: none;
+                 }
+                 .dashboard table {
+                     width: 100%;
+                     border-collapse: collapse;
+                     margin-top: 20px;
+                 }
+                 .dashboard th, .dashboard td {
+                     border: 1px solid #ccc;
+                     padding: 10px;
+                     text-align: left;
+                 }
+                 .dashboard th {
+                     background-color: #1976D2;
+                     color: white;
+                     font-weight: bold;
+                     cursor: pointer;
+                 }
+                 .dashboard th:hover {
+                     background-color: #1565C0;
+                 }
+                 .dashboard tr:nth-child(even) {
+                     background-color: #f9f9f9;
+                 }
+                 .dashboard-controls {
+                     margin-bottom: 20px;
+                     display: flex;
+                     gap: 10px;
+                     flex-wrap: wrap;
+                     align-items: center;
+                 }
+                 .dashboard-controls input, .dashboard-controls select {
+                     padding: 8px;
+                     border: 1px solid #ccc;
+                     border-radius: 4px;
+                     font-size: 0.9em;
+                 }
+                 .pagination {
+                     margin-top: 10px;
+                     display: flex;
+                     gap: 5px;
+                     justify-content: center;
+                 }
+                 .pagination button {
+                     padding: 5px 10px;
+                     border: 1px solid #ccc;
+                     background-color: #fff;
+                     cursor: pointer;
+                     border-radius: 4px;
+                 }
+                 .pagination button.active {
+                     background-color: #df7366;
+                     color: white;
+                     border-color: #df7366;
+                 }
+                 .pagination button:hover:not(.disabled) {
+                     background-color: #ef8376;
+                     color: white;
+                 }
+                 .pagination button.disabled {
+                     cursor: not-allowed;
+                     opacity: 0.5;
+                 }
+                 .error {
+                     color: red;
+                     display: none;
+                     font-size: 0.9em;
+                     text-align: center;
+                     margin-top: 20px;
+                 }
+                 .logout-button {
+                     display: inline-block;
+                     padding: 10px 20px;
+                     background-color: #df7366;
+                     color: white;
+                     border: none;
+                     border-radius: 4px;
+                     cursor: pointer;
+                     text-decoration: none;
+                     font-size: 1em;
+                     margin-top: 20px;
+                 }
+                 .logout-button:hover {
+                     background-color: #ef8376;
+                 }
+             </style>
+         </head>
+         <body class="is-preload">
+             <div id="page-wrapper">
+                 <!-- Header -->
+                 <div id="header">
+                     <!-- Nav -->
+                     <nav id="nav">
+                         <ul>
+                             <li><a href="index.html">Home</a></li>
+                             <li><a href="About_Us.html">About Us</a></li>
+                             <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="track_your_item.html">Track Items</a></li>
+                             <li><a href="claim_item.html">Claim Items</a></li>
+                             <li><a href="contact_support.html">Contact Us</a></li>
+                         </ul>
+                     </nav>
+                 </div>
 
-            <!-- Main -->
-            <div class="wrapper style2">
-                <article id="main" class="container special">
-                    <header>
-                        <h2>Staff Portal</h2>
-                        <p>Manage reported lost and found items (Staff Only)</p>
-                    </header>
-                    <section class="portal-container">
-                        <div class="dashboard" id="dashboard">
-                            <h3>Lost Items</h3>
-                            <div class="dashboard-controls">
-                                <input type="text" id="lostSearch" placeholder="Search lost items..." />
-                                <select id="lostAirportFilter">
-                                    <option value="">All Airports</option>
-                                    <option value="LAX">LAX</option>
-                                    <option value="JFK">JFK</option>
-                                    <option value="ORD">ORD</option>
-                                    <option value="ATL">ATL</option>
-                                    <option value="DFW">DFW</option>
-                                </select>
-                                <select id="lostItemTypeFilter">
-                                    <option value="">All Item Types</option>
-                                    <option value="electronics">Electronics</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="luggage">Luggage</option>
-                                    <option value="jewelry">Jewelry</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <table id="lostItemsTable">
-                                <thead>
-                                    <tr>
-                                        <th data-sort="timestamp">Timestamp</th>
-                                        <th data-sort="name">Name</th>
-                                        <th data-sort="email">Email</th>
-                                        <th data-sort="phone">Phone</th>
-                                        <th data-sort="airport">Airport</th>
-                                        <th data-sort="itemType">Item Type</th>
-                                        <th data-sort="description">Description</th>
-                                        <th data-sort="dateLost">Date Lost</th>
-                                        <th data-sort="trackingId">Tracking ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <div class="pagination" id="lostPagination"></div>
-                            <h3>Found Items</h3>
-                            <div class="dashboard-controls">
-                                <input type="text" id="foundSearch" placeholder="Search found items..." />
-                                <select id="foundAirportFilter">
-                                    <option value="">All Airports</option>
-                                    <option value="LAX">LAX</option>
-                                    <option value="JFK">JFK</option>
-                                    <option value="ORD">ORD</option>
-                                    <option value="ATL">ATL</option>
-                                    <option value="DFW">DFW</option>
-                                </select>
-                                <select id="foundItemTypeFilter">
-                                    <option value="">All Item Types</option>
-                                    <option value="electronics">Electronics</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="luggage">Luggage</option>
-                                    <option value="jewelry">Jewelry</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <select id="foundStatusFilter">
-                                    <option value="">All Statuses</option>
-                                    <option value="Available">Available</option>
-                                    <option value="Claimed">Claimed</option>
-                                    <option value="Returned">Returned</option>
-                                </select>
-                            </div>
-                            <table id="foundItemsTable">
-                                <thead>
-                                    <tr>
-                                        <th data-sort="trackingId">Tracking ID</th>
-                                        <th data-sort="itemType">Item Type</th>
-                                        <th data-sort="airport">Airport</th>
-                                        <th data-sort="description">Description</th>
-                                        <th data-sort="foundDate">Found Date</th>
-                                        <th data-sort="foundLocation">Location</th>
-                                        <th data-sort="status">Status</th>
-                                        <th data-sort="reportedBy">Reported By</th>
-                                        <th data-sort="reporterType">Reporter Type</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <div class="pagination" id="foundPagination"></div>
-                            <button class="logout-button" onclick="logout()">Logout</button>
-                            <p class="error" id="dataError"></p>
-                        </section>
-                    </article>
-                </div>
+                 <!-- Main -->
+                 <div class="wrapper style2">
+                     <article id="main" class="container special">
+                         <header>
+                             <h2>Staff Portal</h2>
+                             <p>Manage reported lost and found items (Staff Only)</p>
+                         </header>
+                         <section class="portal-container">
+                             <div class="dashboard" id="dashboard">
+                                 <h3>Lost Items</h3>
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="lostSearch" placeholder="Search lost items..." />
+                                     <select id="lostAirportFilter">
+                                         <option value="">All Airports</option>
+                                         <option value="LAX">LAX</option>
+                                         <option value="JFK">JFK</option>
+                                         <option value="ORD">ORD</option>
+                                         <option value="ATL">ATL</option>
+                                         <option value="DFW">DFW</option>
+                                     </select>
+                                     <select id="lostItemTypeFilter">
+                                         <option value="">All Item Types</option>
+                                         <option value="electronics">Electronics</option>
+                                         <option value="clothing">Clothing</option>
+                                         <option value="luggage">Luggage</option>
+                                         <option value="jewelry">Jewelry</option>
+                                         <option value="other">Other</option>
+                                     </select>
+                                 </div>
+                                 <table id="lostItemsTable">
+                                     <thead>
+                                         <tr>
+                                             <th data-sort="timestamp">Timestamp</th>
+                                             <th data-sort="name">Name</th>
+                                             <th data-sort="email">Email</th>
+                                             <th data-sort="phone">Phone</th>
+                                             <th data-sort="airport">Airport</th>
+                                             <th data-sort="itemType">Item Type</th>
+                                             <th data-sort="description">Description</th>
+                                             <th data-sort="dateLost">Date Lost</th>
+                                             <th data-sort="trackingId">Tracking ID</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody></tbody>
+                                 </table>
+                                 <div class="pagination" id="lostPagination"></div>
+                                 <h3>Found Items</h3>
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="foundSearch" placeholder="Search found items..." />
+                                     <select id="foundAirportFilter">
+                                         <option value="">All Airports</option>
+                                         <option value="LAX">LAX</option>
+                                         <option value="JFK">JFK</option>
+                                         <option value="ORD">ORD</option>
+                                         <option value="ATL">ATL</option>
+                                         <option value="DFW">DFW</option>
+                                     </select>
+                                     <select id="foundItemTypeFilter">
+                                         <option value="">All Item Types</option>
+                                         <option value="electronics">Electronics</option>
+                                         <option value="clothing">Clothing</option>
+                                         <option value="luggage">Luggage</option>
+                                         <option value="jewelry">Jewelry</option>
+                                         <option value="other">Other</option>
+                                     </select>
+                                     <select id="foundStatusFilter">
+                                         <option value="">All Statuses</option>
+                                         <option value="Available">Available</option>
+                                         <option value="Claimed">Claimed</option>
+                                         <option value="Returned">Returned</option>
+                                     </select>
+                                 </div>
+                                 <table id="foundItemsTable">
+                                     <thead>
+                                         <tr>
+                                             <th data-sort="timestamp">Timestamp</th>
+                                             <th data-sort="trackingID">Tracking ID</th>
+                                             <th data-sort="itemType">Item Type</th>
+                                             <th data-sort="airport">Airport</th>
+                                             <th data-sort="description">Description</th>
+                                             <th data-sort="dateFound">Date Found</th>
+                                             <th data-sort="location">Location</th>
+                                             <th data-sort="status">Status</th>
+                                             <th data-sort="reporter">Reporter</th>
+                                             <th data-sort="reporterType">Reporter Type</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody></tbody>
+                                 </table>
+                                 <div class="pagination" id="foundPagination"></div>
+                                 <button class="logout-button" onclick="logout()">Logout</button>
+                                 <p class="error" id="dataError"></p>
+                             </div>
+                         </section>
+                     </article>
+                 </div>
 
-                <!-- Footer -->
-                <div id="footer">
-                    <div class="container">
-                        <div class="row">
-                            <section class="contact">
-                                <header>
-                                    <h3>Have Questions?</h3>
-                                </header>
-                                <p>Our support team is here to assist you with tracking or recovering your lost items.</p>
-                                <ul class="icons">
-                                    <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
-                                    <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                                    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-                                    <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-                                    <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-                                    <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-                                </ul>
-                            </section>
-                            <div class="copyright">
-                                <ul class="menu">
-                                    <li>© LostLink. All rights reserved.</li>
-                                    <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                 <!-- Footer -->
+                 <div id="footer">
+                     <div class="container">
+                         <div class="row">
+                             <section class="contact">
+                                 <header>
+                                     <h3>Have Questions?</h3>
+                                 </header>
+                                 <p>Our support team is here to assist you with tracking or recovering your lost items.</p>
+                                 <ul class="icons">
+                                     <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                     <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                     <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                     <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                     <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                     <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                 </ul>
+                             </section>
+                             <div class="copyright">
+                                 <ul class="menu">
+                                     <li>© LostLink. All rights reserved.</li>
+                                     <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
 
-            <!-- Scripts -->
-            <script src="https://apis.google.com/js/api.js"></script>
-            <script src="assets/js/jquery.min.js"></script>
-            <script src="assets/js/jquery.dropotron.min.js"></script>
-            <script src="assets/js/jquery.scrolly.min.js"></script>
-            <script src="assets/js/jquery.scrollex.min.js"></script>
-            <script src="assets/js/browser.min.js"></script>
-            <script src="assets/js/breakpoints.min.js"></script>
-            <script src="assets/js/util.js"></script>
-            <script src="assets/js/main.js"></script>
-            <script>
-                console.log('Script loaded at:', new Date().toISOString());
-                try {
-                    console.log('Checking for jQuery');
-                    if (typeof jQuery === 'undefined') {
-                        console.error('jQuery not loaded');
-                        alert('Error: jQuery not loaded. Please contact support.');
-                        throw new Error('jQuery not loaded');
-                    }
-                    console.log('jQuery loaded:', jQuery.fn.jquery);
+             <!-- Scripts -->
+             <script src="https://apis.google.com/js/api.js"></script>
+             <script src="assets/js/jquery.min.js"></script>
+             <script src="assets/js/jquery.dropotron.min.js"></script>
+             <script src="assets/js/jquery.scrolly.min.js"></script>
+             <script src="assets/js/jquery.scrollex.min.js"></script>
+             <script src="assets/js/browser.min.js"></script>
+             <script src="assets/js/breakpoints.min.js"></script>
+             <script src="assets/js/util.js"></script>
+             <script src="assets/js/main.js"></script>
+             <script>
+                 console.log('Script loaded at:', new Date().toISOString());
+                 try {
+                     console.log('Checking for jQuery');
+                     if (typeof jQuery === 'undefined') {
+                         console.error('jQuery not loaded');
+                         alert('Error: jQuery not loaded. Please contact support.');
+                         throw new Error('jQuery not loaded');
+                     }
+                     console.log('jQuery loaded:', jQuery.fn.jquery);
 
-                    const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                    const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                    let lostItemsData = [];
-                    let foundItemsData = [];
-                    let lostSortDirection = {};
-                    let foundSortDirection = {};
-                    const ROWS_PER_PAGE = 10;
+                     const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     let lostItemsData = [];
+                     let foundItemsData = [];
+                     let lostSortDirection = {};
+                     let foundSortDirection = {};
+                     const ROWS_PER_PAGE = 10;
 
-                    function initGapiClient() {
-                        console.log('Initializing Google API client');
-                        return new Promise((resolve, reject) => {
-                            gapi.load('client', () => {
-                                gapi.client.init({
-                                    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-                                }).then(() => {
-                                    console.log('gapi client initialized');
-                                    resolve();
-                                }).catch(error => {
-                                    console.error('gapi client initialization error:', error);
-                                    reject(error);
-                                });
-                            });
-                        });
-                    }
+                     function initGapiClient() {
+                         console.log('Initializing Google API client');
+                         return new Promise((resolve, reject) => {
+                             gapi.load('client', () => {
+                                 gapi.client.init({
+                                     discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                                 }).then(() => {
+                                     console.log('gapi client initialized');
+                                     resolve();
+                                 }).catch(error => {
+                                     console.error('gapi client initialization error:', error);
+                                     reject(error);
+                                 });
+                             });
+                         });
+                     }
 
-                    function sortTable(tableId, column, data, tbody, sortDirection, page) {
-                        console.log(`Sorting ${tableId} by ${column}`);
-                        const index = {
-                            lost: {
-                                timestamp: 0, name: 1, email: 2, phone: 3, airport: 4,
-                                itemType: 5, description: 6, dateLost: 7, trackingId: 8
-                            },
-                            found: {
-                                trackingId: 0, itemType: 1, airport: 2, description: 3,
-                                foundDate: 4, foundLocation: 5, status: 6, reportedBy: 7, reporterType: 8
-                            }
-                        }[tableId.split('ItemsTable')[0].toLowerCase()];
-                        sortDirection[column] = !sortDirection[column];
-                        data.sort((a, b) => {
-                            let valA = a[index[column]] || '';
-                            let valB = b[index[column]] || '';
-                            if (column === 'timestamp' || column === 'dateLost' || column === 'foundDate') {
-                                valA = new Date(valA).getTime();
-                                valB = new Date(valB).getTime();
-                            }
-                            if (sortDirection[column]) {
-                                return valA > valB ? 1 : -1;
-                            } else {
-                                return valA < valB ? 1 : -1;
-                            }
-                        });
-                        renderTable(tableId, data, tbody, page);
-                    }
+                     function sortTable(tableId, column, data, tbody, sortDirection, page) {
+                         console.log(`Sorting ${tableId} by ${column}`);
+                         const index = {
+                             lost: {
+                                 timestamp: 0, name: 1, email: 2, phone: 3, airport: 4,
+                                 itemType: 5, description: 6, dateLost: 7, trackingId: 8
+                             },
+                             found: {
+                                 timestamp: 0, trackingID: 1, itemType: 2, airport: 3, description: 4,
+                                 dateFound: 5, location: 6, status: 7, reporter: 8, reporterType: 9
+                             }
+                         }[tableId.split('ItemsTable')[0].toLowerCase()];
+                         sortDirection[column] = !sortDirection[column];
+                         data.sort((a, b) => {
+                             let valA = a[index[column]] || '';
+                             let valB = b[index[column]] || '';
+                             if (column === 'timestamp' || column === 'dateLost' || column === 'dateFound') {
+                                 valA = new Date(valA).getTime();
+                                 valB = new Date(valB).getTime();
+                             }
+                             if (sortDirection[column]) {
+                                 return valA > valB ? 1 : -1;
+                             } else {
+                                 return valA < valB ? 1 : -1;
+                             }
+                         });
+                         renderTable(tableId, data, tbody, page);
+                     }
 
-                    function renderTable(tableId, data, tbody, page) {
-                        console.log(`Rendering ${tableId} with ${data.length} items, page ${page}`);
-                        tbody.empty();
-                        const start = (page - 1) * ROWS_PER_PAGE;
-                        const end = start + ROWS_PER_PAGE;
-                        const paginatedData = data.slice(start, end);
-                        if (paginatedData.length === 0) {
-                            tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : 9}">No items found.</td></tr>`);
-                        } else {
-                            paginatedData.forEach(item => {
-                                const row = `
-                                    <tr>
-                                        ${item.map(val => `<td>${val || ''}</td>`).join('')}
-                                    </tr>
-                                `;
-                                tbody.append(row);
-                            });
-                        }
-                        renderPagination(tableId, data, page);
-                    }
+                     function renderTable(tableId, data, tbody, page) {
+                         console.log(`Rendering ${tableId} with ${data.length} items, page ${page}`);
+                         tbody.empty();
+                         const start = (page - 1) * ROWS_PER_PAGE;
+                         const end = start + ROWS_PER_PAGE;
+                         const paginatedData = data.slice(start, end);
+                         if (paginatedData.length === 0) {
+                             tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : 10}">No items found.</td></tr>`);
+                         } else {
+                             paginatedData.forEach(item => {
+                                 const row = `
+                                     <tr>
+                                         ${item.map(val => `<td>${val || ''}</td>`).join('')}
+                                     </tr>
+                                 `;
+                                 tbody.append(row);
+                             });
+                         }
+                         renderPagination(tableId, data, page);
+                     }
 
-                    function renderPagination(tableId, data, page) {
-                        console.log(`Rendering pagination for ${tableId}, page ${page}`);
-                        const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : 'foundPagination'}`);
-                        pagination.empty();
-                        const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
-                        for (let i = 1; i <= pageCount; i++) {
-                            const button = `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
-                            pagination.append(button);
-                        }
-                        pagination.find('button').click(function() {
-                            const newPage = parseInt($(this).data('page'), 10);
-                            const filteredData = filterTable(
-                                tableId,
-                                tableId === 'lostItemsTable' ? lostItemsData : foundItemsData,
-                                `#${tableId === 'lostItemsTable' ? 'lostSearch' : 'foundSearch'}`,
-                                tableId === 'lostItemsTable' ? {
-                                    airport: '#lostAirportFilter',
-                                    itemType: '#lostItemTypeFilter'
-                                } : {
-                                    airport: '#foundAirportFilter',
-                                    itemType: '#foundItemTypeFilter',
-                                    status: '#foundStatusFilter'
-                                }
-                            );
-                            renderTable(tableId, filteredData, $(`#${tableId} tbody`), newPage);
-                        });
-                    }
+                     function renderPagination(tableId, data, page) {
+                         console.log(`Rendering pagination for ${tableId}, page ${page}`);
+                         const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : 'foundPagination'}`);
+                         pagination.empty();
+                         const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
+                         for (let i = 1; i <= pageCount; i++) {
+                             const button = `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                             pagination.append(button);
+                         }
+                         pagination.find('button').click(function() {
+                             const newPage = parseInt($(this).data('page'), 10);
+                             const filteredData = filterTable(
+                                 tableId,
+                                 tableId === 'lostItemsTable' ? lostItemsData : foundItemsData,
+                                 `#${tableId === 'lostItemsTable' ? 'lostSearch' : 'foundSearch'}`,
+                                 tableId === 'lostItemsTable' ? {
+                                     airport: '#lostAirportFilter',
+                                     itemType: '#lostItemTypeFilter'
+                                 } : {
+                                     airport: '#foundAirportFilter',
+                                     itemType: '#foundItemTypeFilter',
+                                     status: '#foundStatusFilter'
+                                 }
+                             );
+                             renderTable(tableId, filteredData, $(`#${tableId} tbody`), newPage);
+                         });
+                     }
 
-                    function filterTable(tableId, data, searchInput, filters) {
-                        console.log(`Filtering ${tableId}, search: ${$(searchInput).val()}`);
-                        let filteredData = [...data];
-                        const searchTerm = $(searchInput).val().toLowerCase();
-                        if (searchTerm) {
-                            filteredData = filteredData.filter(row =>
-                                row.some(cell => cell && cell.toLowerCase().includes(searchTerm))
-                            );
-                        }
-                        Object.keys(filters).forEach(key => {
-                            const value = $(filters[key]).val();
-                            if (value) {
-                                const index = {
-                                    lost: { airport: 4, itemType: 5 },
-                                    found: { airport: 2, itemType: 1, status: 6 }
-                                }[tableId.split('ItemsTable')[0].toLowerCase()];
-                                filteredData = filteredData.filter(row => row[index[key]] === value);
-                            }
-                        });
-                        return filteredData;
-                    }
+                     function filterTable(tableId, data, searchInput, filters) {
+                         console.log(`Filtering ${tableId}, search: ${$(searchInput).val()}`);
+                         let filteredData = [...data];
+                         const searchTerm = $(searchInput).val().toLowerCase();
+                         if (searchTerm) {
+                             filteredData = filteredData.filter(row =>
+                                 row.some(cell => cell && cell.toLowerCase().includes(searchTerm))
+                             );
+                         }
+                         Object.keys(filters).forEach(key => {
+                             const value = $(filters[key]).val();
+                             if (value) {
+                                 const index = {
+                                     lost: { airport: 4, itemType: 5 },
+                                     found: { airport: 3, itemType: 2, status: 7 }
+                                 }[tableId.split('ItemsTable')[0].toLowerCase()];
+                                 filteredData = filteredData.filter(row => row[index[key]] === value);
+                             }
+                         });
+                         return filteredData;
+                     }
 
-                    async function loadDashboard() {
-                        console.log('Loading dashboard');
-                        try {
-                            const accessToken = localStorage.getItem('staffAccessToken');
-                            const expiresAt = parseInt(localStorage.getItem('staffTokenExpiresAt') || '0', 10);
-                            console.log('Checking token:', {
-                                token: accessToken ? accessToken.substring(0, 20) + '...' : 'Not set',
-                                expiresAt: expiresAt ? new Date(expiresAt).toISOString() : 'Not set',
-                                isExpired: expiresAt <= Date.now()
-                            });
-                            if (!accessToken || expiresAt <= Date.now()) {
-                                console.log('No valid token or token expired, redirecting to login_staff.html');
-                                localStorage.removeItem('staffAccessToken');
-                                localStorage.removeItem('staffTokenExpiresAt');
-                                $('#dataError').text('Session expired. Please sign in again.').css('display', 'block');
-                                setTimeout(() => window.location.assign('login_staff.html'), 2000);
-                                return;
-                            }
+                     async function loadDashboard() {
+                         console.log('Loading dashboard');
+                         try {
+                             const accessToken = localStorage.getItem('staffAccessToken');
+                             const expiresAt = parseInt(localStorage.getItem('staffTokenExpiresAt') || '0', 10);
+                             console.log('Checking token:', {
+                                 token: accessToken ? accessToken.substring(0, 20) + '...' : 'Not set',
+                                 expiresAt: expiresAt ? new Date(expiresAt).toISOString() : 'Not set',
+                                 isExpired: expiresAt <= Date.now()
+                             });
+                             if (!accessToken || expiresAt <= Date.now()) {
+                                 console.log('No valid token or token expired, redirecting to login_staff.html');
+                                 localStorage.removeItem('staffAccessToken');
+                                 localStorage.removeItem('staffTokenExpiresAt');
+                                 $('#dataError').text('Session expired. Please sign in again.').css('display', 'block');
+                                 setTimeout(() => window.location.assign('login_staff.html'), 2000);
+                                 return;
+                             }
 
-                            console.log('Initializing gapi client');
-                            await initGapiClient();
-                            console.log('Setting access token');
-                            gapi.client.setToken({ access_token: accessToken });
+                             console.log('Initializing gapi client');
+                             await initGapiClient();
+                             console.log('Setting access token');
+                             gapi.client.setToken({ access_token: accessToken });
 
-                            console.log('Fetching lost items');
-                            const lostResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                spreadsheetId: LOST_SPREADSHEET_ID,
-                                range: 'LostItems!A2:I'
-                            });
-                            lostItemsData = lostResponse.result.values || [];
-                            console.log('Lost items fetched:', lostItemsData.length);
+                             console.log('Fetching lost items');
+                             const lostResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: LOST_SPREADSHEET_ID,
+                                 range: 'LostItems!A2:I'
+                             });
+                             lostItemsData = lostResponse.result.values || [];
+                             console.log('Lost items fetched:', lostItemsData.length, 'Sample:', lostItemsData[0] || 'Empty');
 
-                            console.log('Fetching found items');
-                            const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                spreadsheetId: FOUND_SPREADSHEET_ID,
-                                range: 'FoundItems!A2:I'
-                            });
-                            foundItemsData = foundResponse.result.values || [];
-                            console.log('Found items fetched:', foundItemsData.length);
+                             console.log('Fetching found items');
+                             const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'FoundItems!A2:J'
+                             });
+                             foundItemsData = foundResponse.result.values || [];
+                             console.log('Found items fetched:', foundItemsData.length, 'Sample:', foundItemsData[0] || 'Empty');
 
-                            $('#dashboard').show();
-                            $('#dataError').hide();
+                             $('#dashboard').show();
+                             $('#dataError').hide();
 
-                            const lostTbody = $('#lostItemsTable tbody');
-                            renderTable('lostItemsTable', lostItemsData, lostTbody, 1);
+                             const lostTbody = $('#lostItemsTable tbody');
+                             renderTable('lostItemsTable', lostItemsData, lostTbody, 1);
 
-                            const foundTbody = $('#foundItemsTable tbody');
-                            renderTable('foundItemsTable', foundItemsData, foundTbody, 1);
+                             const foundTbody = $('#foundItemsTable tbody');
+                             renderTable('foundItemsTable', foundItemsData, foundTbody, 1);
 
-                            $('#lostItemsTable th').click(function() {
-                                const column = $(this).data('sort');
-                                sortTable('lostItemsTable', column, lostItemsData, lostTbody, lostSortDirection, 1);
-                            });
+                             $('#lostItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('lostItemsTable', column, lostItemsData, lostTbody, lostSortDirection, 1);
+                             });
 
-                            $('#foundItemsTable th').click(function() {
-                                const column = $(this).data('sort');
-                                sortTable('foundItemsTable', column, foundItemsData, foundTbody, foundSortDirection, 1);
-                            });
+                             $('#foundItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('foundItemsTable', column, foundItemsData, foundTbody, foundSortDirection, 1);
+                             });
 
-                            $('#lostSearch, #lostAirportFilter, #lostItemTypeFilter').on('input change', () => {
-                                const filteredData = filterTable('lostItemsTable', lostItemsData, '#lostSearch', {
-                                    airport: '#lostAirportFilter',
-                                    itemType: '#lostItemTypeFilter'
-                                });
-                                renderTable('lostItemsTable', filteredData, lostTbody, 1);
-                            });
+                             $('#lostSearch, #lostAirportFilter, #lostItemTypeFilter').on('input change', () => {
+                                 const filteredData = filterTable('lostItemsTable', lostItemsData, '#lostSearch', {
+                                     airport: '#lostAirportFilter',
+                                     itemType: '#lostItemTypeFilter'
+                                 });
+                                 renderTable('lostItemsTable', filteredData, lostTbody, 1);
+                             });
 
-                            $('#foundSearch, #foundAirportFilter, #foundItemTypeFilter, #foundStatusFilter').on('input change', () => {
-                                const filteredData = filterTable('foundItemsTable', foundItemsData, '#foundSearch', {
-                                    airport: '#foundAirportFilter',
-                                    itemType: '#foundItemTypeFilter',
-                                    status: '#foundStatusFilter'
-                                });
-                                renderTable('foundItemsTable', filteredData, foundTbody, 1);
-                            });
-                        } catch (error) {
-                            console.error('Error loading dashboard:', error.message, error);
-                            let errorMessage = 'Failed to load items: ' + error.message;
-                            if (error.status === 401 || error.status === 403) {
-                                errorMessage = 'Invalid or unauthorized token. Please sign in again.';
-                            } else if (error.status === 404) {
-                                errorMessage = 'Spreadsheet not found. Check Spreadsheet IDs.';
-                            }
-                            $('#dataError').text(errorMessage).css('display', 'block');
-                            console.log('Clearing token and redirecting to login_staff.html');
-                            localStorage.removeItem('staffAccessToken');
-                            localStorage.removeItem('staffTokenExpiresAt');
-                            setTimeout(() => window.location.assign('login_staff.html'), 2000);
-                        }
-                    }
+                             $('#foundSearch, #foundAirportFilter, #foundItemTypeFilter, #foundStatusFilter').on('input change', () => {
+                                 const filteredData = filterTable('foundItemsTable', foundItemsData, '#foundSearch', {
+                                     airport: '#foundAirportFilter',
+                                     itemType: '#foundItemTypeFilter',
+                                     status: '#foundStatusFilter'
+                                 });
+                                 renderTable('foundItemsTable', filteredData, foundTbody, 1);
+                             });
+                         } catch (error) {
+                             console.error('Error loading dashboard:', error.message, error);
+                             let errorMessage = 'Failed to load items: ' + error.message;
+                             if (error.status === 401 || error.status === 403) {
+                                 errorMessage = 'Invalid or unauthorized token. Please sign in again.';
+                             } else if (error.status === 404) {
+                                 errorMessage = 'Spreadsheet not found. Check Spreadsheet IDs.';
+                             }
+                             $('#dataError').text(errorMessage).css('display', 'block');
+                             console.log('Clearing token and redirecting to login_staff.html');
+                             localStorage.removeItem('staffAccessToken');
+                             localStorage.removeItem('staffTokenExpiresAt');
+                             setTimeout(() => window.location.assign('login_staff.html'), 2000);
+                         }
+                     }
 
-                    function logout() {
-                        console.log('Logging out');
-                        localStorage.removeItem('staffAccessToken');
-                        localStorage.removeItem('staffTokenExpiresAt');
-                        window.location.assign('login_staff.html');
-                    }
+                     function logout() {
+                         console.log('Logging out');
+                         localStorage.removeItem('staffAccessToken');
+                         localStorage.removeItem('staffTokenExpiresAt');
+                         window.location.assign('login_staff.html');
+                     }
 
-                    document.addEventListener('DOMContentLoaded', () => {
-                        console.log('DOM loaded, initializing dashboard');
-                        $('#dashboard').hide();
-                        $('#dataError').hide();
-                        loadDashboard();
-                    });
-                } catch (error) {
-                    console.error('Script initialization error:', error.message);
-                    $('#dataError').text('Initialization failed: ' + error.message).css('display', 'block');
-                }
-            </script>
-        </body>
-    </html>
+                     document.addEventListener('DOMContentLoaded', () => {
+                         console.log('DOM loaded, initializing dashboard');
+                         $('#dashboard').hide();
+                         $('#dataError').hide();
+                         loadDashboard();
+                     });
+                 } catch (error) {
+                     console.error('Script initialization error:', error.message);
+                     $('#dataError').text('Initialization failed: ' + error.message).css('display', 'block');
+                 }
+             </script>
+         </body>
+     </html>

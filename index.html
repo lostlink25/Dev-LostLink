@@ -448,26 +448,26 @@
                  const trackingId = generateTrackingId();
                  console.log('Submitting found item to Sheets API');
                  const response = await gapi.client.sheets.spreadsheets.values.append({
-                     spreadsheetId: SPREADSHEET_ID,
-                     range: 'FoundItems!A:I',
-                     valueInputOption: 'USER_ENTERED',
-                     resource: {
-                         values: [
-                             [
-                                 new Date().toISOString(),
-                                 trackingId,
-                                 formData.itemType,
-                                 formData.airport,
-                                 formData.description,
-                                 formData.foundDate,
-                                 formData.foundLocation,
-                                 'Available',
-                                 formData.reportedBy,
-                                 formData.reporterType
-                             ]
-                         ]
-                     }
-                 });
+    spreadsheetId: SPREADSHEET_ID,
+    range: 'FoundItems!A:J',
+    valueInputOption: 'USER_ENTERED',
+    resource: {
+        values: [
+            [
+                new Date().toISOString(),
+                trackingId,
+                formData.itemType,
+                formData.airport,
+                formData.description,
+                formData.foundDate,
+                formData.foundLocation,
+                'Available',
+                formData.reportedBy,
+                formData.reporterType
+            ]
+        ]
+    }
+});
 
                  console.log('Sheets API response status:', response.status);
                  if (response.status !== 200) {
