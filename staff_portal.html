@@ -401,7 +401,7 @@
                                      if (existingMatches.some(match => match[0] === lostTrackingId && match[1] === foundTrackingID)) return;
                                      const descriptionSimilarity = computeSimilarity(lostDescription, foundDescription);
                                      const matchConfidence = 80 + (descriptionSimilarity / 5);
-                                     if (matchConfidence >= 80) { // High-confidence threshold
+                                     if (matchConfidence >= 80) {
                                          matches.push([
                                              lostTrackingId,
                                              foundTrackingID,
@@ -447,23 +447,34 @@
                              });
                              const foundRows = foundResponse.result.values || [];
                              let foundRowIndex = -1;
+                             let foundItemStatus = '';
                              for (let i = 1; i < foundRows.length; i++) {
-                                 if (foundRows[i][1] === foundTrackingID && foundRows[i][7] === 'Available') {
+                                 if (foundRows[i][1] === foundTrackingID) {
                                      foundRowIndex = i + 1;
+                                     foundItemStatus = foundRows[i][7];
                                      break;
                                  }
                              }
                              if (foundRowIndex === -1) {
-                                 throw new Error('Found item not found or already claimed.');
+                                 console.error('Found item not found:', foundTrackingID);
+                                 throw new Error('Found item not found in FoundItems sheet.');
+                             }
+                             if (foundItemStatus !== 'Available') {
+                                 console.error('Found item status is not Available:', foundItemStatus);
+                                 throw new Error(`Found item is not available for claiming (current status: ${foundItemStatus}).`);
                              }
 
                              console.log(`Updating FoundItems Status to Claimed at row ${foundRowIndex}`);
-                             await gapi.client.sheets.spreadsheets.values.update({
+                             const foundUpdateResponse = await gapi.client.sheets.spreadsheets.values.update({
                                  spreadsheetId: FOUND_SPREADSHEET_ID,
                                  range: `FoundItems!H${foundRowIndex}`,
                                  valueInputOption: 'USER_ENTERED',
                                  resource: { values: [['Claimed']] }
                              });
+                             if (foundUpdateResponse.status !== 200) {
+                                 console.error('Failed to update FoundItems:', foundUpdateResponse.status);
+                                 throw new Error(`Failed to update FoundItems status: HTTP ${foundUpdateResponse.status}`);
+                             }
 
                              const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
                                  spreadsheetId: FOUND_SPREADSHEET_ID,
@@ -471,18 +482,25 @@
                              });
                              const matchRows = matchResponse.result.values || [];
                              let matchRowIndex = -1;
+                             let matchStatus = '';
                              for (let i = 1; i < matchRows.length; i++) {
-                                 if (matchRows[i][0] === lostTrackingId && matchRows[i][1] === foundTrackingID && matchRows[i][6] === 'Pending') {
+                                 if (matchRows[i][0] === lostTrackingId && matchRows[i][1] === foundTrackingID) {
                                      matchRowIndex = i + 1;
+                                     matchStatus = matchRows[i][6];
                                      break;
                                  }
                              }
                              if (matchRowIndex === -1) {
-                                 throw new Error('Pending match not found in ClaimItems.');
+                                 console.error('Match not found:', { lostTrackingId, foundTrackingID });
+                                 throw new Error('Match not found in ClaimItems sheet.');
+                             }
+                             if (matchStatus !== 'Pending') {
+                                 console.error('Match is not Pending:', matchStatus);
+                                 throw new Error(`Match is not in Pending status (current status: ${matchStatus}).`);
                              }
 
                              console.log(`Updating ClaimItems to Confirmed at row ${matchRowIndex}`);
-                             await gapi.client.sheets.spreadsheets.values.update({
+                             const matchUpdateResponse = await gapi.client.sheets.spreadsheets.values.update({
                                  spreadsheetId: FOUND_SPREADSHEET_ID,
                                  range: `ClaimItems!G${matchRowIndex}:I${matchRowIndex}`,
                                  valueInputOption: 'USER_ENTERED',
@@ -494,12 +512,16 @@
                                      ]]
                                  }
                              });
+                             if (matchUpdateResponse.status !== 200) {
+                                 console.error('Failed to update ClaimItems:', matchUpdateResponse.status);
+                                 throw new Error(`Failed to update ClaimItems status: HTTP ${matchUpdateResponse.status}`);
+                             }
 
                              console.log('Match confirmed successfully');
                              return true;
                          } catch (error) {
-                             console.error('Error confirming match:', error);
-                             return false;
+                             console.error('Error confirming match:', error.message, error);
+                             return error.message;
                          }
                      }
 
@@ -630,12 +652,12 @@
                              alert('Claimant details must be at least 2 characters.');
                              return;
                          }
-                         const success = await confirmMatch(lostTrackingId, foundTrackingID, claimantDetails);
-                         if (success) {
+                         const result = await confirmMatch(lostTrackingId, foundTrackingID, claimantDetails);
+                         if (result === true) {
                              alert('Match confirmed successfully!');
                              loadDashboard();
                          } else {
-                             alert('Failed to confirm match. Please try again or check the TrackingID.');
+                             alert(`Failed to confirm match: ${result}`);
                          }
                      }
 
