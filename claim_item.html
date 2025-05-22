@@ -1,122 +1,400 @@
 <!DOCTYPE HTML>
-<html>
-	<head>
-		<title>LostLink - Claim Item</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<div id="page-wrapper">
+     <html>
+         <head>
+             <title>LostLink - Claim Item</title>
+             <meta charset="utf-8" />
+             <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+             <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
+             <link rel="stylesheet" href="assets/css/main.css" />
+             <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+             <style>
+                 .form-container {
+                     padding: 20px;
+                 }
+                 .form-container label {
+                     display: block;
+                     margin: 10px 0 5px;
+                     font-weight: bold;
+                     color: #333;
+                 }
+                 .form-container input, .form-container textarea {
+                     width: 100%;
+                     padding: 8px;
+                     margin-bottom: 15px;
+                     border: 1px solid #ccc;
+                     border-radius: 4px;
+                     box-sizing: border-box;
+                     font-size: 1em;
+                 }
+                 .form-container button {
+                     display: inline-block;
+                     padding: 10px 20px;
+                     background-color: #007bff;
+                     color: white;
+                     border: none;
+                     border-radius: 4px;
+                     cursor: pointer;
+                     text-align: center;
+                     text-decoration: none;
+                 }
+                 .form-container button:hover {
+                     background-color: #0056b3;
+                 }
+                 .error {
+                     color: red;
+                     display: none;
+                     font-size: 0.9em;
+                 }
+             </style>
+         </head>
+         <body class="is-preload">
+             <div id="page-wrapper">
+                 <!-- Header -->
+                 <div id="header">
+                     <!-- Nav -->
+                     <nav id="nav">
+                         <ul>
+                             <li><a href="index.html">Home</a></li>
+                             <li><a href="About_Us.html">About Us</a></li>
+                             <li><a href="report_Lost_Items.html">Report Lost Items</a></li>
+                             <li><a href="track_your_item.html">Track Items</a></li>
+                             <li><a href="claim_item.html">Claim Items</a></li>
+                             <li><a href="contact_support.html">Contact Us</a></li>
+                         </ul>
+                     </nav>
+                 </div>
 
-			<!-- Header -->
-				<div id="header">
-					<!-- Nav -->
-					<nav id="nav">
-						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li><a href="About_Us.html">About Us</a></li>
-							<li><a href="report_Lost_Items.html">Report Lost Items</a></li>
-							<li><a href="track_your_item.html">Track Items</a></li>
-							<li><a href="claim_item.html">Claim Items</a></li>
-                            <li><a href="contact_support.html">Contact Us</a></li>
-						</ul>
-					</nav>
-				</div>
+                 <!-- Main -->
+                 <div class="wrapper style2">
+                     <article id="main" class="container special">
+                         <header>
+                             <h2>Claim Your Item</h2>
+                             <p>Submit a claim to recover an item you believe is yours.</p>
+                         </header>
+                         <section>
+                             <h3>Claim Process</h3>
+                             <p>
+                                 To claim a found item, provide the Item ID from the <a href="view_found_items.html">View Found Items</a> page, your contact details, and a detailed description of the item, including any unique identifiers (e.g., engravings, stickers, or contents). Our team will verify your claim and contact you with next steps, which may include visiting the airport’s Lost and Found office.
+                             </p>
+                             <div class="form-container">
+                                 <form id="claimItemForm">
+                                     <div class="row gtr-50">
+                                         <div class="col-6 col-12-mobile">
+                                             <label for="item_id">Item ID</label>
+                                             <input type="text" name="item_id" id="item_id" placeholder="Enter Item ID (e.g., LOST-0001-XYZ)" required />
+                                             <span class="error" id="itemIdError">Please enter a valid Item ID</span>
+                                         </div>
+                                         <div class="col-6 col-12-mobile">
+                                             <label for="name">Full Name</label>
+                                             <input type="text" name="name" id="name" placeholder="Your Full Name" required />
+                                             <span class="error" id="nameError">Please enter a valid name</span>
+                                         </div>
+                                         <div class="col-6 col-12-mobile">
+                                             <label for="email">Email</label>
+                                             <input type="email" name="email" id="email" placeholder="Your Email Address" required />
+                                             <span class="error" id="emailError">Please enter a valid email</span>
+                                         </div>
+                                         <div class="col-6 col-12-mobile">
+                                             <label for="phone">Phone Number</label>
+                                             <input type="tel" name="phone" id="phone" placeholder="Your Phone Number" required />
+                                             <span class="error" id="phoneError">Please enter a valid phone number</span>
+                                         </div>
+                                         <div class="col-12">
+                                             <label for="description">Item Description</label>
+                                             <textarea name="description" id="description" placeholder="Describe the item, including any unique features or contents" rows="6" required></textarea>
+                                             <span class="error" id="descriptionError">Please provide a description</span>
+                                         </div>
+                                         <div class="col-12">
+                                             <button type="submit">Submit Claim</button>
+                                         </div>
+                                     </div>
+                                 </form>
+                             </div>
+                         </section>
+                         <section>
+                             <h3>Important Notes</h3>
+                             <ul>
+                                 <li>Ensure the Item ID matches the item you’re claiming.</li>
+                                 <li>Provide as much detail as possible to expedite verification.</li>
+                                 <li>You may be required to present identification or proof of ownership.</li>
+                                 <li>Claims are processed within 3–5 business days.</li>
+                             </ul>
+                             <p>
+                                 For assistance, please <a href="contact_support.html">contact our support team</a>.
+                             </p>
+                         </section>
+                     </article>
+                 </div>
 
-			<!-- Main -->
-				<div class="wrapper style2">
-					<article id="main" class="container special">
-						<header>
-							<h2>Claim Your Item</h2>
-							<p>Submit a claim to recover an item you believe is yours.</p>
-						</header>
-						<section>
-							<h3>Claim Process</h3>
-							<p>
-								To claim a found item, provide the Item ID from the <a href="view_found_items.html">View Found Items</a> page, your contact details, and a detailed description of the item, including any unique identifiers (e.g., engravings, stickers, or contents). Our team will verify your claim and contact you with next steps, which may include visiting the airport’s Lost and Found office.
-							</p>
-							<form action="#" method="post">
-								<div class="row gtr-50">
-									<div class="col-6 col-12-mobile">
-										<label for="item_id">Item ID</label>
-										<input type="text" name="item_id" id="item_id" placeholder="Enter Item ID (e.g., LL-F123)" required />
-									</div>
-									<div class="col-6 col-12-mobile">
-										<label for="name">Full Name</label>
-										<input type="text" name="name" id="name" placeholder="Your Full Name" required />
-									</div>
-									<div class="col-6 col-12-mobile">
-										<label for="email">Email</label>
-										<input type="email" name="email" id="email" placeholder="Your Email Address" required />
-									</div>
-									<div class="col-6 col-12-mobile">
-										<label for="phone">Phone Number</label>
-										<input type="tel" name="phone" id="phone" placeholder="Your Phone Number" required />
-									</div>
-									<div class="col-12">
-										<label for="description">Item Description</label>
-										<textarea name="description" id="description" placeholder="Describe the item, including any unique features or contents" rows="6" required></textarea>
-									</div>
-									<div class="col-12">
-										<input type="submit" value="Submit Claim" class="button" />
-									</div>
-								</div>
-							</form>
-						</section>
-						<section>
-							<h3>Important Notes</h3>
-							<ul>
-								<li>Ensure the Item ID matches the item you’re claiming.</li>
-								<li>Provide as much detail as possible to expedite verification.</li>
-								<li>You may be required to present identification or proof of ownership.</li>
-								<li>Claims are processed within 3–5 business days.</li>
-							</ul>
-							<p>
-								For assistance, please <a href="contact_support.html">contact our support team</a>.
-							</p>
-						</section>
-					</article>
-				</div>
+                 <!-- Footer -->
+                 <div id="footer">
+                     <div class="container">
+                         <div class="row">
+                             <div class="col-12">
+                                 <!-- Contact -->
+                                 <section class="contact">
+                                     <header>
+                                         <h3>Need Help with a Lost Item?</h3>
+                                     </header>
+                                     <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+                                     <ul class="icons">
+                                         <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                                         <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                         <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                         <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                         <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                         <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                     </ul>
+                                 </section>
 
-			<!-- Footer -->
-		<div id="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<!-- Contact -->
-							<section class="contact">
-								<header>
-									<h3>Need Help with a Lost Item?</h3>
-								</header>
-								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-								<ul class="icons">
-									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-								</ul>
-							</section>
+                                 <!-- Copyright -->
+                                 <div class="copyright">
+                                     <ul class="menu">
+                                         <li>© LostLink. All rights reserved.</li>
+                                         <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                     </ul>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
 
-						<!-- Copyright -->
-							<div class="copyright">
-								<ul class="menu">
-									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-								</ul>
-							</div>
+                 <!-- Scripts -->
+                 <script src="https://accounts.google.com/gsi/client" async defer></script>
+                 <script src="https://apis.google.com/js/api.js"></script>
+                 <script src="assets/js/jquery.min.js"></script>
+                 <script src="assets/js/jquery.dropotron.min.js"></script>
+                 <script src="assets/js/jquery.scrolly.min.js"></script>
+                 <script src="assets/js/jquery.scrollex.min.js"></script>
+                 <script src="assets/js/browser.min.js"></script>
+                 <script src="assets/js/breakpoints.min.js"></script>
+                 <script src="assets/js/util.js"></script>
+                 <script src="assets/js/main.js"></script>
+                 <script>
+                     console.log('Script loaded at:', new Date().toISOString());
+                     try {
+                         console.log('Checking for jQuery');
+                         if (typeof jQuery === 'undefined') {
+                             console.error('jQuery not loaded');
+                             alert('Error: jQuery not loaded. Please contact support.');
+                             throw new Error('jQuery not loaded');
+                         }
+                         console.log('jQuery loaded:', jQuery.fn.jquery);
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+                         const form = document.getElementById('claimItemForm');
+                         if (!form) {
+                             console.error('Form with ID "claimItemForm" not found');
+                             alert('Form not found. Please contact support.');
+                             throw new Error('Form not found');
+                         }
+                         console.log('Form found');
 
-	</body>
-</html>
+                         // Client-side claim ID counter (persist in localStorage)
+                         let counter = parseInt(localStorage.getItem('claimItemCounter') || '0', 10);
+                         let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toISOString().split('T')[0];
+
+                         // Google API configuration
+                     const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+                         // Initialize gapi.client for Sheets API
+                         function initGapiClient() {
+                             return new Promise((resolve, reject) => {
+                                 gapi.load('client', () => {
+                                     gapi.client.init({
+                                         discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                                     }).then(() => {
+                                         console.log('gapi client initialized');
+                                         resolve();
+                                     }).catch(error => {
+                                         console.error('gapi client initialization error:', error);
+                                         reject(error);
+                                     });
+                                 });
+                             });
+                         }
+
+                         // Initialize GIS OAuth
+                         function getAccessToken() {
+                             return new Promise((resolve, reject) => {
+                                 const client = google.accounts.oauth2.initTokenClient({
+                                     client_id: CLIENT_ID,
+                                     scope: SCOPES,
+                                     prompt: 'select_account',
+                                     callback: (response) => {
+                                         if (response.error) {
+                                             console.error('OAuth error:', response.error);
+                                             if (response.error === 'access_denied') {
+                                                 reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
+                                             } else {
+                                                 reject(new Error(response.error));
+                                             }
+                                         } else {
+                                             console.log('Access token received');
+                                             resolve(response.access_token);
+                                         }
+                                     }
+                                 });
+                                 client.requestAccessToken();
+                             });
+                         }
+
+                         $(form).on('submit', async function (e) {
+                             e.preventDefault();
+                             console.log('Form submission started at:', new Date().toISOString());
+                             alert('Submitting claim...');
+
+                             try {
+                                 // Reset error messages
+                                 console.log('Resetting error messages');
+                                 $('.error').css('display', 'none');
+
+                                 // Get form values
+                                 console.log('Retrieving form values');
+                                 const itemId = $('#item_id').val()?.trim();
+                                 const name = $('#name').val()?.trim();
+                                 const email = $('#email').val()?.trim();
+                                 const phone = $('#phone').val()?.trim();
+                                 const description = $('#description').val()?.trim();
+
+                                 // Check for missing or empty values
+                                 console.log('Checking for missing or empty values');
+                                 if (!itemId || !name || !email || !phone || !description) {
+                                     console.error('Missing or empty form values:', {
+                                         itemId: !!itemId, name: !!name, email: !!email,
+                                         phone: !!phone, description: !!description
+                                     });
+                                     alert('Form error: All fields are required.');
+                                     return;
+                                 }
+
+                                 // Client-side validation
+                                 console.log('Validating form inputs');
+                                 let isValid = true;
+                                 const errors = [];
+                                 if (!itemId.match(/^LOST-\d{4}-[A-Z]{3}$/)) {
+                                     $('#itemIdError').css('display', 'block');
+                                     errors.push('Item ID must follow format LOST-XXXX-YYY (e.g., LOST-0001-XYZ)');
+                                     isValid = false;
+                                 }
+                                 if (name.length < 2) {
+                                     $('#nameError').css('display', 'block');
+                                     errors.push('Name must be at least 2 characters');
+                                     isValid = false;
+                                 }
+                                 if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+                                     $('#emailError').css('display', 'block');
+                                     errors.push('Invalid email format');
+                                     isValid = false;
+                                 }
+                                 if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+                                     $('#phoneError').css('display', 'block');
+                                     errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
+                                     isValid = false;
+                                 }
+                                 if (description.length < 5) {
+                                     $('#descriptionError').css('display', 'block');
+                                     errors.push('Description must be at least 5 characters');
+                                     isValid = false;
+                                 }
+
+                                 if (!isValid) {
+                                     console.log('Validation failed:', errors);
+                                     alert('Please correct the following errors:\n- ' + errors.join('\n- '));
+                                     return;
+                                 }
+
+                                 // Sanitize inputs
+                                 console.log('Sanitizing inputs');
+                                 const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
+                                 const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
+
+                                 // Generate Claim ID client-side
+                                 const today = new Date().toISOString().split('T')[0];
+                                 if (lastResetDate !== today) {
+                                     counter = 0;
+                                     lastResetDate = today;
+                                     localStorage.setItem('lastResetDate', today);
+                                 }
+                                 counter += 1;
+                                 localStorage.setItem('claimItemCounter', counter.toString());
+                                 const formattedCounter = ('0000' + counter).slice(-4);
+                                 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                                 let randomStr = '';
+                                 for (let i = 0; i < 3; i++) {
+                                     randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
+                                 }
+                                 const claimId = `CLAIM-${formattedCounter}-${randomStr}`;
+
+                                 const formData = {
+                                     itemId,
+                                     name: sanitizedName,
+                                     email,
+                                     phone,
+                                     description: sanitizedDescription,
+                                     claimStatus: 'Pending',
+                                     claimDate: today,
+                                     claimId
+                                 };
+                                 console.log('Form data with Claim ID:', formData);
+
+                                 // Initialize gapi.client and get OAuth token
+                                 await initGapiClient();
+                                 const accessToken = await getAccessToken();
+                                 gapi.client.setToken({ access_token: accessToken });
+
+                                 // Append to Google Sheet using Sheets API
+                                 console.log('Sending data to Sheets API');
+                                 const response = await gapi.client.sheets.spreadsheets.values.append({
+                                     spreadsheetId: SPREADSHEET_ID,
+                                     range: 'ItemClaims!A:I',
+                                     valueInputOption: 'USER_ENTERED',
+                                     resource: {
+                                         values: [
+                                             [
+                                                 new Date().toISOString(),
+                                                 itemId,
+                                                 sanitizedName,
+                                                 email,
+                                                 phone,
+                                                 sanitizedDescription,
+                                                 'Pending',
+                                                 today,
+                                                 claimId
+                                             ]
+                                         ]
+                                     }
+                                 });
+
+                                 console.log('Sheets API response status:', response.status);
+                                 if (response.status !== 200) {
+                                     throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(response.result)}`);
+                                 }
+
+                                 console.log('Sheets API response:', response.result);
+
+                                 // Redirect to confirmation page (create claim_submission.html separately)
+                                 const queryParams = new URLSearchParams({
+                                     claimId,
+                                     itemId,
+                                     name: sanitizedName,
+                                     email,
+                                     phone,
+                                     description: sanitizedDescription
+                                 }).toString();
+                                 console.log('Redirecting to:', '/claim_submission.html?' + queryParams);
+                                 window.location.assign('/claim_submission.html?' + queryParams);
+                             } catch (error) {
+                                 console.error('Submission error:', error.message || error);
+                                 alert('Submission failed: ' + (error.message || 'Unknown error'));
+                                 return false;
+                             }
+                         });
+                     } catch (error) {
+                         console.error('Script initialization error:', error.message);
+                         alert('Script initialization failed: ' + error.message);
+                     }
+                 </script>
+             </body>
+         </html>
