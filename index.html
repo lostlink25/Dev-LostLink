@@ -168,9 +168,9 @@
                  <section class="carousel">
                      <div class="reel">
                          <article>
-                             <a href="report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+                             <a href="Report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
                              <header>
-                                 <h3><a href="Report_Lost_Items.html">Report Lost Items</a></h3>
+                                 <h3><a href="report_Lost_Items.html">Report Lost Items</a></h3>
                              </header>
                              <p>Submit info about stuff you lost to start finding it.</p>
                          </article>
@@ -228,9 +228,9 @@
                          </header>
                          <div class="row">
                              <article class="col-4 col-12-mobile special">
-                                 <a href="Report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="Report Lost Items" /></a>
+                                 <a href="report_Lost_Items.html" class="image featured"><img src="images/pic01.jpg" alt="Report Lost Items" /></a>
                                  <header>
-                                     <h3><a href="report_Lost_Items.html">Report Lost Items</a></h3>
+                                     <h3><a href="Report_Lost_Items.html">Report Lost Items</a></h3>
                                  </header>
                                  <p>Quickly submit details about your lost item to initiate the recovery process. Provide descriptions, locations, and images to help us find it faster.</p>
                              </article>
@@ -323,6 +323,18 @@
              <script src="assets/js/breakpoints.min.js"></script>
              <script src="assets/js/util.js"></script>
              <script src="assets/js/main.js"></script>
+             <!-- Tawk.to Live Chat -->
+             <script>
+                 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+                 (function(){
+                     var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                     s1.async=true;
+                     s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/default';
+                     s1.charset='UTF-8';
+                     s1.setAttribute('crossorigin','*');
+                     s0.parentNode.insertBefore(s1,s0);
+                 })();
+             </script>
              <script>
                  let chatState = 'initial';
                  let lastUserTopic = '';
@@ -340,10 +352,10 @@
                  const validAirports = ['LAX', 'JFK', 'ORD', 'ATL', 'DFW'];
                  const validReporterTypes = ['staff', 'other'];
 
-                 // Google API configuration
-                 const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-                 const SPREADSHEET_ID = 'YOUR_FOUND_ITEMS_SPREADSHEET_ID';
-                 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+                // Google API configuration
+                     const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+                     const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
                  // Initialize gapi.client for Sheets API
                  function initGapiClient() {
@@ -492,33 +504,7 @@
                  }
 
                  // Handle user message
-                 async function getBotResponse(message) {
-                     lastUserTopic = message.toLowerCase();
-
-                     if (message.includes('report') && message.includes('lost item')) {
-                         return 'To report a lost item, please visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
-                     } else if (message.includes('track') || message.includes('status')) {
-                         return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
-                     } else if (message.includes('claim') || message.includes('found item') && !message.includes('i found')) {
-                         return 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
-                     } else if (message.includes('support') || message.includes('contact')) {
-                         return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
-                     } else if (message.includes('fee') || message.includes('cost')) {
-                         return 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
-                     } else if (message.includes('tips') || message.includes('reporting')) {
-                         return 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
-                     } else if (message.includes('hi') || message.includes('hello')) {
-                         return 'Hey there! I’m here to help with lost items. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below!';
-                     } else if (message.includes('i found') || message.includes('report found')) {
-                         chatState = 'reporterType';
-                         return 'Great! Let’s report a found item. Are you reporting as airport staff or someone else? (Type "staff" or "other")';
-                     } else {
-                         return 'Hmm, I’m not sure about that. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below.';
-                     }
-                 }
-
-                 // Handle chatbot message
-                 function sendMessage() {
+                 async function sendMessage() {
                      const input = document.getElementById('chatbotInput');
                      const messages = document.getElementById('chatbotMessages');
                      const userMessage = input.value.trim();
@@ -540,7 +526,26 @@
 
                          switch (chatState) {
                              case 'initial':
-                                 response = await getBotResponse(userMessage);
+                                 if (userMessage.toLowerCase().includes('i found') || userMessage.toLowerCase().includes('report found')) {
+                                     chatState = 'reporterType';
+                                     response = 'Great! Let’s report a found item. Are you reporting as airport staff or someone else? (Type "staff" or "other")';
+                                 } else if (userMessage.toLowerCase().includes('report') || userMessage.toLowerCase().includes('lost item')) {
+                                     response = 'To report a lost item, please visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
+                                 } else if (userMessage.toLowerCase().includes('track') || userMessage.toLowerCase().includes('status')) {
+                                     response = 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
+                                 } else if (userMessage.toLowerCase().includes('claim') || userMessage.toLowerCase().includes('found item') && !userMessage.toLowerCase().includes('i found')) {
+                                     response = 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
+                                 } else if (userMessage.toLowerCase().includes('support') || userMessage.toLowerCase().includes('contact')) {
+                                     response = 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
+                                 } else if (userMessage.toLowerCase().includes('fee') || userMessage.toLowerCase().includes('cost')) {
+                                     response = 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
+                                 } else if (userMessage.toLowerCase().includes('tips') || userMessage.toLowerCase().includes('reporting')) {
+                                     response = 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
+                                 } else if (userMessage.toLowerCase().includes('hi') || userMessage.toLowerCase().includes('hello')) {
+                                     response = 'Hey there! I’m here to help with lost items. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below!';
+                                 } else {
+                                     response = 'Hmm, I’m not sure about that. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below.';
+                                 }
                                  break;
                              case 'reporterType':
                                  const reporterType = userMessage.toLowerCase();
