@@ -215,554 +215,578 @@
                                          <option value="electronics">Electronics</option>
                                          <option value="clothing">Clothing</option>
                                          <option value="luggage">Luggage</option>
-                                         <th data-sort="reporterType">Reporter Type</th>
-                                         </tr>
+                                         <option value="jewelry">Jewelry</option>
+                                         <option value="other">Other</option>
+                                     </select>
+                                     <select id="foundStatusFilter">
+                                         <option value="">All Statuses</option>
+                                         <option value="Available">Available</option>
+                                         <option value="Claimed">Claimed</option>
+                                         <option value="Returned">Returned</option>
+                                     </select>
+                                 </div>
+                                 <div class="table-container">
+                                     <table id="foundItemsTable">
+                                         <thead>
+                                             <tr>
+                                                 <th data-sort="timestamp">Timestamp</th>
+                                                 <th data-sort="trackingID">Tracking ID</th>
+                                                 <th data-sort="itemType">Item Type</th>
+                                                 <th data-sort="airport">Airport</th>
+                                                 <th data-sort="description">Description</th>
+                                                 <th data-sort="dateFound">Date Found</th>
+                                                 <th data-sort="location">Location</th>
+                                                 <th data-sort="status">Status</th>
+                                                 <th data-sort="reporter">Reporter</th>
+                                                 <th data-sort="reporterType">Reporter Type</th>
+                                             </tr>
                                          </thead>
                                          <tbody></tbody>
-                                         </table>
-                                         </div>
-                                         <div class="pagination" id="foundPagination"></div>
-                                         <h3>Potential Matches</h3>
-                                         <div class="dashboard-controls">
-                                             <input type="text" id="matchSearch" placeholder="Search matches..." />
-                                             <select id="matchStatusFilter">
-                                                 <option value="">All Claim Statuses</option>
-                                                 <option value="Pending">Pending</option>
-                                                 <option value="Confirmed">Confirmed</option>
-                                             </select>
-                                         </div>
-                                         <div class="table-container">
-                                             <table id="matchItemsTable">
-                                                 <thead>
-                                                     <tr>
-                                                         <th data-sort="lostTrackingId">Lost Tracking ID</th>
-                                                         <th data-sort="foundTrackingID">Found Tracking ID</th>
-                                                         <th data-sort="itemType">Item Type</th>
-                                                         <th data-sort="airport">Airport</th>
-                                                         <th data-sort="descriptionSimilarity">Description Similarity</th>
-                                                         <th data-sort="matchConfidence">Match Confidence</th>
-                                                         <th data-sort="claimStatus">Claim Status</th>
-                                                         <th>Action</th>
-                                                     </tr>
-                                                 </thead>
-                                                 <tbody></tbody>
-                                             </table>
-                                         </div>
-                                         <div class="pagination" id="matchPagination"></div>
-                                         <button class="logout-button" onclick="logout()">Logout</button>
-                                         <p class="error" id="dataError"></p>
-                                     </div>
-                                 </section>
-                             </article>
-                         </div>
-
-                         <!-- Footer -->
-                         <div id="footer">
-                             <div class="container">
-                                 <div class="row">
-                                     <section class="contact">
-                                         <header>
-                                             <h3>Have Questions?</h3>
-                                         </header>
-                                         <p>Our support team is here to assist you with tracking or recovering your lost items.</p>
-                                         <ul class="icons">
-                                             <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
-                                             <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                                             <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-                                             <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-                                             <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-                                             <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-                                         </ul>
-                                     </section>
-                                     <div class="copyright">
-                                         <ul class="menu">
-                                             <li>© LostLink. All rights reserved.</li>
-                                             <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-                                         </ul>
-                                     </div>
+                                     </table>
                                  </div>
+                                 <div class="pagination" id="foundPagination"></div>
+                                 <h3>Potential List</h3>
+                                 <div class="dashboard-controls">
+                                     <input type="text" id="potentialSearch" placeholder="Search potential matches..." />
+                                     <select id="potentialStatusFilter">
+                                         <option value="">All Claim Statuses</option>
+                                         <option value="Pending">Pending</option>
+                                         <option value="Confirmed">Confirmed</option>
+                                     </select>
+                                 </div>
+                                 <div class="table-container">
+                                     <table id="potentialListTable">
+                                         <thead>
+                                             <tr>
+                                                 <th data-sort="lostTrackingId">Lost Tracking ID</th>
+                                                 <th data-sort="foundTrackingID">Found Tracking ID</th>
+                                                 <th data-sort="itemType">Item Type</th>
+                                                 <th data-sort="airport">Airport</th>
+                                                 <th data-sort="descriptionSimilarity">Description Similarity</th>
+                                                 <th data-sort="matchConfidence">Match Confidence</th>
+                                                 <th data-sort="claimStatus">Claim Status</th>
+                                                 <th>Action</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody></tbody>
+                                     </table>
+                                 </div>
+                                 <div class="pagination" id="potentialPagination"></div>
+                                 <button class="logout-button" onclick="logout()">Logout</button>
+                                 <p class="error" id="dataError"></p>
+                             </div>
+                         </section>
+                     </article>
+                 </div>
+
+                 <!-- Footer -->
+                 <div id="footer">
+                     <div class="container">
+                         <div class="row">
+                             <section class="contact">
+                                 <header>
+                                     <h3>Have Questions?</h3>
+                                 </header>
+                                 <p>Our support team is here to assist you with tracking or recovering your lost items.</p>
+                                 <ul class="icons">
+                                     <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                     <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                     <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                     <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                     <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                     <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                 </ul>
+                             </section>
+                             <div class="copyright">
+                                 <ul class="menu">
+                                     <li>© LostLink. All rights reserved.</li>
+                                     <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                 </ul>
                              </div>
                          </div>
                      </div>
+                 </div>
+             </div>
 
-                     <!-- Scripts -->
-                     <script src="https://apis.google.com/js/api.js"></script>
-                     <script src="assets/js/jquery.min.js"></script>
-                     <script src="assets/js/jquery.dropotron.min.js"></script>
-                     <script src="assets/js/jquery.scrolly.min.js"></script>
-                     <script src="assets/js/jquery.scrollex.min.js"></script>
-                     <script src="assets/js/browser.min.js"></script>
-                     <script src="assets/js/breakpoints.min.js"></script>
-                     <script src="assets/js/util.js"></script>
-                     <script src="assets/js/main.js"></script>
-                     <script>
-                         console.log('Script loaded at:', new Date().toISOString());
+             <!-- Scripts -->
+             <script src="https://apis.google.com/js/api.js"></script>
+             <script src="assets/js/jquery.min.js"></script>
+             <script src="assets/js/jquery.dropotron.min.js"></script>
+             <script src="assets/js/jquery.scrolly.min.js"></script>
+             <script src="assets/js/jquery.scrollex.min.js"></script>
+             <script src="assets/js/browser.min.js"></script>
+             <script src="assets/js/breakpoints.min.js"></script>
+             <script src="assets/js/util.js"></script>
+             <script src="assets/js/main.js"></script>
+             <script>
+                 console.log('Script loaded at:', new Date().toISOString());
+                 try {
+                     console.log('Checking for jQuery');
+                     if (typeof jQuery === 'undefined') {
+                         console.error('jQuery not loaded');
+                         alert('Error: jQuery not loaded. Please contact support.');
+                         throw new Error('jQuery not loaded');
+                     }
+                     console.log('jQuery loaded:', jQuery.fn.jquery);
+
+                     const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                     let lostItemsData = [];
+                     let foundItemsData = [];
+                     let potentialListData = [];
+                     let lostSortDirection = {};
+                     let foundSortDirection = {};
+                     let potentialSortDirection = {};
+                     const ROWS_PER_PAGE = 10;
+
+                     function initGapiClient() {
+                         console.log('Initializing Google API client');
+                         return new Promise((resolve, reject) => {
+                             gapi.load('client', () => {
+                                 gapi.client.init({
+                                     discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                                 }).then(() => {
+                                     console.log('gapi client initialized');
+                                     resolve();
+                                 }).catch(error => {
+                                     console.error('gapi client initialization error:', error);
+                                     reject(error);
+                                 });
+                             });
+                         });
+                     }
+
+                     function computeLevenshteinDistance(str1, str2) {
+                         const m = str1.length, n = str2.length;
+                         const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+                         for (let i = 0; i <= m; i++) dp[i][0] = i;
+                         for (let j = 0; j <= n; j++) dp[0][j] = j;
+                         for (let i = 1; i <= m; i++) {
+                             for (let j = 1; j <= n; j++) {
+                                 dp[i][j] = Math.min(
+                                     dp[i - 1][j] + 1,
+                                     dp[i][j - 1] + 1,
+                                     dp[i - 1][j - 1] + (str1[i - 1] === str2[j - 1] ? 0 : 1)
+                                 );
+                             }
+                         }
+                         return dp[m][n];
+                     }
+
+                     function computeSimilarity(str1, str2) {
+                         const maxLen = Math.max(str1.length, str2.length);
+                         if (maxLen === 0) return 100;
+                         const distance = computeLevenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
+                         return ((maxLen - distance) / maxLen) * 100;
+                     }
+
+                     function computeMatches(lostItems, foundItems, existingMatches) {
+                         const matches = [];
+                         const confirmedFoundTrackingIDs = existingMatches
+                             .filter(match => match[6] === 'Confirmed')
+                             .map(match => match[1]);
+                         lostItems.forEach(lost => {
+                             const lostTrackingId = lost[8];
+                             const lostItemType = lost[5];
+                             const lostAirport = lost[4];
+                             const lostDescription = lost[6];
+                             foundItems.forEach(found => {
+                                 const foundTrackingID = found[1];
+                                 const foundItemType = found[2];
+                                 const foundAirport = found[3];
+                                 const foundDescription = found[4];
+                                 const foundStatus = found[7];
+                                 if (foundStatus !== 'Available' || confirmedFoundTrackingIDs.includes(foundTrackingID)) return;
+                                 if (lostItemType === foundItemType && lostAirport === foundAirport) {
+                                     if (existingMatches.some(match => match[0] === lostTrackingId && match[1] === foundTrackingID)) return;
+                                     const descriptionSimilarity = computeSimilarity(lostDescription, foundDescription);
+                                     const matchConfidence = 80 + (descriptionSimilarity / 5);
+                                     if (matchConfidence >= 80) { // High-confidence threshold
+                                         matches.push([
+                                             lostTrackingId,
+                                             foundTrackingID,
+                                             lostItemType,
+                                             lostAirport,
+                                             descriptionSimilarity.toFixed(2),
+                                             matchConfidence.toFixed(2),
+                                             'Pending',
+                                             '',
+                                             ''
+                                         ]);
+                                     }
+                                 }
+                             });
+                         });
+                         return matches;
+                     }
+
+                     async function saveMatches(matches) {
+                         if (matches.length === 0) return true;
                          try {
-                             console.log('Checking for jQuery');
-                             if (typeof jQuery === 'undefined') {
-                                 console.error('jQuery not loaded');
-                                 alert('Error: jQuery not loaded. Please contact support.');
-                                 throw new Error('jQuery not loaded');
-                             }
-                             console.log('jQuery loaded:', jQuery.fn.jquery);
+                             console.log('Saving matches to ClaimItems sheet:', matches.length);
+                             const response = await gapi.client.sheets.spreadsheets.values.append({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'ClaimItems!A:I',
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: { values: matches }
+                             });
+                             console.log('Matches saved, API response status:', response.status);
+                             return response.status === 200;
+                         } catch (error) {
+                             console.error('Error saving matches:', error);
+                             return false;
+                         }
+                     }
 
-                             const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                             const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                             let lostItemsData = [];
-                             let foundItemsData = [];
-                             let matchItemsData = [];
-                             let lostSortDirection = {};
-                             let foundSortDirection = {};
-                             let matchSortDirection = {};
-                             const ROWS_PER_PAGE = 10;
-
-                             function initGapiClient() {
-                                 console.log('Initializing Google API client');
-                                 return new Promise((resolve, reject) => {
-                                     gapi.load('client', () => {
-                                         gapi.client.init({
-                                             discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-                                         }).then(() => {
-                                             console.log('gapi client initialized');
-                                             resolve();
-                                         }).catch(error => {
-                                             console.error('gapi client initialization error:', error);
-                                             reject(error);
-                                         });
-                                     });
-                                 });
-                             }
-
-                             function computeLevenshteinDistance(str1, str2) {
-                                 const m = str1.length, n = str2.length;
-                                 const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
-                                 for (let i = 0; i <= m; i++) dp[i][0] = i;
-                                 for (let j = 0; j <= n; j++) dp[0][j] = j;
-                                 for (let i = 1; i <= m; i++) {
-                                     for (let j = 1; j <= n; j++) {
-                                         dp[i][j] = Math.min(
-                                             dp[i - 1][j] + 1,
-                                             dp[i][j - 1] + 1,
-                                             dp[i - 1][j - 1] + (str1[i - 1] === str2[j - 1] ? 0 : 1)
-                                         );
-                                     }
-                                 }
-                                 return dp[m][n];
-                             }
-
-                             function computeSimilarity(str1, str2) {
-                                 const maxLen = Math.max(str1.length, str2.length);
-                                 if (maxLen === 0) return 100;
-                                 const distance = computeLevenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
-                                 return ((maxLen - distance) / maxLen) * 100;
-                             }
-
-                             function computeMatches(lostItems, foundItems, existingMatches) {
-                                 const matches = [];
-                                 const confirmedFoundTrackingIDs = existingMatches
-                                     .filter(match => match[6] === 'Confirmed')
-                                     .map(match => match[1]);
-                                 lostItems.forEach(lost => {
-                                     const lostTrackingId = lost[8];
-                                     const lostItemType = lost[5];
-                                     const lostAirport = lost[4];
-                                     const lostDescription = lost[6];
-                                     foundItems.forEach(found => {
-                                         const foundTrackingID = found[1];
-                                         const foundItemType = found[2];
-                                         const foundAirport = found[3];
-                                         const foundDescription = found[4];
-                                         const foundStatus = found[7];
-                                         if (foundStatus !== 'Available' || confirmedFoundTrackingIDs.includes(foundTrackingID)) return;
-                                         if (lostItemType === foundItemType && lostAirport === foundAirport) {
-                                             if (existingMatches.some(match => match[0] === lostTrackingId && match[1] === foundTrackingID)) return;
-                                             const descriptionSimilarity = computeSimilarity(lostDescription, foundDescription);
-                                             const matchConfidence = 80 + (descriptionSimilarity / 5);
-                                             if (matchConfidence >= 70) {
-                                                 matches.push([
-                                                     lostTrackingId,
-                                                     foundTrackingID,
-                                                     lostItemType,
-                                                     lostAirport,
-                                                     descriptionSimilarity.toFixed(2),
-                                                     matchConfidence.toFixed(2),
-                                                     'Pending',
-                                                     '',
-                                                     ''
-                                                 ]);
-                                             }
-                                         }
-                                     });
-                                 });
-                                 return matches;
-                             }
-
-                             async function saveMatches(matches) {
-                                 if (matches.length === 0) return true;
-                                 try {
-                                     console.log('Saving matches to ClaimItems sheet:', matches.length);
-                                     const response = await gapi.client.sheets.spreadsheets.values.append({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: 'ClaimItems!A:I',
-                                         valueInputOption: 'USER_ENTERED',
-                                         resource: { values: matches }
-                                     });
-                                     console.log('Matches saved, API response status:', response.status);
-                                     return response.status === 200;
-                                 } catch (error) {
-                                     console.error('Error saving matches:', error);
-                                     return false;
+                     async function confirmMatch(lostTrackingId, foundTrackingID, claimantDetails) {
+                         try {
+                             console.log('Confirming match:', { lostTrackingId, foundTrackingID, claimantDetails });
+                             const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'FoundItems!A:J'
+                             });
+                             const foundRows = foundResponse.result.values || [];
+                             let foundRowIndex = -1;
+                             for (let i = 1; i < foundRows.length; i++) {
+                                 if (foundRows[i][1] === foundTrackingID && foundRows[i][7] === 'Available') {
+                                     foundRowIndex = i + 1;
+                                     break;
                                  }
                              }
-
-                             async function confirmMatch(lostTrackingId, foundTrackingID, claimantDetails) {
-                                 try {
-                                     console.log('Confirming match:', { lostTrackingId, foundTrackingID, claimantDetails });
-                                     const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: 'FoundItems!A:J'
-                                     });
-                                     const foundRows = foundResponse.result.values || [];
-                                     let foundRowIndex = -1;
-                                     for (let i = 1; i < foundRows.length; i++) {
-                                         if (foundRows[i][1] === foundTrackingID) {
-                                             foundRowIndex = i + 1;
-                                             break;
-                                         }
-                                     }
-                                     if (foundRowIndex === -1) {
-                                         throw new Error('Found item not found.');
-                                     }
-
-                                     await gapi.client.sheets.spreadsheets.values.update({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: `FoundItems!H${foundRowIndex}`,
-                                         valueInputOption: 'USER_ENTERED',
-                                         resource: { values: [['Claimed']] }
-                                     });
-
-                                     const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: 'ClaimItems!A:I'
-                                     });
-                                     const matchRows = matchResponse.result.values || [];
-                                     let matchRowIndex = -1;
-                                     for (let i = 1; i < matchRows.length; i++) {
-                                         if (matchRows[i][0] === lostTrackingId && matchRows[i][1] === foundTrackingID) {
-                                             matchRowIndex = i + 1;
-                                             break;
-                                         }
-                                     }
-                                     if (matchRowIndex === -1) {
-                                         throw new Error('Match not found in ClaimItems.');
-                                     }
-
-                                     await gapi.client.sheets.spreadsheets.values.update({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: `ClaimItems!G${matchRowIndex}:I${matchRowIndex}`,
-                                         valueInputOption: 'USER_ENTERED',
-                                         resource: {
-                                             values: [[
-                                                 'Confirmed',
-                                                 claimantDetails,
-                                                 new Date().toISOString()
-                                             ]]
-                                         }
-                                     });
-
-                                     console.log('Match confirmed successfully');
-                                     return true;
-                                 } catch (error) {
-                                     console.error('Error confirming match:', error);
-                                     return false;
-                                 }
+                             if (foundRowIndex === -1) {
+                                 throw new Error('Found item not found or already claimed.');
                              }
 
-                             function sortTable(tableId, column, data, tbody, sortDirection, page) {
-                                 console.log(`Sorting ${tableId} by ${column}`);
+                             console.log(`Updating FoundItems Status to Claimed at row ${foundRowIndex}`);
+                             await gapi.client.sheets.spreadsheets.values.update({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: `FoundItems!H${foundRowIndex}`,
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: { values: [['Claimed']] }
+                             });
+
+                             const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'ClaimItems!A:I'
+                             });
+                             const matchRows = matchResponse.result.values || [];
+                             let matchRowIndex = -1;
+                             for (let i = 1; i < matchRows.length; i++) {
+                                 if (matchRows[i][0] === lostTrackingId && matchRows[i][1] === foundTrackingID && matchRows[i][6] === 'Pending') {
+                                     matchRowIndex = i + 1;
+                                     break;
+                                 }
+                             }
+                             if (matchRowIndex === -1) {
+                                 throw new Error('Pending match not found in ClaimItems.');
+                             }
+
+                             console.log(`Updating ClaimItems to Confirmed at row ${matchRowIndex}`);
+                             await gapi.client.sheets.spreadsheets.values.update({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: `ClaimItems!G${matchRowIndex}:I${matchRowIndex}`,
+                                 valueInputOption: 'USER_ENTERED',
+                                 resource: {
+                                     values: [[
+                                         'Confirmed',
+                                         claimantDetails,
+                                         new Date().toISOString()
+                                     ]]
+                                 }
+                             });
+
+                             console.log('Match confirmed successfully');
+                             return true;
+                         } catch (error) {
+                             console.error('Error confirming match:', error);
+                             return false;
+                         }
+                     }
+
+                     function sortTable(tableId, column, data, tbody, sortDirection, page) {
+                         console.log(`Sorting ${tableId} by ${column}`);
+                         const index = {
+                             lost: {
+                                 timestamp: 0, name: 1, email: 2, phone: 3, airport: 4,
+                                 itemType: 5, description: 6, dateLost: 7, trackingId: 8
+                             },
+                             found: {
+                                 timestamp: 0, trackingID: 1, itemType: 2, airport: 3, description: 4,
+                                 dateFound: 5, location: 6, status: 7, reporter: 8, reporterType: 9
+                             },
+                             potential: {
+                                 lostTrackingId: 0, foundTrackingID: 1, itemType: 2, airport: 3,
+                                 descriptionSimilarity: 4, matchConfidence: 5, claimStatus: 6
+                             }
+                         }[tableId.split('ItemsTable')[0].toLowerCase()];
+                         sortDirection[column] = !sortDirection[column];
+                         data.sort((a, b) => {
+                             let valA = a[index[column]] || '';
+                             let valB = b[index[column]] || '';
+                             if (column === 'timestamp' || column === 'dateLost' || column === 'dateFound') {
+                                 valA = new Date(valA).getTime();
+                                 valB = new Date(valB).getTime();
+                             } else if (column === 'descriptionSimilarity' || column === 'matchConfidence') {
+                                 valA = parseFloat(valA) || 0;
+                                 valB = parseFloat(valB) || 0;
+                             }
+                             if (sortDirection[column]) {
+                                 return valA > valB ? 1 : -1;
+                             } else {
+                                 return valA < valB ? 1 : -1;
+                             }
+                         });
+                         renderTable(tableId, data, tbody, page);
+                     }
+
+                     function renderTable(tableId, data, tbody, page) {
+                         console.log(`Rendering ${tableId} with ${data.length} items, page ${page}`);
+                         tbody.empty();
+                         const start = (page - 1) * ROWS_PER_PAGE;
+                         const end = start + ROWS_PER_PAGE;
+                         const paginatedData = data.slice(start, end);
+                         if (paginatedData.length === 0) {
+                             tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : tableId === 'foundItemsTable' ? 10 : 8}">No items found.</td></tr>`);
+                         } else {
+                             paginatedData.forEach(item => {
+                                 const row = tableId === 'potentialListTable' ? `
+                                     <tr>
+                                         <td>${item[0] || ''}</td>
+                                         <td>${item[1] || ''}</td>
+                                         <td>${item[2] || ''}</td>
+                                         <td>${item[3] || ''}</td>
+                                         <td>${item[4] || ''}%</td>
+                                         <td>${item[5] || ''}%</td>
+                                         <td>${item[6] || ''}</td>
+                                         <td>${item[6] === 'Pending' ? `<button class="confirm-button" onclick="confirmMatchWithDetails('${item[0]}', '${item[1]}')">Confirm</button>` : '-'}</td>
+                                     </tr>
+                                 ` : `
+                                     <tr>
+                                         ${item.map(val => `<td>${val || ''}</td>`).join('')}
+                                     </tr>
+                                 `;
+                                 tbody.append(row);
+                             });
+                         }
+                         renderPagination(tableId, data, page);
+                     }
+
+                     function renderPagination(tableId, data, page) {
+                         console.log(`Rendering pagination for ${tableId}, page ${page}`);
+                         const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : tableId === 'foundItemsTable' ? 'foundPagination' : 'potentialPagination'}`);
+                         pagination.empty();
+                         const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
+                         for (let i = 1; i <= pageCount; i++) {
+                             const button = `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                             pagination.append(button);
+                         }
+                         pagination.find('button').click(function() {
+                             const newPage = parseInt($(this).data('page'), 10);
+                             const filteredData = filterTable(
+                                 tableId,
+                                 tableId === 'lostItemsTable' ? lostItemsData : tableId === 'foundItemsTable' ? foundItemsData : potentialListData,
+                                 `#${tableId === 'lostItemsTable' ? 'lostSearch' : tableId === 'foundItemsTable' ? 'foundSearch' : 'potentialSearch'}`,
+                                 tableId === 'lostItemsTable' ? {
+                                     airport: '#lostAirportFilter',
+                                     itemType: '#lostItemTypeFilter'
+                                 } : tableId === 'foundItemsTable' ? {
+                                     airport: '#foundAirportFilter',
+                                     itemType: '#foundItemTypeFilter',
+                                     status: '#foundStatusFilter'
+                                 } : {
+                                     claimStatus: '#potentialStatusFilter'
+                                 }
+                             );
+                             renderTable(tableId, filteredData, $(`#${tableId} tbody`), newPage);
+                         });
+                     }
+
+                     function filterTable(tableId, data, searchInput, filters) {
+                         console.log(`Filtering ${tableId}, search: ${$(searchInput).val()}`);
+                         let filteredData = [...data];
+                         const searchTerm = $(searchInput).val().toLowerCase();
+                         if (searchTerm) {
+                             filteredData = filteredData.filter(row =>
+                                 row.some(cell => cell && cell.toLowerCase().includes(searchTerm))
+                             );
+                         }
+                         Object.keys(filters).forEach(key => {
+                             const value = $(filters[key]).val();
+                             if (value) {
                                  const index = {
-                                     lost: {
-                                         timestamp: 0, name: 1, email: 2, phone: 3, airport: 4,
-                                         itemType: 5, description: 6, dateLost: 7, trackingId: 8
-                                     },
-                                     found: {
-                                         timestamp: 0, trackingID: 1, itemType: 2, airport: 3, description: 4,
-                                         dateFound: 5, location: 6, status: 7, reporter: 8, reporterType: 9
-                                     },
-                                     match: {
-                                         lostTrackingId: 0, foundTrackingID: 1, itemType: 2, airport: 3,
-                                         descriptionSimilarity: 4, matchConfidence: 5, claimStatus: 6
-                                     }
+                                     lost: { airport: 4, itemType: 5 },
+                                     found: { airport: 3, itemType: 2, status: 7 },
+                                     potential: { claimStatus: 6 }
                                  }[tableId.split('ItemsTable')[0].toLowerCase()];
-                                 sortDirection[column] = !sortDirection[column];
-                                 data.sort((a, b) => {
-                                     let valA = a[index[column]] || '';
-                                     let valB = b[index[column]] || '';
-                                     if (column === 'timestamp' || column === 'dateLost' || column === 'dateFound') {
-                                         valA = new Date(valA).getTime();
-                                         valB = new Date(valB).getTime();
-                                     } else if (column === 'descriptionSimilarity' || column === 'matchConfidence') {
-                                         valA = parseFloat(valA) || 0;
-                                         valB = parseFloat(valB) || 0;
-                                     }
-                                     if (sortDirection[column]) {
-                                         return valA > valB ? 1 : -1;
-                                     } else {
-                                         return valA < valB ? 1 : -1;
-                                     }
-                                 });
-                                 renderTable(tableId, data, tbody, page);
+                                 filteredData = filteredData.filter(row => row[index[key]] === value);
                              }
+                         });
+                         return filteredData;
+                     }
 
-                             function renderTable(tableId, data, tbody, page) {
-                                 console.log(`Rendering ${tableId} with ${data.length} items, page ${page}`);
-                                 tbody.empty();
-                                 const start = (page - 1) * ROWS_PER_PAGE;
-                                 const end = start + ROWS_PER_PAGE;
-                                 const paginatedData = data.slice(start, end);
-                                 if (paginatedData.length === 0) {
-                                     tbody.append(`<tr><td colspan="${tableId === 'lostItemsTable' ? 9 : tableId === 'foundItemsTable' ? 10 : 8}">No items found.</td></tr>`);
-                                 } else {
-                                     paginatedData.forEach(item => {
-                                         const row = tableId === 'matchItemsTable' ? `
-                                             <tr>
-                                                 <td>${item[0] || ''}</td>
-                                                 <td>${item[1] || ''}</td>
-                                                 <td>${item[2] || ''}</td>
-                                                 <td>${item[3] || ''}</td>
-                                                 <td>${item[4] || ''}%</td>
-                                                 <td>${item[5] || ''}%</td>
-                                                 <td>${item[6] || ''}</td>
-                                                 <td>${item[6] === 'Pending' ? `<button class="confirm-button" onclick="confirmMatchWithDetails('${item[0]}', '${item[1]}')">Confirm</button>` : '-'}</td>
-                                             </tr>
-                                         ` : `
-                                             <tr>
-                                                 ${item.map(val => `<td>${val || ''}</td>`).join('')}
-                                             </tr>
-                                         `;
-                                         tbody.append(row);
-                                     });
-                                 }
-                                 renderPagination(tableId, data, page);
-                             }
+                     async function confirmMatchWithDetails(lostTrackingId, foundTrackingID) {
+                         const claimantDetails = prompt('Enter claimant details (e.g., name or email):');
+                         if (!claimantDetails || claimantDetails.length < 2) {
+                             alert('Claimant details must be at least 2 characters.');
+                             return;
+                         }
+                         const success = await confirmMatch(lostTrackingId, foundTrackingID, claimantDetails);
+                         if (success) {
+                             alert('Match confirmed successfully!');
+                             loadDashboard();
+                         } else {
+                             alert('Failed to confirm match. Please try again or check the TrackingID.');
+                         }
+                     }
 
-                             function renderPagination(tableId, data, page) {
-                                 console.log(`Rendering pagination for ${tableId}, page ${page}`);
-                                 const pagination = $(`#${tableId === 'lostItemsTable' ? 'lostPagination' : tableId === 'foundItemsTable' ? 'foundPagination' : 'matchPagination'}`);
-                                 pagination.empty();
-                                 const pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
-                                 for (let i = 1; i <= pageCount; i++) {
-                                     const button = `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
-                                     pagination.append(button);
-                                 }
-                                 pagination.find('button').click(function() {
-                                     const newPage = parseInt($(this).data('page'), 10);
-                                     const filteredData = filterTable(
-                                         tableId,
-                                         tableId === 'lostItemsTable' ? lostItemsData : tableId === 'foundItemsTable' ? foundItemsData : matchItemsData,
-                                         `#${tableId === 'lostItemsTable' ? 'lostSearch' : tableId === 'foundItemsTable' ? 'foundSearch' : 'matchSearch'}`,
-                                         tableId === 'lostItemsTable' ? {
-                                             airport: '#lostAirportFilter',
-                                             itemType: '#lostItemTypeFilter'
-                                         } : tableId === 'foundItemsTable' ? {
-                                             airport: '#foundAirportFilter',
-                                             itemType: '#foundItemTypeFilter',
-                                             status: '#foundStatusFilter'
-                                         } : {
-                                             claimStatus: '#matchStatusFilter'
-                                         }
-                                     );
-                                     renderTable(tableId, filteredData, $(`#${tableId} tbody`), newPage);
-                                 });
-                             }
-
-                             function filterTable(tableId, data, searchInput, filters) {
-                                 console.log(`Filtering ${tableId}, search: ${$(searchInput).val()}`);
-                                 let filteredData = [...data];
-                                 const searchTerm = $(searchInput).val().toLowerCase();
-                                 if (searchTerm) {
-                                     filteredData = filteredData.filter(row =>
-                                         row.some(cell => cell && cell.toLowerCase().includes(searchTerm))
-                                     );
-                                 }
-                                 Object.keys(filters).forEach(key => {
-                                     const value = $(filters[key]).val();
-                                     if (value) {
-                                         const index = {
-                                             lost: { airport: 4, itemType: 5 },
-                                             found: { airport: 3, itemType: 2, status: 7 },
-                                             match: { claimStatus: 6 }
-                                         }[tableId.split('ItemsTable')[0].toLowerCase()];
-                                         filteredData = filteredData.filter(row => row[index[key]] === value);
-                                     }
-                                 });
-                                 return filteredData;
-                             }
-
-                             async function confirmMatchWithDetails(lostTrackingId, foundTrackingID) {
-                                 const claimantDetails = prompt('Enter claimant details (e.g., name or email):');
-                                 if (!claimantDetails || claimantDetails.length < 2) {
-                                     alert('Claimant details must be at least 2 characters.');
-                                     return;
-                                 }
-                                 const success = await confirmMatch(lostTrackingId, foundTrackingID, claimantDetails);
-                                 if (success) {
-                                     alert('Match confirmed successfully!');
-                                     loadDashboard();
-                                 } else {
-                                     alert('Failed to confirm match. Please try again.');
-                                 }
-                             }
-
-                             async function loadDashboard() {
-                                 console.log('Loading dashboard');
-                                 try {
-                                     const accessToken = localStorage.getItem('staffAccessToken');
-                                     const expiresAt = parseInt(localStorage.getItem('staffTokenExpiresAt') || '0', 10);
-                                     console.log('Checking token:', {
-                                         token: accessToken ? accessToken.substring(0, 20) + '...' : 'Not set',
-                                         expiresAt: expiresAt ? new Date(expiresAt).toISOString() : 'Not set',
-                                         isExpired: expiresAt <= Date.now()
-                                     });
-                                     if (!accessToken || expiresAt <= Date.now()) {
-                                         console.log('No valid token or token expired, redirecting to login_staff.html');
-                                         localStorage.removeItem('staffAccessToken');
-                                         localStorage.removeItem('staffTokenExpiresAt');
-                                         $('#dataError').text('Session expired. Please sign in again.').css('display', 'block');
-                                         setTimeout(() => window.location.assign('login_staff.html'), 2000);
-                                         return;
-                                     }
-
-                                     console.log('Initializing gapi client');
-                                     await initGapiClient();
-                                     console.log('Setting access token');
-                                     gapi.client.setToken({ access_token: accessToken });
-
-                                     console.log('Fetching lost items');
-                                     const lostResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                         spreadsheetId: LOST_SPREADSHEET_ID,
-                                         range: 'LostItems!A2:I'
-                                     });
-                                     lostItemsData = lostResponse.result.values || [];
-                                     console.log('Lost items fetched:', lostItemsData.length, 'Sample:', lostItemsData[0] || 'Empty');
-
-                                     console.log('Fetching found items');
-                                     const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: 'FoundItems!A2:J'
-                                     });
-                                     foundItemsData = foundResponse.result.values || [];
-                                     console.log('Found items fetched:', foundItemsData.length, 'Sample:', foundItemsData[0] || 'Empty');
-
-                                     console.log('Fetching existing matches');
-                                     const matchResponse = await gapi.client.sheets.spreadsheets.values.get({
-                                         spreadsheetId: FOUND_SPREADSHEET_ID,
-                                         range: 'ClaimItems!A2:I'
-                                     });
-                                     matchItemsData = matchResponse.result.values || [];
-                                     console.log('Existing matches fetched:', matchItemsData.length, 'Sample:', matchItemsData[0] || 'Empty');
-
-                                     console.log('Computing new matches');
-                                     const newMatches = computeMatches(lostItemsData, foundItemsData, matchItemsData);
-                                     console.log('New matches computed:', newMatches.length, 'Sample:', newMatches[0] || 'Empty');
-
-                                     const uniqueNewMatches = newMatches.filter(newMatch => {
-                                         return !matchItemsData.some(existing => 
-                                             existing[0] === newMatch[0] && 
-                                             existing[1] === newMatch[1]
-                                         );
-                                     });
-                                     console.log('Unique new matches:', uniqueNewMatches.length);
-
-                                     if (uniqueNewMatches.length > 0) {
-                                         await saveMatches(uniqueNewMatches);
-                                     }
-
-                                     matchItemsData = [...matchItemsData]; // Use existing matches only, new matches already saved
-
-                                     $('#dashboard').show();
-                                     $('#dataError').hide();
-
-                                     const lostTbody = $('#lostItemsTable tbody');
-                                     renderTable('lostItemsTable', lostItemsData, lostTbody, 1);
-
-                                     const foundTbody = $('#foundItemsTable tbody');
-                                     renderTable('foundItemsTable', foundItemsData, foundTbody, 1);
-
-                                     const matchTbody = $('#matchItemsTable tbody');
-                                     renderTable('matchItemsTable', matchItemsData, matchTbody, 1);
-
-                                     $('#lostItemsTable th').click(function() {
-                                         const column = $(this).data('sort');
-                                         sortTable('lostItemsTable', column, lostItemsData, lostTbody, lostSortDirection, 1);
-                                     });
-
-                                     $('#foundItemsTable th').click(function() {
-                                         const column = $(this).data('sort');
-                                         sortTable('foundItemsTable', column, foundItemsData, foundTbody, foundSortDirection, 1);
-                                     });
-
-                                     $('#matchItemsTable th').click(function() {
-                                         const column = $(this).data('sort');
-                                         sortTable('matchItemsTable', column, matchItemsData, matchTbody, matchSortDirection, 1);
-                                     });
-
-                                     $('#lostSearch, #lostAirportFilter, #lostItemTypeFilter').on('input change', () => {
-                                         const filteredData = filterTable('lostItemsTable', lostItemsData, '#lostSearch', {
-                                             airport: '#lostAirportFilter',
-                                             itemType: '#lostItemTypeFilter'
-                                         });
-                                         renderTable('lostItemsTable', filteredData, lostTbody, 1);
-                                     });
-
-                                     $('#foundSearch, #foundAirportFilter, #foundItemTypeFilter, #foundStatusFilter').on('input change', () => {
-                                         const filteredData = filterTable('foundItemsTable', foundItemsData, '#foundSearch', {
-                                             airport: '#foundAirportFilter',
-                                             itemType: '#foundItemTypeFilter',
-                                             status: '#foundStatusFilter'
-                                         });
-                                         renderTable('foundItemsTable', filteredData, foundTbody, 1);
-                                     });
-
-                                     $('#matchSearch, #matchStatusFilter').on('input change', () => {
-                                         const filteredData = filterTable('matchItemsTable', matchItemsData, '#matchSearch', {
-                                             claimStatus: '#matchStatusFilter'
-                                         });
-                                         renderTable('matchItemsTable', filteredData, matchTbody, 1);
-                                     });
-                                 } catch (error) {
-                                     console.error('Error loading dashboard:', error.message, error);
-                                     let errorMessage = 'Failed to load items: ' + error.message;
-                                     if (error.status === 401 || error.status === 403) {
-                                         errorMessage = 'Invalid or unauthorized token. Please sign in again.';
-                                     } else if (error.status === 404) {
-                                         errorMessage = 'Spreadsheet not found. Check Spreadsheet IDs.';
-                                     }
-                                     $('#dataError').text(errorMessage).css('display', 'block');
-                                     console.log('Clearing token and redirecting to login_staff.html');
-                                     localStorage.removeItem('staffAccessToken');
-                                     localStorage.removeItem('staffTokenExpiresAt');
-                                     setTimeout(() => window.location.assign('login_staff.html'), 2000);
-                                 }
-                             }
-
-                             function logout() {
-                                 console.log('Logging out');
+                     async function loadDashboard() {
+                         console.log('Loading dashboard');
+                         try {
+                             const accessToken = localStorage.getItem('staffAccessToken');
+                             const expiresAt = parseInt(localStorage.getItem('staffTokenExpiresAt') || '0', 10);
+                             console.log('Checking token:', {
+                                 token: accessToken ? accessToken.substring(0, 20) + '...' : 'Not set',
+                                 expiresAt: expiresAt ? new Date(expiresAt).toISOString() : 'Not set',
+                                 isExpired: expiresAt <= Date.now()
+                             });
+                             if (!accessToken || expiresAt <= Date.now()) {
+                                 console.log('No valid token or token expired, redirecting to login_staff.html');
                                  localStorage.removeItem('staffAccessToken');
                                  localStorage.removeItem('staffTokenExpiresAt');
-                                 window.location.assign('login_staff.html');
+                                 $('#dataError').text('Session expired. Please sign in again.').css('display', 'block');
+                                 setTimeout(() => window.location.assign('login_staff.html'), 2000);
+                                 return;
                              }
 
-                             document.addEventListener('DOMContentLoaded', () => {
-                                 console.log('DOM loaded, initializing dashboard');
-                                 $('#dashboard').hide();
-                                 $('#dataError').hide();
-                                 loadDashboard();
+                             console.log('Initializing gapi client');
+                             await initGapiClient();
+                             console.log('Setting access token');
+                             gapi.client.setToken({ access_token: accessToken });
+
+                             console.log('Fetching lost items');
+                             const lostResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: LOST_SPREADSHEET_ID,
+                                 range: 'LostItems!A2:I'
+                             });
+                             lostItemsData = lostResponse.result.values || [];
+                             console.log('Lost items fetched:', lostItemsData.length, 'Sample:', lostItemsData[0] || 'Empty');
+
+                             console.log('Fetching found items');
+                             const foundResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'FoundItems!A2:J'
+                             });
+                             foundItemsData = foundResponse.result.values || [];
+                             console.log('Found items fetched:', foundItemsData.length, 'Sample:', foundItemsData[0] || 'Empty');
+
+                             console.log('Fetching potential list');
+                             const potentialResponse = await gapi.client.sheets.spreadsheets.values.get({
+                                 spreadsheetId: FOUND_SPREADSHEET_ID,
+                                 range: 'ClaimItems!A2:I'
+                             });
+                             potentialListData = potentialResponse.result.values || [];
+                             console.log('Potential list fetched:', potentialListData.length, 'Sample:', potentialListData[0] || 'Empty');
+
+                             console.log('Computing new matches');
+                             const newMatches = computeMatches(lostItemsData, foundItemsData, potentialListData);
+                             console.log('New matches computed:', newMatches.length, 'Sample:', newMatches[0] || 'Empty');
+
+                             const uniqueNewMatches = newMatches.filter(newMatch => {
+                                 return !potentialListData.some(existing => 
+                                     existing[0] === newMatch[0] && 
+                                     existing[1] === newMatch[1]
+                                 );
+                             });
+                             console.log('Unique new matches:', uniqueNewMatches.length);
+
+                             if (uniqueNewMatches.length > 0) {
+                                 await saveMatches(uniqueNewMatches);
+                                 potentialListData = [...uniqueNewMatches, ...potentialListData];
+                             }
+
+                             $('#dashboard').show();
+                             $('#dataError').hide();
+
+                             const lostTbody = $('#lostItemsTable tbody');
+                             renderTable('lostItemsTable', lostItemsData, lostTbody, 1);
+
+                             const foundTbody = $('#foundItemsTable tbody');
+                             renderTable('foundItemsTable', foundItemsData, foundTbody, 1);
+
+                             const potentialTbody = $('#potentialListTable tbody');
+                             renderTable('potentialListTable', potentialListData, potentialTbody, 1);
+
+                             $('#lostItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('lostItemsTable', column, lostItemsData, lostTbody, lostSortDirection, 1);
+                             });
+
+                             $('#foundItemsTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('foundItemsTable', column, foundItemsData, foundTbody, foundSortDirection, 1);
+                             });
+
+                             $('#potentialListTable th').click(function() {
+                                 const column = $(this).data('sort');
+                                 sortTable('potentialListTable', column, potentialListData, potentialTbody, potentialSortDirection, 1);
+                             });
+
+                             $('#lostSearch, #lostAirportFilter, #lostItemTypeFilter').on('input change', () => {
+                                 const filteredData = filterTable('lostItemsTable', lostItemsData, '#lostSearch', {
+                                     airport: '#lostAirportFilter',
+                                     itemType: '#lostItemTypeFilter'
+                                 });
+                                 renderTable('lostItemsTable', filteredData, lostTbody, 1);
+                             });
+
+                             $('#foundSearch, #foundAirportFilter, #foundItemTypeFilter, #foundStatusFilter').on('input change', () => {
+                                 const filteredData = filterTable('foundItemsTable', foundItemsData, '#foundSearch', {
+                                     airport: '#foundAirportFilter',
+                                     itemType: '#foundItemTypeFilter',
+                                     status: '#foundStatusFilter'
+                                 });
+                                 renderTable('foundItemsTable', filteredData, foundTbody, 1);
+                             });
+
+                             $('#potentialSearch, #potentialStatusFilter').on('input change', () => {
+                                 const filteredData = filterTable('potentialListTable', potentialListData, '#potentialSearch', {
+                                     claimStatus: '#potentialStatusFilter'
+                                 });
+                                 renderTable('potentialListTable', filteredData, potentialTbody, 1);
                              });
                          } catch (error) {
-                             console.error('Script initialization error:', error.message);
-                             $('#dataError').text('Initialization failed: ' + error.message).css('display', 'block');
+                             console.error('Error loading dashboard:', error.message, error);
+                             let errorMessage = 'Failed to load items: ' + error.message;
+                             if (error.status === 401 || error.status === 403) {
+                                 errorMessage = 'Invalid or unauthorized token. Please sign in again.';
+                             } else if (error.status === 404) {
+                                 errorMessage = 'Spreadsheet not found. Check Spreadsheet IDs.';
+                             }
+                             $('#dataError').text(errorMessage).css('display', 'block');
+                             console.log('Clearing token and redirecting to login_staff.html');
+                             localStorage.removeItem('staffAccessToken');
+                             localStorage.removeItem('staffTokenExpiresAt');
+                             setTimeout(() => window.location.assign('login_staff.html'), 2000);
                          }
-                     </script>
-                 </body>
-             </html>
+                     }
+
+                     function logout() {
+                         console.log('Logging out');
+                         localStorage.removeItem('staffAccessToken');
+                         localStorage.removeItem('staffTokenExpiresAt');
+                         window.location.assign('login_staff.html');
+                     }
+
+                     document.addEventListener('DOMContentLoaded', () => {
+                         console.log('DOM loaded, initializing dashboard');
+                         $('#dashboard').hide();
+                         $('#dataError').hide();
+                         loadDashboard();
+                     });
+                 } catch (error) {
+                     console.error('Script initialization error:', error.message);
+                     $('#dataError').text('Initialization failed: ' + error.message).css('display', 'block');
+                 }
+             </script>
+         </body>
+     </html>
