@@ -335,307 +335,326 @@
                      s0.parentNode.insertBefore(s1,s0);
                  })();
              </script>
-             <script>
-                 let chatState = 'initial';
-                 let lastUserTopic = '';
-                 const formData = {
-                     itemId: '',
-                     itemType: '',
-                     airport: '',
-                     description: '',
-                     foundDate: '',
-                     foundLocation: '',
-                     reportedBy: '',
-                     reporterType: ''
-                 };
-                 const validItemTypes = ['electronics', 'clothing', 'luggage', 'jewelry', 'other'];
-                 const validAirports = ['LAX', 'JFK', 'ORD', 'ATL', 'DFW'];
-                 const validReporterTypes = ['staff', 'other'];
+            <script>
+         let chatState = 'initial';
+         let lastUserTopic = '';
+         const formData = {
+             itemType: '',
+             airport: '',
+             description: '',
+             foundDate: '',
+             foundLocation: '',
+             reportedBy: '',
+             reporterType: ''
+         };
+         const validItemTypes = ['electronics', 'clothing', 'luggage', 'jewelry', 'other'];
+         const validAirports = ['LAX', 'JFK', 'ORD', 'ATL', 'DFW'];
+         const validReporterTypes = ['staff', 'other'];
 
-                // Google API configuration
+         // Google API configuration
                      const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
                      const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
                      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-                 // Initialize gapi.client for Sheets API
-                 function initGapiClient() {
-                     return new Promise((resolve, reject) => {
-                         gapi.load('client', () => {
-                             gapi.client.init({
-                                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-                             }).then(() => {
-                                 console.log('gapi client initialized');
-                                 resolve();
-                             }).catch(error => {
-                                 console.error('gapi client initialization error:', error);
-                                 reject(error);
-                             });
-                         });
+         // Initialize gapi.client for Sheets API
+         function initGapiClient() {
+             return new Promise((resolve, reject) => {
+                 gapi.load('client', () => {
+                     gapi.client.init({
+                         discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                     }).then(() => {
+                         console.log('gapi client initialized');
+                         resolve();
+                     }).catch(error => {
+                         console.error('gapi client initialization error:', error);
+                         reject(error);
                      });
-                 }
+                 });
+             });
+         }
 
-                 // Initialize GIS OAuth
-                 function getAccessToken() {
-                     return new Promise((resolve, reject) => {
-                         const client = google.accounts.oauth2.initTokenClient({
-                             client_id: CLIENT_ID,
-                             scope: SCOPES,
-                             prompt: 'select_account',
-                             callback: (response) => {
-                                 if (response.error) {
-                                     console.error('OAuth error:', response.error);
-                                     if (response.error === 'access_denied') {
-                                         reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
-                                     } else {
-                                         reject(new Error(response.error));
-                                     }
-                                 } else {
-                                     console.log('Access token received');
-                                     resolve(response.access_token);
-                                 }
+         // Initialize GIS OAuth
+         function getAccessToken() {
+             return new Promise((resolve, reject) => {
+                 const client = google.accounts.oauth2.initTokenClient({
+                     client_id: CLIENT_ID,
+                     scope: SCOPES,
+                     prompt: 'select_account',
+                     callback: (response) => {
+                         if (response.error) {
+                             console.error('OAuth error:', response.error);
+                             if (response.error === 'access_denied') {
+                                 reject(new Error('Access denied: Please ensure your account is approved as a tester or contact the developer.'));
+                             } else {
+                                 reject(new Error(response.error));
                              }
-                         });
-                         client.requestAccessToken();
-                     });
-                 }
-
-                 // Append message to chatbot
-                 function appendMessage(text, sender) {
-                     const messages = document.getElementById('chatbotMessages');
-                     const message = document.createElement('div');
-                     message.className = `chatbot-message ${sender}`;
-                     message.innerHTML = text;
-                     messages.appendChild(message);
-                     messages.scrollTop = messages.scrollHeight;
-                 }
-
-                 // Show error message
-                 function showError(text) {
-                     const error = document.getElementById('chatbotError');
-                     error.textContent = text;
-                     error.style.display = 'block';
-                     setTimeout(() => { error.style.display = 'none'; }, 5000);
-                 }
-
-                 // Submit found item to Google Sheet
-                 async function submitFoundItem() {
-                     try {
-                         await initGapiClient();
-                         const accessToken = await getAccessToken();
-                         gapi.client.setToken({ access_token: accessToken });
-
-                         console.log('Submitting found item to Sheets API');
-                         const response = await gapi.client.sheets.spreadsheets.values.append({
-                             spreadsheetId: SPREADSHEET_ID,
-                             range: 'FoundItems!A:J',
-                             valueInputOption: 'USER_ENTERED',
-                             resource: {
-                                 values: [
-                                     [
-                                         new Date().toISOString(),
-                                         formData.itemId,
-                                         formData.itemType,
-                                         formData.airport,
-                                         formData.description,
-                                         formData.foundDate,
-                                         formData.foundLocation,
-                                         'Available',
-                                         formData.reportedBy,
-                                         formData.itemId,
-                                         formData.reporterType
-                                     ]
-                                 ]
-                             }
-                         });
-
-                         console.log('Sheets API response status:', response.status);
-                         if (response.status !== 200) {
-                             throw new Error(`HTTP error! Status: ${response.status}`);
+                         } else {
+                             console.log('Access token received');
+                             resolve(response.access_token);
                          }
-
-                         appendMessage('Found item reported successfully! Item ID: ' + formData.itemId, 'bot');
-                         updateQuickReplies();
-                         chatState = 'initial';
-                         Object.keys(formData).forEach(key => formData[key] = '');
-                     } catch (error) {
-                         console.error('Submission error:', error.message || error);
-                         appendMessage('Failed to submit found item. Please try again or contact support.', 'bot');
-                         showError('Submission failed: ' + (error.message || 'Unknown error'));
-                         updateQuickReplies();
                      }
-                 }
+                 });
+                 client.requestAccessToken();
+             });
+         }
 
-                 // Toggle chatbot visibility
-                 function toggleChatbot() {
-                     const window = document.getElementById('chatbotWindow');
-                     window.classList.toggle('open');
-                 }
+         // Generate TrackingId
+         function generateTrackingId() {
+             let counter = parseInt(localStorage.getItem('foundItemCounter') || '0', 10);
+             const today = new Date().toISOString().split('T')[0];
+             let lastResetDate = localStorage.getItem('lastResetDate') || today;
 
-                 // Send quick reply
-                 function sendQuickReply(message) {
-                     const input = document.getElementById('chatbotInput');
-                     input.value = message;
-                     sendMessage();
-                 }
+             if (lastResetDate !== today) {
+                 counter = 0;
+                 lastResetDate = today;
+                 localStorage.setItem('lastResetDate', today);
+             }
+             counter += 1;
+             localStorage.setItem('foundItemCounter', counter.toString());
+             const formattedCounter = ('0000' + counter).slice(-4);
+             const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+             let randomStr = '';
+             for (let i = 0; i < 3; i++) {
+                 randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
+             }
+             return `FOUND-${formattedCounter}-${randomStr}`;
+         }
 
-                 // Update quick replies
-                 function updateQuickReplies() {
-                     const quickReplies = document.getElementById('quickReplies');
-                     quickReplies.innerHTML = '';
-                     const buttons = [
-                         { text: 'Report Lost Item', message: 'How do I report a lost item?' },
-                         { text: 'Track Item', message: 'How do I track my item?' },
-                         { text: 'Claim Item', message: 'How do I claim a found item?' },
-                         { text: 'Report Found Item', message: 'I found an item' },
-                         { text: 'Contact Support', message: 'How do I contact support?' }
-                     ];
-                     if (lastUserTopic.includes('report') && !lastUserTopic.includes('found')) {
-                         buttons.push({ text: 'More Reporting Tips', message: 'What are tips for reporting?' });
-                     } else if (lastUserTopic.includes('track')) {
-                         buttons.push({ text: 'Check Status', message: 'How do I check my item’s status?' });
+         // Append message to chatbot
+         function appendMessage(text, sender) {
+             const messages = document.getElementById('chatbotMessages');
+             const message = document.createElement('div');
+             message.className = `chatbot-message ${sender}`;
+             message.innerHTML = text;
+             messages.appendChild(message);
+             messages.scrollTop = messages.scrollHeight;
+         }
+
+         // Show error message
+         function showError(text) {
+             const error = document.getElementById('chatbotError');
+             error.textContent = text;
+             error.style.display = 'block';
+             setTimeout(() => { error.style.display = 'none'; }, 5000);
+         }
+
+         // Submit found item to Google Sheet
+         async function submitFoundItem() {
+             try {
+                 await initGapiClient();
+                 const accessToken = await getAccessToken();
+                 gapi.client.setToken({ access_token: accessToken });
+
+                 const trackingId = generateTrackingId();
+                 console.log('Submitting found item to Sheets API');
+                 const response = await gapi.client.sheets.spreadsheets.values.append({
+                     spreadsheetId: SPREADSHEET_ID,
+                     range: 'FoundItems!A:I',
+                     valueInputOption: 'USER_ENTERED',
+                     resource: {
+                         values: [
+                             [
+                                 new Date().toISOString(),
+                                 trackingId,
+                                 formData.itemType,
+                                 formData.airport,
+                                 formData.description,
+                                 formData.foundDate,
+                                 formData.foundLocation,
+                                 'Available',
+                                 formData.reportedBy,
+                                 formData.reporterType
+                             ]
+                         ]
                      }
-                     buttons.forEach(btn => {
-                         const button = document.createElement('button');
-                         button.className = 'chatbot-quick-reply';
-                         button.textContent = btn.text;
-                         button.onclick = () => sendQuickReply(btn.message);
-                         quickReplies.appendChild(button);
-                     });
+                 });
+
+                 console.log('Sheets API response status:', response.status);
+                 if (response.status !== 200) {
+                     throw new Error(`HTTP error! Status: ${response.status}`);
                  }
 
-                 // Handle user message
-                 async function sendMessage() {
-                     const input = document.getElementById('chatbotInput');
-                     const messages = document.getElementById('chatbotMessages');
-                     const userMessage = input.value.trim();
-                     if (!userMessage) return;
+                 appendMessage('Thank you, your report has been submitted', 'bot');
+                 updateQuickReplies();
+                 chatState = 'initial';
+                 Object.keys(formData).forEach(key => formData[key] = '');
+             } catch (error) {
+                 console.error('Submission error:', error.message || error);
+                 appendMessage('Failed to submit found item. Please try again or contact support.', 'bot');
+                 showError('Submission failed: ' + (error.message || 'Unknown error'));
+                 updateQuickReplies();
+             }
+         }
 
-                     appendMessage(userMessage, 'user');
-                     input.value = '';
+         // Toggle chatbot visibility
+         function toggleChatbot() {
+             const window = document.getElementById('chatbotWindow');
+             window.classList.toggle('open');
+         }
 
-                     // Show typing indicator
-                     const typingDiv = document.createElement('div');
-                     typingDiv.className = 'chatbot-message bot typing';
-                     typingDiv.textContent = '...';
-                     messages.appendChild(typingDiv);
-                     messages.scrollTop = messages.scrollHeight;
+         // Send quick reply
+         function sendQuickReply(message) {
+             const input = document.getElementById('chatbotInput');
+             input.value = message;
+             sendMessage();
+         }
 
-                     setTimeout(async () => {
-                         typingDiv.remove();
-                         let response;
+         // Update quick replies
+         function updateQuickReplies() {
+             const quickReplies = document.getElementById('quickReplies');
+             quickReplies.innerHTML = '';
+             const buttons = [
+                 { text: 'Report Lost Item', message: 'How do I report a lost item?' },
+                 { text: 'Track Item', message: 'How do I track my item?' },
+                 { text: 'Claim Item', message: 'How do I claim a found item?' },
+                 { text: 'Report Found Item', message: 'I found an item' },
+                 { text: 'Contact Support', message: 'How do I contact support?' }
+             ];
+             if (lastUserTopic.includes('report') && !lastUserTopic.includes('found')) {
+                 buttons.push({ text: 'More Reporting Tips', message: 'What are tips for reporting?' });
+             } else if (lastUserTopic.includes('track')) {
+                 buttons.push({ text: 'Check Status', message: 'How do I check my item’s status?' });
+             }
+             buttons.forEach(btn => {
+                 const button = document.createElement('button');
+                 button.className = 'chatbot-quick-reply';
+                 button.textContent = btn.text;
+                 button.onclick = () => sendQuickReply(btn.message);
+                 quickReplies.appendChild(button);
+             });
+         }
 
-                         switch (chatState) {
-                             case 'initial':
-                                 if (userMessage.toLowerCase().includes('i found') || userMessage.toLowerCase().includes('report found')) {
-                                     chatState = 'reporterType';
-                                     response = 'Great! Let’s report a found item. Are you reporting as airport staff or someone else? (Type "staff" or "other")';
-                                 } else if (userMessage.toLowerCase().includes('report') || userMessage.toLowerCase().includes('lost item')) {
-                                     response = 'To report a lost item, please visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
-                                 } else if (userMessage.toLowerCase().includes('track') || userMessage.toLowerCase().includes('status')) {
-                                     response = 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
-                                 } else if (userMessage.toLowerCase().includes('claim') || userMessage.toLowerCase().includes('found item') && !userMessage.toLowerCase().includes('i found')) {
-                                     response = 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
-                                 } else if (userMessage.toLowerCase().includes('support') || userMessage.toLowerCase().includes('contact')) {
-                                     response = 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
-                                 } else if (userMessage.toLowerCase().includes('fee') || userMessage.toLowerCase().includes('cost')) {
-                                     response = 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
-                                 } else if (userMessage.toLowerCase().includes('tips') || userMessage.toLowerCase().includes('reporting')) {
-                                     response = 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
-                                 } else if (userMessage.toLowerCase().includes('hi') || userMessage.toLowerCase().includes('hello')) {
-                                     response = 'Hey there! I’m here to help with lost items. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below!';
-                                 } else {
-                                     response = 'Hmm, I’m not sure about that. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below.';
-                                 }
-                                 break;
-                             case 'reporterType':
-                                 const reporterType = userMessage.toLowerCase();
-                                 if (validReporterTypes.includes(reporterType)) {
-                                     formData.reporterType = reporterType.charAt(0).toUpperCase() + reporterType.slice(1);
-                                     response = 'Thanks! Please provide the Item ID of the found item (e.g., LOST-0001-XYZ).';
-                                     chatState = 'itemId';
-                                 } else {
-                                     response = 'Please specify if you are "staff" or "other". Try again.';
-                                 }
-                                 break;
-                             case 'itemId':
-                                 if (userMessage.match(/^LOST-\d{4}-[A-Z]{3}$/)) {
-                                     formData.itemId = userMessage;
-                                     response = 'Got the Item ID. What type of item is it? (electronics, clothing, luggage, jewelry, other)';
-                                     chatState = 'itemType';
-                                 } else {
-                                     response = 'Invalid Item ID. It should be like LOST-XXXX-YYY (e.g., LOST-0001-XYZ). Try again.';
-                                 }
-                                 break;
-                             case 'itemType':
-                                 const itemType = userMessage.toLowerCase();
-                                 if (validItemTypes.includes(itemType)) {
-                                     formData.itemType = itemType;
-                                     response = 'Thanks! Which airport was it found at? (LAX, JFK, ORD, ATL, DFW)';
-                                     chatState = 'airport';
-                                 } else {
-                                     response = 'Invalid item type. Choose from: electronics, clothing, luggage, jewelry, other. Try again.';
-                                 }
-                                 break;
-                             case 'airport':
-                                 const airport = userMessage.toUpperCase();
-                                 if (validAirports.includes(airport)) {
-                                     formData.airport = airport;
-                                     response = 'Got it. Please provide a description of the item (e.g., color, brand, unique features).';
-                                     chatState = 'description';
-                                 } else {
-                                     response = 'Invalid airport. Choose from: LAX, JFK, ORD, ATL, DFW. Try again.';
-                                 }
-                                 break;
-                             case 'description':
-                                 if (userMessage.length >= 5) {
-                                     formData.description = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
-                                     response = 'When was the item found? (e.g., 2025-05-22)';
-                                     chatState = 'foundDate';
-                                 } else {
-                                     response = 'Description must be at least 5 characters. Try again.';
-                                 }
-                                 break;
-                             case 'foundDate':
-                                 if (userMessage.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                                     formData.foundDate = userMessage;
-                                     response = 'Where was the item found? (e.g., Terminal 3, Gate 12)';
-                                     chatState = 'foundLocation';
-                                 } else {
-                                     response = 'Invalid date format. Use YYYY-MM-DD (e.g., 2025-05-22). Try again.';
-                                 }
-                                 break;
-                             case 'foundLocation':
-                                 if (userMessage.length >= 5) {
-                                     formData.foundLocation = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
-                                     response = 'Who is reporting this item? (e.g., your name, email, or role like LAX Staff)';
-                                     chatState = 'reportedBy';
-                                 } else {
-                                     response = 'Location must be at least 5 characters. Try again.';
-                                 }
-                                 break;
-                             case 'reportedBy':
-                                 if (userMessage.length >= 2) {
-                                     formData.reportedBy = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
-                                     submitFoundItem();
-                                     return;
-                                 } else {
-                                     response = 'Reporter identifier must be at least 2 characters. Try again.';
-                                 }
-                                 break;
+         // Handle user message
+         async function getBotResponse(message) {
+             lastUserTopic = message.toLowerCase();
+
+             if (message.toLowerCase().includes('report') && message.toLowerCase().includes('lost item')) {
+                 return 'To report a lost item, please visit our <a href="report_Lost_Items.html">Report Lost Items</a> page and fill out the form with details like item type, description, and date lost.';
+             } else if (message.toLowerCase().includes('track') || message.toLowerCase().includes('status')) {
+                 return 'You can track your item’s status on the <a href="track_your_item.html">Track Items</a> page using your email address. Check your email for a tracking ID.';
+             } else if (message.toLowerCase().includes('claim') || (message.toLowerCase().includes('found item') && !message.toLowerCase().includes('i found'))) {
+                 return 'Visit the <a href="claim_item.html">Claim Items</a> page to submit a claim with verification details.';
+             } else if (message.toLowerCase().includes('support') || message.toLowerCase().includes('contact')) {
+                 return 'Our 24/7 support team is available via the <a href="contact_support.html">Contact Us</a> page, phone, email, or live chat.';
+             } else if (message.toLowerCase().includes('fee') || message.toLowerCase().includes('cost')) {
+                 return 'Reporting and tracking are free. A small fee may apply for item return shipping, depending on location. Want details on shipping?';
+             } else if (message.toLowerCase().includes('tips') || message.toLowerCase().includes('reporting')) {
+                 return 'For better chances of recovery, describe your item in detail (e.g., color, brand, unique features) and report it as soon as possible. See our <a href="faq.html">FAQ</a> for more tips.';
+             } else if (message.toLowerCase().includes('hi') || message.toLowerCase().includes('hello')) {
+                 return 'Hey there! I’m here to help with lost items. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below!';
+             } else if (message.toLowerCase() === 'i found an item' || message.toLowerCase().includes('report found')) {
+                 chatState = 'reporterType';
+                 return 'Great! Let’s report a found item. Are you reporting as airport staff or someone else? (Type "staff" or "other")';
+             } else {
+                 return 'Hmm, I’m not sure about that. Try asking about reporting a lost item, tracking, claiming, or reporting a found item, or click a button below.';
+             }
+         }
+
+         // Handle chatbot message
+         async function sendMessage() {
+             const input = document.getElementById('chatbotInput');
+             const messages = document.getElementById('chatbotMessages');
+             const userMessage = input.value.trim();
+             if (!userMessage) return;
+
+             appendMessage(userMessage, 'user');
+             input.value = '';
+
+             // Show typing indicator
+             const typingDiv = document.createElement('div');
+             typingDiv.className = 'chatbot-message bot typing';
+             typingDiv.textContent = '...';
+             messages.appendChild(typingDiv);
+             messages.scrollTop = messages.scrollHeight;
+
+             setTimeout(async () => {
+                 typingDiv.remove();
+                 let response;
+
+                 switch (chatState) {
+                     case 'initial':
+                         response = await getBotResponse(userMessage);
+                         break;
+                     case 'reporterType':
+                         const reporterType = userMessage.toLowerCase();
+                         if (validReporterTypes.includes(reporterType)) {
+                             formData.reporterType = reporterType.charAt(0).toUpperCase() + reporterType.slice(1);
+                             response = 'Thanks! What type of item is it? (electronics, clothing, luggage, jewelry, other)';
+                             chatState = 'itemType';
+                         } else {
+                             response = 'Please specify if you are "staff" or "other". Try again.';
                          }
-
-                         appendMessage(response, 'bot');
-                         updateQuickReplies();
-                         document.getElementById('chatbotMessages').scrollTop = document.getElementById('chatbotMessages').scrollHeight;
-                     }, 1000);
+                         break;
+                     case 'itemType':
+                         const itemType = userMessage.toLowerCase();
+                         if (validItemTypes.includes(itemType)) {
+                             formData.itemType = itemType;
+                             response = 'Thanks! Which airport was it found at? (LAX, JFK, ORD, ATL, DFW)';
+                             chatState = 'airport';
+                         } else {
+                             response = 'Invalid item type. Choose from: electronics, clothing, luggage, jewelry, other. Try again.';
+                         }
+                         break;
+                     case 'airport':
+                         const airport = userMessage.toUpperCase();
+                         if (validAirports.includes(airport)) {
+                             formData.airport = airport;
+                             response = 'Got it. Please provide a description of the item (e.g., color, brand, unique features).';
+                             chatState = 'description';
+                         } else {
+                             response = 'Invalid airport. Choose from: LAX, JFK, ORD, ATL, DFW. Try again.';
+                         }
+                         break;
+                     case 'description':
+                         if (userMessage.length >= 5) {
+                             formData.description = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
+                             response = 'When was the item found? (e.g., 2025-05-22)';
+                             chatState = 'foundDate';
+                         } else {
+                             response = 'Description must be at least 5 characters. Try again.';
+                         }
+                         break;
+                     case 'foundDate':
+                         if (userMessage.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                             formData.foundDate = userMessage;
+                             response = 'Where was the item found? (e.g., Terminal 3, Gate 12)';
+                             chatState = 'foundLocation';
+                         } else {
+                             response = 'Invalid date format. Use YYYY-MM-DD (e.g., 2025-05-22). Try again.';
+                         }
+                         break;
+                     case 'foundLocation':
+                         if (userMessage.length >= 5) {
+                             formData.foundLocation = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
+                             response = 'Who is reporting this item? (e.g., your name, email, or role like LAX Staff)';
+                             chatState = 'reportedBy';
+                         } else {
+                             response = 'Location must be at least 5 characters. Try again.';
+                         }
+                         break;
+                     case 'reportedBy':
+                         if (userMessage.length >= 2) {
+                             formData.reportedBy = userMessage.replace(/[\n\r"\\]/g, ' ').trim();
+                             submitFoundItem();
+                             return;
+                         } else {
+                             response = 'Reporter identifier must be at least 2 characters. Try again.';
+                         }
+                         break;
                  }
 
-                 // Remove footer if present
-                 window.onload = function() {
-                     const footer = document.querySelector('article#main footer');
-                     if (footer) footer.remove();
-                     updateQuickReplies();
-                 };
-             </script>
+                 appendMessage(response, 'bot');
+                 updateQuickReplies();
+                 document.getElementById('chatbotMessages').scrollTop = document.getElementById('chatbotMessages').scrollHeight;
+             }, 1000);
+         }
+
+         // Remove footer if present
+         window.onload = function() {
+             const footer = document.querySelector('article#main footer');
+             if (footer) footer.remove();
+             updateQuickReplies();
+         };
+     </script>
          </body>
      </html>
