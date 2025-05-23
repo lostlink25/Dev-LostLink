@@ -21,11 +21,12 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                z-index: 10001;
+                z-index: 10002; /* Increased z-index */
                 -moz-transition: background-color 0.35s ease-in-out;
                 -webkit-transition: background-color 0.35s ease-in-out;
                 -ms-transition: background-color 0.35s ease-in-out;
                 transition: background-color 0.35s ease-in-out;
+                pointer-events: auto; /* Ensure clickable */
             }
             .chatbot-button:hover {
                 background: #ef8376;
@@ -40,8 +41,9 @@
                 background: #fff;
                 border-radius: 8px;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-                z-index: 10001;
+                z-index: 10002; /* Increased z-index */
                 overflow: hidden;
+                pointer-events: auto;
             }
             .chatbot-window.open {
                 display: block;
@@ -357,7 +359,7 @@
             const validAirports = ['LAX', 'JFK', 'ORD', 'ATL', 'DFW'];
             const validReporterTypes = ['staff', 'other'];
 
-            // Google API configuration
+ // Google API configuration
             const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
             const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
             const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
@@ -459,6 +461,10 @@
             // Append message to chatbot
             function appendMessage(text, sender) {
                 const messages = document.getElementById('chatbotMessages');
+                if (!messages) {
+                    console.error('Chatbot messages container not found');
+                    return;
+                }
                 const message = document.createElement('div');
                 message.className = `chatbot-message ${sender}`;
                 message.innerHTML = text;
@@ -469,6 +475,10 @@
             // Show error message
             function showError(text) {
                 const error = document.getElementById('chatbotError');
+                if (!error) {
+                    console.error('Chatbot error element not found');
+                    return;
+                }
                 error.textContent = text;
                 error.style.display = 'block';
                 setTimeout(() => { error.style.display = 'none'; }, 5000);
@@ -562,8 +572,8 @@
                         const lostItemType = lost[5];
                         const lostAirport = lost[4];
                         const lostDescription = lost[6];
-                        if (lostItemType === foundItemType && lostAirport === foundAirport) {
-                            const similarity = computeSimilarity(lostDescription, foundDescription);
+                        if (lostItemType === formData.itemType && lostAirport === formData.airport) {
+                            const similarity = computeSimilarity(lostDescription, formData.description);
                             const confidence = 80 + (similarity / 5);
                             if (confidence >= 70) {
                                 matches.push({
@@ -722,13 +732,26 @@
 
             // Toggle chatbot visibility
             function toggleChatbot() {
-                const window = document.getElementById('chatbotWindow');
-                window.classList.toggle('open');
+                try {
+                    const window = document.getElementById('chatbotWindow');
+                    if (!window) {
+                        console.error('Chatbot window element not found');
+                        return;
+                    }
+                    window.classList.toggle('open');
+                    console.log('Chatbot toggled:', window.classList.contains('open') ? 'Opened' : 'Closed');
+                } catch (error) {
+                    console.error('Error toggling chatbot:', error.message);
+                }
             }
 
             // Send quick reply
             function sendQuickReply(message) {
                 const input = document.getElementById('chatbotInput');
+                if (!input) {
+                    console.error('Chatbot input element not found');
+                    return;
+                }
                 input.value = message;
                 sendMessage();
             }
@@ -736,6 +759,10 @@
             // Update quick replies
             function updateQuickReplies() {
                 const quickReplies = document.getElementById('quickReplies');
+                if (!quickReplies) {
+                    console.error('Quick replies container not found');
+                    return;
+                }
                 quickReplies.innerHTML = '';
                 const buttons = [
                     { text: 'Report Lost Item', message: 'How do I report a lost item?' },
@@ -789,6 +816,10 @@
             async function sendMessage() {
                 const input = document.getElementById('chatbotInput');
                 const messages = document.getElementById('chatbotMessages');
+                if (!input || !messages) {
+                    console.error('Chatbot input or messages container not found');
+                    return;
+                }
                 const userMessage = input.value.trim();
                 if (!userMessage) return;
 
@@ -879,19 +910,8 @@
                         case 'claimTrackingId':
                             if (userMessage.length >= 5) {
                                 formData.trackingId = userMessage.trim();
-                                try {
-                                    potentialMatches = await findMatches();
-                                    if (potentialMatches.length > 0) {
-                                        const matchList = potentialMatches.map(m => `Lost TrackingID: ${m.lostTrackingId} (Confidence: ${m.confidence}%)`).join('<br>');
-                                        response = `Found ${potentialMatches.length} potential match(es):<br>${matchList}<br>Please provide your full name to proceed with the claim.`;
-                                    } else {
-                                        response = 'No potential matches found for this TrackingID. Please provide your full name to proceed with the claim.';
-                                    }
-                                    chatState = 'claimName';
-                                } catch (error) {
-                                    response = `Unable to find matches: ${error.message}. Please provide your full name to proceed with the claim anyway.`;
-                                    chatState = 'claimName';
-                                }
+                                response = 'Please provide your full name.';
+                                chatState = 'claimName';
                             } else {
                                 response = 'TrackingID must be at least 5 characters. Try again.';
                             }
@@ -955,8 +975,21 @@
                         case 'claimDateLost':
                             if (userMessage.match(/^\d{4}-\d{2}-\d{2}$/)) {
                                 formData.dateLost = userMessage;
-                                claimItem();
-                                return;
+                                try {
+                                    potentialMatches = await findMatches();
+                                    if (potentialMatches.length > 0) {
+                                        const matchList = potentialMatches.map(m => `Lost TrackingID: ${m.lostTrackingId} (Confidence: ${m.confidence}%)`).join('<br>');
+                                        appendMessage(`Found ${potentialMatches.length} potential match(es):<br>${matchList}<br>Proceeding with claim submission.`, 'bot');
+                                    } else {
+                                        appendMessage('No potential matches found for this TrackingID. Proceeding with claim submission.', 'bot');
+                                    }
+                                    claimItem();
+                                    return;
+                                } catch (error) {
+                                    appendMessage(`Unable to find matches: ${error.message}. Proceeding with claim submission anyway.`, 'bot');
+                                    claimItem();
+                                    return;
+                                }
                             } else {
                                 response = 'Invalid date format. Use YYYY-MM-DD (e.g., 2025-05-22). Try again.';
                             }
@@ -969,12 +1002,13 @@
                 }, 1000);
             }
 
-            // Remove footer if present
-            window.onload = function() {
+            // Ensure DOM is ready before initializing
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM loaded, initializing chatbot');
+                updateQuickReplies();
                 const footer = document.querySelector('article#main footer');
                 if (footer) footer.remove();
-                updateQuickReplies();
-            };
+            });
         </script>
     </body>
 </html>
