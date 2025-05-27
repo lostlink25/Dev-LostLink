@@ -1,111 +1,326 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>LostLink - Track Your Item</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<div id="page-wrapper">
+<head>
+    <title>LostLink - Track Your Item</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .form-group .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+            margin-top: 5px;
+        }
+        .track-button {
+            background-color: #df7366;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .track-button:hover {
+            background-color: #ef8376;
+        }
+        .track-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .result-message, .error-message {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .result-message {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-details {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        @media screen and (max-width: 768px) {
+            .form-container {
+                padding: 10px;
+            }
+            .form-group input {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="page-wrapper">
+        <!-- Header -->
+        <div id="header">
+            <!-- Nav -->
+            <nav id="nav">
+                <ul>
+                   <li><a href="index.html">Home</a></li>
+                   <li><a href="About_Us.html">About Us</a></li>
+                   <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
+                   <li><a href="report_found_items.html">Found Items</a></li>
+                   <li><a href="track_your_item.html">Track Items</a></li>
+                   <li><a href="claim_item.html">Claim Items</a></li>
+                   <li><a href="login_staff.html">Staff Login</a></li>
+                   <li><a href="claim_submission.html">Claim Submissions</a></li>
+                   <li><a href="contact_support.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
 
-			<!-- Header -->
-				<div id="header">
-					<!-- Nav -->
-					<nav id="nav">
-						<ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="About_Us.html">About Us</a></li>
-                        <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
-                        <li><a href="report_found_items.html">Found Items</a></li>
-                        <li><a href="track_your_item.html">Track Items</a></li>
-                        <li><a href="claim_item.html">Claim Items</a></li>
-                        <li><a href="login_staff.html">Track Items</a></li>
-                        <li><a href="claim_submission.html">Claim Submissions</a></li>
-                        <li><a href="contact_support.html">Contact Us</a></li>
-						<li><a href="faq.html">FAQ</a></li>
-					</nav>
-				</div>
+        <!-- Main -->
+        <div class="wrapper style2">
+            <article id="main" class="container special">
+                <header>
+                    <h2>Track Your Lost Item</h2>
+                    <p>Monitor the status of your reported lost item with real-time updates.</p>
+                </header>
+                <section class="form-container">
+                    <form id="trackItemForm">
+                        <div class="form-group">
+                            <label for="tracking_id">Tracking ID</label>
+                            <input type="text" name="tracking_id" id="tracking_id" placeholder="Enter your Tracking ID (e.g., LOST-0068-MLZ)" required />
+                            <span class="error" id="trackingIdError">Please enter a valid Tracking ID.</span>
+                        </div>
+                        <button type="submit" class="track-button" id="trackButton">Track Item</button>
+                    </form>
+                    <div class="result-message" id="resultMessage"></div>
+                    <div class="error-message" id="errorMessage"></div>
+                </section>
+                <section>
+                    <h3>Sample Tracking Status</h3>
+                    <ul>
+                        <li><strong>Received:</strong> Your lost item report has been logged.</li>
+                        <li><strong>In Progress:</strong> Our team is searching for your item.</li>
+                        <li><strong>Found:</strong> Your item has been located and is awaiting verification.</li>
+                        <li><strong>Claimed:</strong> Your item has been successfully claimed and returned.</li>
+                    </ul>
+                    <p>
+                        If your item is marked as "Found," please visit the <a href="claim_item.html">Claim Item</a> page to initiate the recovery process.
+                    </p>
+                </section>
+                <footer>
+                    <a href="contact_support.html" class="button">Need Help? Contact Support</a>
+                </footer>
+            </article>
+        </div>
 
-			<!-- Main -->
-				<div class="wrapper style2">
-					<article id="main" class="container special">
-						<header>
-							<h2>Track Your Lost Item</h2>
-							<p>Monitor the status of your reported lost item with real-time updates.</p>
-						</header>
-						<section>
-							<h3>How It Works</h3>
-							<p>
-								Enter the unique Tracking ID provided when you reported your lost item. Our system will display the latest status, including whether the item has been found, its current location, or any pending actions required from you. If you don’t have your Tracking ID, please <a href="contact_support.html">contact support</a> for assistance.
-							</p>
-							<form action="#" method="post">
-								<div class="row gtr-50">
-									<div class="col-12">
-										<label for="tracking_id">Tracking ID</label>
-										<input type="text" name="tracking_id" id="tracking_id" placeholder="Enter your Tracking ID (e.g., LL-123456)" required />
-									</div>
-									<div class="col-12">
-										<input type="submit" value="Track Item" class="button" />
-									</div>
-								</div>
-							</form>
-						</section>
-						<section>
-							<h3>Sample Tracking Status</h3>
-							<ul>
-								<li><strong>Received:</strong> Your lost item report has been logged.</li>
-								<li><strong>In Progress:</strong> Our team is searching for your item.</li>
-								<li><strong>Found:</strong> Your item has been located and is awaiting verification.</li>
-								<li><strong>Claimed:</strong> Your item has been successfully claimed and returned.</li>
-							</ul>
-							<p>
-								If your item is marked as "Found," please visit the <a href="claim_item.html">Claim Item</a> page to initiate the recovery process.
-							</p>
-						</section>
-						<footer>
-							<a href="contact_support.html" class="button">Need Help? Contact Support</a>
-						</footer>
-					</article>
-				</div>
+        <!-- Footer -->
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Contact -->
+                        <section class="contact">
+                            <header>
+                                <h3>Need Help with a Lost Item?</h3>
+                            </header>
+                            <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+                            <ul class="icons">
+                                <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                            </ul>
+                        </section>
 
-<!-- Footer -->
-<div id="footer">
-	<div class="container">
-		<div class="row">
-			<div class="col-12">
-				<!-- Contact -->
-					<section class="contact">
-						<header>
-							<h3>Need Help with a Lost Item?</h3>
-						</header>
-						<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-							<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-							<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-						</ul>
-					</section>
+                        <!-- Copyright -->
+                        <div class="copyright">
+                            <ul class="menu">
+                                <li>© LostLink. All rights reserved.</li>
+                                <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-				<!-- Copyright -->
-					<div class="copyright">
-						<ul class="menu">
-							<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</div>
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+    <!-- Scripts -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.dropotron.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        $(document).ready(function() {
+            const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+            const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+            const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-	</body>
+            function initGapiClient() {
+                console.log('Initializing Google API client');
+                return new Promise((resolve, reject) => {
+                    gapi.load('client', () => {
+                        gapi.client.init({
+                            discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                        }).then(() => {
+                            console.log('gapi client initialized');
+                            resolve();
+                        }).catch(error => {
+                            console.error('gapi client initialization error:', error);
+                            reject(error);
+                        });
+                    });
+                });
+            }
+
+            function getAccessToken() {
+                console.log('Requesting access token');
+                return new Promise((resolve, reject) => {
+                    const client = google.accounts.oauth2.initTokenClient({
+                        client_id: CLIENT_ID,
+                        scope: SCOPES,
+                        prompt: '', // Mimic chatbot behavior
+                        callback: (response) => {
+                            if (response.error) {
+                                console.error('OAuth error:', response);
+                                reject(new Error(`OAuth error: ${response.error}`));
+                            } else {
+                                console.log('Access token received:', response.access_token.substring(0, 20) + '...');
+                                resolve(response.access_token);
+                            }
+                        }
+                    });
+                    client.requestAccessToken();
+                });
+            }
+
+            function validateTrackingId(trackingId) {
+                const isValid = trackingId.match(/^LOST-\d{4}-[A-Z]{3}$/);
+                $('#trackingIdError').toggle(!isValid).text(isValid ? '' : 'Please enter a valid Tracking ID (e.g., LOST-0068-MLZ).');
+                return isValid;
+            }
+
+            async function trackItem(trackingId) {
+                try {
+                    $('#trackButton').prop('disabled', true);
+                    $('#resultMessage, #errorMessage').hide();
+
+                    await initGapiClient();
+                    const accessToken = await getAccessToken();
+                    gapi.client.setToken({ access_token: accessToken });
+
+                    console.log('Fetching lost items for Tracking ID:', trackingId);
+                    const response = await gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: SPREADSHEET_ID,
+                        range: 'LostItems!A2:I'
+                    });
+                    const rows = response.result.values || [];
+                    let item = null;
+                    for (let row of rows) {
+                        if (row[8] && row[8].toUpperCase() === trackingId.toUpperCase()) {
+                            item = {
+                                timestamp: row[0],
+                                name: row[1],
+                                email: row[2],
+                                phone: row[3],
+                                airport: row[4],
+                                itemType: row[5],
+                                description: row[6],
+                                dateLost: row[7],
+                                trackingId: row[8]
+                            };
+                            break;
+                        }
+                    }
+
+                    // Check ClaimItems for status
+                    let status = 'Received';
+                    const claimResponse = await gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: 'YOUR_FOUND_SPREADSHEET_ID',
+                        range: 'ClaimItems!A2:I'
+                    });
+                    const claimRows = claimResponse.result.values || [];
+                    for (let claim of claimRows) {
+                        if (claim[0] === trackingId) {
+                            if (claim[6] === 'Confirmed') {
+                                status = 'Claimed';
+                            } else if (claim[6] === 'Pending') {
+                                status = 'Found';
+                            }
+                            break;
+                        }
+                    }
+
+                    if (!item) {
+                        throw new Error('Tracking ID not found.');
+                    }
+
+                    const resultHtml = `
+                        <div class="status-details">
+                            <p><strong>Tracking ID:</strong> ${item.trackingId}</p>
+                            <p><strong>Status:</strong> ${status}</p>
+                            <p><strong>Item Type:</strong> ${item.itemType}</p>
+                            <p><strong>Airport:</strong> ${item.airport}</p>
+                            <p><strong>Description:</strong> ${item.description}</p>
+                            <p><strong>Date Lost:</strong> ${item.dateLost}</p>
+                            ${status === 'Found' ? '<p><a href="claim_item.html">Claim your item here</a></p>' : ''}
+                        </div>
+                    `;
+                    $('#resultMessage').html(resultHtml).show();
+                } catch (error) {
+                    console.error('Tracking error:', error.message);
+                    const errorMsg = error.message.includes('OAuth') || error.message.includes('access_denied') ? 'Authentication failed. Please try again.' :
+                                    error.message.includes('Tracking ID not found') ? 'No item found with that Tracking ID.' :
+                                    'Failed to track item. Please try again.';
+                    $('#errorMessage').text(errorMsg).show();
+                    setTimeout(() => $('#errorMessage').hide(), 5000);
+                } finally {
+                    $('#trackButton').prop('disabled', false);
+                }
+            }
+
+            $('#trackItemForm').submit(function(e) {
+                e.preventDefault();
+                const trackingId = $('#tracking_id').val().trim();
+                if (!validateTrackingId(trackingId)) return;
+
+                trackItem(trackingId);
+            });
+        });
+    </script>
+</body>
 </html>
