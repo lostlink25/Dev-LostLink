@@ -51,7 +51,7 @@
             background-color: #6c757d;
             cursor: not-allowed;
         }
-        .result-message, .error-message {
+        .result-message, .error-message, .confirmation-message {
             display: none;
             text-align: center;
             margin-top: 20px;
@@ -65,6 +65,10 @@
         .error-message {
             background-color: #f8d7da;
             color: #721c24;
+        }
+        .confirmation-message {
+            background-color: #e8f0fe;
+            color: #1a73e8;
         }
         .status-details {
             margin-top: 10px;
@@ -118,6 +122,7 @@
                         </div>
                         <button type="submit" class="track-button" id="trackButton">Track Item</button>
                     </form>
+                    <div class="confirmation-message" id="confirmationMessage"></div>
                     <div class="result-message" id="resultMessage"></div>
                     <div class="error-message" id="errorMessage"></div>
                 </section>
@@ -187,7 +192,8 @@
     <script>
         $(document).ready(function() {
             const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-            const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+            const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+            const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
             const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
             function initGapiClient() {
@@ -213,7 +219,7 @@
                     const client = google.accounts.oauth2.initTokenClient({
                         client_id: CLIENT_ID,
                         scope: SCOPES,
-                        prompt: '', // Mimic chatbot behavior
+                        prompt: '',
                         callback: (response) => {
                             if (response.error) {
                                 console.error('OAuth error:', response);
@@ -237,7 +243,10 @@
             async function trackItem(trackingId) {
                 try {
                     $('#trackButton').prop('disabled', true);
-                    $('#resultMessage, #errorMessage').hide();
+                    $('#confirmationMessage, #resultMessage, #errorMessage').hide();
+
+                    $('#confirmationMessage').text(`Tracking ID ${trackingId} submitted for status check.`).show();
+                    setTimeout(() => $('#confirmationMessage').hide(), 3000);
 
                     await initGapiClient();
                     const accessToken = await getAccessToken();
@@ -245,7 +254,7 @@
 
                     console.log('Fetching lost items for Tracking ID:', trackingId);
                     const response = await gapi.client.sheets.spreadsheets.values.get({
-                        spreadsheetId: SPREADSHEET_ID,
+                        spreadsheetId: LOST_SPREADSHEET_ID,
                         range: 'LostItems!A2:I'
                     });
                     const rows = response.result.values || [];
@@ -267,26 +276,31 @@
                         }
                     }
 
-                    // Check ClaimItems for status
                     let status = 'Received';
-                    const claimResponse = await gapi.client.sheets.spreadsheets.values.get({
-                        spreadsheetId: 'YOUR_FOUND_SPREADSHEET_ID',
-                        range: 'ClaimItems!A2:I'
-                    });
-                    const claimRows = claimResponse.result.values || [];
-                    for (let claim of claimRows) {
-                        if (claim[0] === trackingId) {
-                            if (claim[6] === 'Confirmed') {
-                                status = 'Claimed';
-                            } else if (claim[6] === 'Pending') {
-                                status = 'Found';
+                    let foundTrackingId = '';
+                    if (item) {
+                        const claimResponse = await gapi.client.sheets.spreadsheets.values.get({
+                            spreadsheetId: FOUND_SPREADSHEET_ID,
+                            range: 'ClaimItems!A2:I'
+                        });
+                        const claimRows = claimResponse.result.values || [];
+                        for (let claim of claimRows) {
+                            if (claim[0] === trackingId) {
+                                foundTrackingId = claim[1];
+                                if (claim[6] === 'Confirmed') {
+                                    status = 'Claimed';
+                                } else if (claim[6] === 'Pending') {
+                                    status = 'Found';
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
 
                     if (!item) {
-                        throw new Error('Tracking ID not found.');
+                        $('#errorMessage').text('No item found with that Tracking ID.').show();
+                        setTimeout(() => $('#errorMessage').hide(), 5000);
+                        return;
                     }
 
                     const resultHtml = `
@@ -297,6 +311,7 @@
                             <p><strong>Airport:</strong> ${item.airport}</p>
                             <p><strong>Description:</strong> ${item.description}</p>
                             <p><strong>Date Lost:</strong> ${item.dateLost}</p>
+                            ${foundTrackingId ? `<p><strong>Found Item ID:</strong> ${foundTrackingId}</p>` : ''}
                             ${status === 'Found' ? '<p><a href="claim_item.html">Claim your item here</a></p>' : ''}
                         </div>
                     `;
