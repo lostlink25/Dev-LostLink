@@ -4,7 +4,7 @@
     <title>LostLink - Track Your Item</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.gstatic.com https://apis.google.com; object-src 'none'; base-uri 'self';" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
     <style>
@@ -93,16 +93,15 @@
             <!-- Nav -->
             <nav id="nav">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="About_Us.html">About Us</a></li>
-                    <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
-                    <li><a href="report_found_items.html">Found Items</a></li>
-                    <li><a href="track_your_item.html">Track Items</a></li>
-                    <li><a href="claim_item.html">Claim Items</a></li>
-                    <li><a href="login_staff.html">Staff Login</a></li>
-                    <li><a href="claim_submission.html">Claim Submissions</a></li>
-                    <li><a href="contact_support.html">Contact Us</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
+                   <li><a href="index.html">Home</a></li>
+                   <li><a href="About_Us.html">About Us</a></li>
+                   <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
+                   <li><a href="report_found_items.html">Found Items</a></li>
+                   <li><a href="track_your_item.html">Track Items</a></li>
+                   <li><a href="claim_item.html">Claim Items</a></li>
+                   <li><a href="login_staff.html">Staff Login</a></li>
+                   <li><a href="claim_submission.html">Claim Submissions</a></li>
+                   <li><a href="contact_support.html">Contact Us</a></li>
                 </ul>
             </nav>
         </div>
@@ -180,6 +179,8 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/jquery.dropotron.min.js"></script>
     <script src="assets/js/jquery.scrolly.min.js"></script>
@@ -190,37 +191,114 @@
     <script src="assets/js/main.js"></script>
     <script>
         $(document).ready(function() {
-            const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby35b71p12zLtpunAlO-KS5jQ-I6kGYvWoIKDw8Vdsf/dev';
+            const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+            const LOST_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+            const FOUND_SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+            const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+            function initGapiClient() {
+                console.log('Initializing Google API client');
+                return new Promise((resolve, reject) => {
+                    gapi.load('client', () => {
+                        gapi.client.init({
+                            discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                        }).then(() => {
+                            console.log('gapi client initialized');
+                            resolve();
+                        }).catch(error => {
+                            console.error('gapi client initialization error:', error);
+                            reject(error);
+                        });
+                    });
+                });
+            }
+
+            function getAccessToken() {
+                console.log('Requesting access token');
+                return new Promise((resolve, reject) => {
+                    const client = google.accounts.oauth2.initTokenClient({
+                        client_id: CLIENT_ID,
+                        scope: SCOPES,
+                        prompt: '',
+                        callback: (response) => {
+                            if (response.error) {
+                                console.error('OAuth error:', response);
+                                reject(new Error(`OAuth error: ${response.error}`));
+                            } else {
+                                console.log('Access token received:', response.access_token.substring(0, 20) + '...');
+                                resolve(response.access_token);
+                            }
+                        }
+                    });
+                    client.requestAccessToken();
+                });
+            }
 
             function validateTrackingId(trackingId) {
                 const isValid = trackingId.match(/^LOST-\d{4}-[A-Z]{3}$/);
-                $('#trackingIdError').toggle(!isValid).text(isValid ? '' : 'Invalid format. Use LOST-XXXX-YYY (e.g., LOST-0068-MLZ).');
+                $('#trackingIdError').toggle(!isValid).text(isValid ? '' : 'Please enter a valid Tracking ID (e.g., LOST-0068-MLZ).');
                 return isValid;
             }
 
             async function trackItem(trackingId) {
                 try {
-                    $('#trackButton').prop('disabled', true).text('Tracking...');
+                    $('#trackButton').prop('disabled', true);
                     $('#confirmationMessage, #resultMessage, #errorMessage').hide();
 
-                    $('#confirmationMessage').text(`Checking status for Tracking ID ${trackingId}...`).show();
+                    $('#confirmationMessage').text(`Tracking ID ${trackingId} submitted for status check.`).show();
                     setTimeout(() => $('#confirmationMessage').hide(), 3000);
 
-                    console.log('Tracking item:', trackingId);
-                    const response = await fetch(WEBHOOK_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ type: 'trackItem', trackingId: trackingId.toUpperCase() })
-                    });
+                    await initGapiClient();
+                    const accessToken = await getAccessToken();
+                    gapi.client.setToken({ access_token: accessToken });
 
-                    const result = await response.json();
-                    if (result.status !== 'success') {
-                        throw new Error(result.message || 'Failed to retrieve item status.');
+                    console.log('Fetching lost items for Tracking ID:', trackingId);
+                    const response = await gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: LOST_SPREADSHEET_ID,
+                        range: 'LostItems!A2:I'
+                    });
+                    const rows = response.result.values || [];
+                    let item = null;
+                    for (let row of rows) {
+                        if (row[8] && row[8].toUpperCase() === trackingId.toUpperCase()) {
+                            item = {
+                                timestamp: row[0],
+                                name: row[1],
+                                email: row[2],
+                                phone: row[3],
+                                airport: row[4],
+                                itemType: row[5],
+                                description: row[6],
+                                dateLost: row[7],
+                                trackingId: row[8]
+                            };
+                            break;
+                        }
                     }
 
-                    const { item, status, foundTrackingId } = result.data;
+                    let status = 'Received';
+                    let foundTrackingId = '';
+                    if (item) {
+                        const claimResponse = await gapi.client.sheets.spreadsheets.values.get({
+                            spreadsheetId: FOUND_SPREADSHEET_ID,
+                            range: 'ClaimItems!A2:I'
+                        });
+                        const claimRows = claimResponse.result.values || [];
+                        for (let claim of claimRows) {
+                            if (claim[0] === trackingId) {
+                                foundTrackingId = claim[1];
+                                if (claim[6] === 'Confirmed') {
+                                    status = 'Claimed';
+                                } else if (claim[6] === 'Pending') {
+                                    status = 'Found';
+                                }
+                                break;
+                            }
+                        }
+                    }
+
                     if (!item) {
-                        $('#errorMessage').html('No item found with that Tracking ID. <a href="contact_support.html">Contact support</a> or <a href="Report_Lost_Items.html">report a lost item</a>.').show();
+                        $('#errorMessage').text('No item found with that Tracking ID.').show();
                         setTimeout(() => $('#errorMessage').hide(), 5000);
                         return;
                     }
@@ -240,13 +318,13 @@
                     $('#resultMessage').html(resultHtml).show();
                 } catch (error) {
                     console.error('Tracking error:', error.message);
-                    const errorMsg = error.message.includes('Failed to retrieve') ? 'Unable to fetch item status. Please try again or contact support@lostlink25.net.' :
-                                    error.message.includes('not found') ? 'No item found with that Tracking ID.' :
-                                    'An error occurred. Please try again.';
+                    const errorMsg = error.message.includes('OAuth') || error.message.includes('access_denied') ? 'Authentication failed. Please try again.' :
+                                    error.message.includes('Tracking ID not found') ? 'No item found with that Tracking ID.' :
+                                    'Failed to track item. Please try again.';
                     $('#errorMessage').text(errorMsg).show();
                     setTimeout(() => $('#errorMessage').hide(), 5000);
                 } finally {
-                    $('#trackButton').prop('disabled', false).text('Track Item');
+                    $('#trackButton').prop('disabled', false);
                 }
             }
 
@@ -256,11 +334,6 @@
                 if (!validateTrackingId(trackingId)) return;
 
                 trackItem(trackingId);
-            });
-
-            $('#tracking_id').on('input', function() {
-                const trackingId = $(this).val().trim();
-                validateTrackingId(trackingId);
             });
         });
     </script>
