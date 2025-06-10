@@ -1,133 +1,280 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>LostLink - Contact Support</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<div id="page-wrapper">
+<head>
+    <title>LostLink - Contact Support</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+            margin-top: 5px;
+        }
+        .submit-button, .login-button {
+            background-color: #df7366;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .submit-button:hover, .login-button:hover {
+            background-color: #ef8376;
+        }
+        .submit-button:disabled, .login-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        @media screen and (max-width: 768px) {
+            .form-container {
+                padding: 10px;
+            }
+            input, select, textarea {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="page-wrapper">
 
-			<!-- Header -->
-				<div id="header">
-					<!-- Nav -->
-					<nav id="nav">
-						<ul>
-                             <li><a href="index.html">Home</a></li>
-                             <li><a href="About_Us.html">About Us</a></li>
-                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
-                             <li><a href="report_found_items.html">Found Items</a></li>
-                             <li><a href="track_your_item.html">Track Items</a></li>
-                             <li><a href="claim_item.html">Claim Items</a></li>
-                             <li><a href="login_staff.html">Staff Login</a></li>
-                             <li><a href="claim_submission.html">Claim Submissions</a></li>
-                             <li><a href="contact_support.html">Contact Us</a></li>
-						</ul>
-					</nav>
-				</div>
+        <!-- Header -->
+        <div id="header">
+            <!-- Nav -->
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="About_Us.html">About Us</a></li>
+                    <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
+                    <li><a href="report_found_items.html">Found Items</a></li>
+                    <li><a href="track_your_item.html">Track Items</a></li>
+                    <li><a href="claim_item.html">Claim Items</a></li>
+                    <li><a href="login_staff.html">Staff Login</a></li>
+                    <li><a href="claim_submission.html">Claim Submissions</a></li>
+                    <li><a href="contact_support.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
 
-			<!-- Main -->
-				<div class="wrapper style2">
-					<article id="main" class="container special">
-						<header>
-							<h2>Contact Support</h2>
-							<p>Reach out to our team for assistance with lost items or account issues.</p>
-						</header>
-						<section>
-							<h3>Get in Touch</h3>
-							<p>
-								Our support team is available 24/7 to help with lost item inquiries, account issues, or general questions about LostLink. Fill out the form below, and we’ll respond within 24 hours. For urgent matters, call our support hotline at <strong>+1-800-555-1234</strong>.
-							</p>
-							<form action="#" method="post">
-								<div class="row gtr-50">
-									<div class="col-6 col-12-mobile">
-										<label for="name">Full Name</label>
-										<input type="text" name="name" id="name" placeholder="Enter your full name" required />
-									</div>
-									<div class="col-6 col-12-mobile">
-										<label for="email">Email Address</label>
-										<input type="email" name="email" id="email" placeholder="Enter your email" required />
-									</div>
-									<div class="col-12">
-										<label for="subject">Subject</label>
-										<select name="subject" id="subject" required>
-											<option value="">Select a subject</option>
-											<option value="lost_item">Lost Item Inquiry</option>
-											<option value="claim_issue">Claim Issue</option>
-											<option value="account_issue">Account Issue</option>
-											<option value="other">Other</option>
-										</select>
-									</div>
-									<div class="col-12">
-										<label for="message">Message</label>
-										<textarea name="message" id="message" placeholder="Describe your issue or question" rows="6" required></textarea>
-									</div>
-									<div class="col-12">
-										<input type="submit" value="Send Message" class="button" />
-									</div>
-								</div>
-							</form>
-						</section>
-						<section>
-							<h3>Additional Contact Options</h3>
-							<ul>
-								<li><strong>Phone:</strong> +1-800-555-1234 (24/7 Support)</li>
-								<li><strong>Email:</strong> support@lostlink.com</li>
-								<li><strong>Live Chat:</strong> Available on our <a href="index.html">homepage</a></li>
-								<li><strong>In-Person:</strong> Visit the Lost and Found office at Terminal 1, near Gate 10.</li>
-							</ul>
-						</section>
-					</section>
-							<h3>Frequently Asked Questions</h3>
-							<ul>
-								<li><a href="faq.html">How do I track my lost item?</a></li>
-								<li><a href="faq.html">What information is needed to claim an item?</a></li>
-							</ul>
-							<p>
-								Visit our <a href="faq.html">FAQ page</a> for more answers, or contact us directly.
-							</p>
-						</section>
-					</article>
-				</div>
+        <!-- Main -->
+        <div class="wrapper style2">
+            <article id="main" class="container special">
+                <header>
+                    <h2>Contact Support</h2>
+                    <p>Reach out to our team for help with lost items or account issues.</p>
+                </header>
+                <section class="form-container">
+                    <h3>Get in Touch</h3>
+                    <p>
+                        Our support team is available 24/7 for inquiries about lost items, claims, or LostLink questions. Fill out the form below after signing in with your Google account, and we’ll get back to you within 24 hours. For urgent issues, call <strong>+1-800-555-9999</strong>.
+                    </p>
+                    <button id="loginButton" class="login-button">Sign in with Google</button>
+                    <form id="contactForm" method="post" style="display: none;">
+                        <div class="row gtr-50">
+                            <div class="col-6 col-12-mobile">
+                                <div class="form-group">
+                                    <label for="name">Full Name</label>
+                                    <input type="text" name="name" id="name" placeholder="Enter your full name" required />
+                                </div>
+                            </div>
+                            <div class="col-6 col-12-mobile">
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" name="email" id="email" placeholder="Enter your email" required />
+                                    <span class="error" id="emailError">Please enter a valid email address.</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="subject">Subject</label>
+                                    <select name="subject" id="subject" required>
+                                        <option value="">Select a subject</option>
+                                        <option value="lost_item">Lost Item Inquiry</option>
+                                        <option value="claim_issue">Claim Issue</option>
+                                        <option value="account_issue">Account Issue</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="message">Message</label>
+                                    <textarea name="message" id="message" maxlength="500" placeholder="Describe your issue or question (max 500 characters)" rows="5" required></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="submit-button">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+                <section>
+                    <h3>Additional Contact Options</h3>
+                    <ul>
+                        <li><strong>Phone:</strong> +1-800-555-9999 (24/7 Support)</li>
+                        <li><strong>Email:</strong> lostlinkservice@gmail.com</li>
+                        <li><strong>Live Chat:</strong> Available on our <a href="index.html">Homepage</a></li>
+                        <li><strong>In-Person:</strong> Visit the Lost and Found office at Terminal 1, LAX Airport.</li>
+                    </ul>
+                    <h3>Frequently Asked Questions</h3>
+                    <ul>
+                        <li><a href="faq.html">How do I track my lost item?</a></li>
+                        <li><a href="faq.html">What information is needed to claim an item?</a></li>
+                    </ul>
+                    <p>
+                        Visit our <a href="faq.html">FAQ page</a> for more answers, or contact us directly.
+                    </p>
+                </section>
+            </article>
+        </div>
 
-			<!-- Footer -->
-		<div id="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<!-- Contact -->
-							<section class="contact">
-								<header>
-									<h3>Need Help with a Lost Item?</h3>
-								</header>
-								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-								<ul class="icons">
-									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-								</ul>
-							</section>
+        <!-- Footer -->
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Contact -->
+                        <section class="contact">
+                            <header>
+                                <h3>Need Help with a Lost Item?</h3>
+                            </header>
+                            <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+                            <ul class="icons">
+                                <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                            </ul>
+                        </section>
 
-						<!-- Copyright -->
-							<div class="copyright">
-								<ul class="menu">
-									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-								</ul>
-							</div>
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+                        <!-- Copyright -->
+                        <div class="copyright">
+                            <ul class="menu">
+                                <li>© LostLink. All rights reserved.</li>
+                                <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-	</body>
+        <!-- Scripts -->
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/jquery.dropotron.min.js"></script>
+        <script src="assets/js/jquery.scrolly.min.js"></script>
+        <script src="assets/js/jquery.scrollex.min.js"></script>
+        <script src="assets/js/browser.min.js"></script>
+        <script src="assets/js/breakpoints.min.js"></script>
+        <script src="assets/js/util.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="https://apis.google.com/js/api.js"></script>
+        <script>
+            $(document).ready(function() {
+                const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
+                const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
+                const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+                let tokenClient;
+
+                function validateEmail(email) {
+                    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                    $('#emailError').toggle(!isValid).text(isValid ? '' : 'Please enter a valid email address.');
+                    return isValid;
+                }
+
+                function initGoogleAuth() {
+                    gapi.load('client', () => {
+                        gapi.client.init({
+                            discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                        }).then(() => {
+                            tokenClient = google.accounts.oauth2.initTokenClient({
+                                client_id: CLIENT_ID,
+                                scope: SCOPES,
+                                callback: (tokenResponse) => {
+                                    if (tokenResponse.access_token) {
+                                        gapi.client.setToken({ access_token: tokenResponse.access_token });
+                                        $('#loginButton').hide();
+                                        $('#contactForm').show();
+                                    } else {
+                                        alert('Failed to authenticate with Google. Please try again.');
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+
+                $('#loginButton').click(function() {
+                    tokenClient.requestAccessToken();
+                });
+
+                $('#contactForm').submit(function(e) {
+                    e.preventDefault();
+                    const name = $('#name').val().trim();
+                    const email = $('#email').val().trim();
+                    const subject = $('#subject').val();
+                    const message = $('#message').val().trim();
+
+                    if (!validateEmail(email)) return;
+
+                    $('.submit-button').prop('disabled', true).text('Sending...');
+
+                    gapi.client.sheets.spreadsheets.values.append({
+                        spreadsheetId: SPREADSHEET_ID,
+                        range: 'ContactInquiries!A:E',
+                        valueInputOption: 'RAW',
+                        resource: {
+                            values: [[new Date().toISOString(), name, email, subject, message]]
+                        }
+                    }).then(() => {
+                        window.location.href = 'contact_acknowledgement.html';
+                    }, (error) => {
+                        alert('Error submitting inquiry: ' + (error.result?.error?.message || 'Unknown error.'));
+                        $('.submit-button').prop('disabled', false).text('Send');
+                    });
+                });
+
+                $('#email').on('input', function() {
+                    validateEmail($(this).val().trim());
+                });
+
+                $('#message').on('input', function() {
+                    const maxLength = 500;
+                    const currentLength = $(this).val().length;
+                    if (currentLength > maxLength) {
+                        $(this).val($(this).val().substring(0, maxLength));
+                    }
+                });
+
+                initGoogleAuth();
+            });
+        </script>
+</body>
 </html>
