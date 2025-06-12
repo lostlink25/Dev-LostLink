@@ -322,7 +322,7 @@
                             const airport = $('#airport').val();
                             const itemType = $('#item-type').val();
                             const description = $('#description').val()?.trim();
-                            const dateLost = $('#date-lost').val();
+                            let dateLost = $('#date-lost').val();
 
                             // Check for missing or empty values
                             console.log('Checking for missing or empty values');
@@ -332,152 +332,163 @@
                                     airport: !!airport, itemType: !!itemType,
                                     description: !!description, dateLost: !!dateLost
                                 });
-                                $('#errorMessage').text('All fields are required.').css('display', 'block');
-                                return;
-                            }
-
-                            // Client-side validation
-                            console.log('Validating form inputs');
-                            let isValid = true;
-                            const errors = [];
-                            if (name.length < 2) {
-                                $('#nameError').css('display', 'block');
-                                errors.push('Name must be at least 2 characters');
-                                isValid = false;
-                            }
-                            if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-                                $('#emailError').css('display', 'block');
-                                errors.push('Invalid email format');
-                                isValid = false;
-                            }
-                            if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
-                                $('#phoneError').css('display', 'block');
-                                errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
-                                isValid = false;
-                            }
-                            if (description.length < 5) {
-                                $('#descriptionError').css('display', 'block');
-                                errors.push('Description must be at least 5 characters');
-                                isValid = false;
-                            }
-                            if (!dateLost) {
-                                $('#dateLostError').css('display', 'block');
-                                errors.push('Date lost is required');
-                                isValid = false;
-                            }
-
-                            if (!isValid) {
-                                console.log('Validation failed:', errors);
-                                $('#errorMessage').text('Please correct the errors: ' + errors.join(', ')).css('display', 'block');
-                                return;
-                            }
-
-                            // Sanitize inputs
-                            console.log('Sanitizing inputs');
-                            const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
-                            const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
-
-                            // Generate tracking ID client-side
-                            const today = new Date().toISOString().split('T')[0];
-                            if (lastResetDate !== today) {
-                                counter = 0;
-                                lastResetDate = today;
-                                localStorage.setItem('lastResetDate', today);
-                            }
-                            counter += 1;
-                            localStorage.setItem('lostItemCounter', counter.toString());
-                            const formattedCounter = ('0000' + counter).slice(-4);
-                            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                            let randomStr = '';
-                            for (let i = 0; i < 3; i++) {
-                                randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
-                            }
-                            const trackingId = `LOST-${formattedCounter}-${randomStr}`;
-
-                            const formData = {
-                                type: 'lost_item',
-                                name: sanitizedName,
-                                email: email,
-                                phone: phone,
-                                airport: airport,
-                                itemType: itemType,
-                                description: sanitizedDescription,
-                                dateLost: dateLost,
-                                trackingId: trackingId,
-                                timestamp: new Date().toISOString()
-                            };
-                            console.log('Form data with tracking ID:', formData);
-
-                            // Submit to Make webhook
-                            console.log('Sending data to Make webhook:', MAKE_WEBHOOK_URL);
-                            $('button[type="submit"]').prop('disabled', true).text('Submitting...');
-                            $('#loadingSpinner').show();
-
-                            $.ajax({
-                                url: MAKE_WEBHOOK_URL,
-                                type: 'POST',
-                                contentType: 'application/json',
-                                data: JSON.stringify(formData),
-                                success: function(response) {
-                                    console.log('Webhook submission successful:', response);
-                                    $('#successMessage').text(`Report submitted with Tracking ID: ${trackingId}`).css('display', 'block');
-                                    // Redirect to report_submission.html
-                                    const queryParams = new URLSearchParams({
-                                        trackingId,
-                                        name: sanitizedName,
-                                        email,
-                                        phone,
-                                        airport,
-                                        itemType,
-                                        description: sanitizedDescription,
-                                        dateLost
-                                    }).toString();
-                                    console.log('Redirecting to:', 'report_submission.html?' + queryParams);
-                                    try {
-                                        window.location.assign('report_submission.html?' + queryParams);
-                                    } catch (err) {
-                                        console.error('Redirect failed:', err);
-                                        alert('Submission successful, but redirect failed. Your Tracking ID is: ' + trackingId);
-                                    }
-                                },
-                                error: function(jqXHR, textStatus, errorThrown) {
-                                    console.error('Webhook submission error:', {
-                                        status: jqXHR.status,
-                                        statusText: jqXHR.statusText,
-                                        responseText: jqXHR.responseText,
-                                        textStatus: textStatus,
-                                        errorThrown: errorThrown
-                                    });
-                                    let errorMsg = 'Submission failed: ';
-                                    if (jqXHR.status === 0) {
-                                        errorMsg += 'Network error. Please check your internet connection.';
-                                    } else if (jqXHR.status >= 400 && jqXHR.status < 500) {
-                                        errorMsg += 'Invalid request. Please check the webhook URL or form data.';
-                                    } else if (jqXHR.status >= 500) {
-                                        errorMsg += 'Server error. Please try again later.';
-                                    } else {
-                                        errorMsg += errorThrown || 'Unknown error';
-                                    }
-                                    $('#errorMessage').text(errorMsg).css('display', 'block');
-                                    $('#loadingSpinner').hide();
-                                    $('button[type="submit"]').prop('disabled', false).text('Submit Report');
-                                },
-                                complete: function() {
-                                    console.log('Webhook request completed');
-                                }
-                            });
-                        } catch (error) {
-                            console.error('Submission error:', error.message);
-                            $('#errorMessage').text('Submission failed: ' + error.message).css('display', 'block');
-                            $('#loadingSpinner').hide();
-                            $('button[type="submit"]').prop('disabled', false).text('Submit Report');
+                            $('#errorMessage').text('All fields are required.').css('display', 'block');
+                            return;
                         }
-                    });
-                } catch (error) {
-                    console.error('Script initialization error:', error.message);
-                    alert('Script initialization failed: ' + error.message);
-                }
-            </script>
-        </div>
-    </body>
+
+                        // Client-side validation
+                        console.log('Validating form inputs');
+                        let isValid = true;
+                        const errors = [];
+                        if (name.length < 2) {
+                            $('#nameError').css('display', 'block');
+                            errors.push('Name must be at least 2 characters');
+                            isValid = false;
+                        }
+                        if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+                            $('#emailError').css('display', 'block');
+                            errors.push('Invalid email format');
+                            isValid = false;
+                        }
+                        if (!phone.match(/^\d{10}$|^\d{3}-\d{3}-\d{4}$/)) {
+                            $('#phoneError').css('display', 'block');
+                            errors.push('Phone must be 10 digits or XXX-XXX-XXXX');
+                            isValid = false;
+                        }
+                        if (description.length < 5) {
+                            $('#descriptionError').css('display', 'block');
+                            errors.push('Description must be at least 5 characters');
+                            isValid = false;
+                        }
+                        if (!dateLost || !dateLost.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateLost).getTime())) {
+                            $('#dateLostError').css('display', 'block');
+                            errors.push('Invalid date format');
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            console.log('Validation failed:', errors);
+                            $('#errorMessage').text('Please correct the errors: ' + errors.join(', ')).css('display', 'block');
+                            return;
+                        }
+
+                        // Format dateLost as YYYY-MM-DD
+                        console.log('Formatting dateLost');
+                        const dateObj = new Date(dateLost);
+                        if (isNaN(dateObj.getTime())) {
+                            console.error('Invalid dateLost value:', dateLost);
+                            $('#dateLostError').css('display', 'block').text('Invalid date format');
+                            return;
+                        }
+                        dateLost = dateObj.toISOString().split('T')[0]; // Ensures YYYY-MM-DD
+                        console.log('Formatted dateLost:', dateLost);
+
+                        // Sanitize inputs
+                        console.log('Sanitizing inputs');
+                        const sanitizedDescription = description.replace(/[\n\r"\\]/g, ' ').trim();
+                        const sanitizedName = name.replace(/[\n\r"\\]/g, ' ').trim();
+
+                        // Generate tracking ID client-side
+                        const today = new Date().toISOString().split('T')[0];
+                        if (lastResetDate !== today) {
+                            counter = 0;
+                            lastResetDate = today;
+                            localStorage.setItem('lastResetDate', today);
+                        }
+                        counter += 1;
+                        localStorage.setItem('lostItemCounter', counter.toString());
+                        const formattedCounter = ('0000' + counter).slice(-4);
+                        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        let randomStr = '';
+                        for (let i = 0; i < 3; i++) {
+                            randomStr += letters.charAt(Math.floor(Math.random() * letters.length));
+                        }
+                        const trackingId = `LOST-${formattedCounter}-${randomStr}`;
+
+                        const formData = {
+                            type: 'lost_item',
+                            name: sanitizedName,
+                            email: email,
+                            phone: phone,
+                            airport: airport,
+                            itemType: itemType,
+                            description: sanitizedDescription,
+                            dateLost: dateLost,
+                            trackingId: trackingId,
+                            timestamp: new Date().toISOString()
+                        };
+                        console.log('Form data with tracking ID:', formData);
+
+                        // Submit to Make webhook
+                        console.log('Sending data to Make webhook:', MAKE_WEBHOOK_URL);
+                        $('button[type="submit"]').prop('disabled', true).text('Submitting...');
+                        $('#loadingSpinner').show();
+
+                        $.ajax({
+                            url: MAKE_WEBHOOK_URL,
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(formData),
+                            success: function(response) {
+                                console.log('Webhook submission successful:', response);
+                                $('#successMessage').text(`Report submitted with Tracking ID: ${trackingId}`).css('display', 'block');
+                                // Redirect to report_submission.html
+                                const queryParams = new URLSearchParams({
+                                    trackingId,
+                                    name: sanitizedName,
+                                    email,
+                                    phone,
+                                    airport,
+                                    itemType,
+                                    description: sanitizedDescription,
+                                    dateLost
+                                }).toString();
+                                console.log('Redirecting to:', 'report_submission.html?' + queryParams);
+                                try {
+                                    window.location.assign('report_submission.html?' + queryParams);
+                                } catch (err) {
+                                    console.error('Redirect failed:', err);
+                                    alert('Submission successful, but redirect failed. Your Tracking ID is: ' + trackingId);
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error('Webhook submission error:', {
+                                    status: jqXHR.status,
+                                    statusText: jqXHR.statusText,
+                                    responseText: jqXHR.responseText,
+                                    textStatus: textStatus,
+                                    errorThrown: errorThrown
+                                });
+                                let errorMsg = 'Submission failed: ';
+                                if (jqXHR.status === 0) {
+                                    errorMsg += 'Network error. Please check your internet connection.';
+                                } else if (jqXHR.status >= 400 && jqXHR.status < 500) {
+                                    errorMsg += 'Invalid request. Please check the webhook URL or form data.';
+                                } else if (jqXHR.status >= 500) {
+                                    errorMsg += 'Server error. Please try again later.';
+                                } else {
+                                    errorMsg += errorThrown || 'Unknown error';
+                                }
+                                $('#errorMessage').text(errorMsg).css('display', 'block');
+                                $('#loadingSpinner').hide();
+                                $('button[type="submit"]').prop('disabled', false).text('Submit Report');
+                            },
+                            complete: function() {
+                                console.log('Webhook request completed');
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Submission error:', error.message);
+                        $('#errorMessage').text('Submission failed: ' + error.message).css('display', 'block');
+                        $('#loadingSpinner').hide();
+                        $('button[type="submit"]').prop('disabled', false).text('Submit Report');
+                    }
+                });
+            } catch (error) {
+                console.error('Script initialization error:', error.message);
+                alert('Script initialization failed: ' + error.message);
+            }
+        </script>
+    </div>
+</body>
 </html>
