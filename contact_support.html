@@ -19,6 +19,7 @@
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+            color: #df7366;
         }
         input, select, textarea {
             width: 100%;
@@ -49,6 +50,13 @@
         .submit-button:disabled {
             background-color: #6c757d;
             cursor: not-allowed;
+        }
+        .chat-prompt {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-style: italic;
         }
         @media screen and (max-width: 768px) {
             .form-container {
@@ -86,13 +94,14 @@
             <article id="main" class="container special">
                 <header>
                     <h2>Contact Support</h2>
-                    <p>Reach out to our team for help with lost items or account issues.</p>
+                    <p>Chat with us for help with lost items or account issues.</p>
                 </header>
                 <section class="form-container">
-                    <h3>Get in Touch</h3>
+                    <h3>Let’s Get Started</h3>
                     <p>
-                        Our support team is available 24/7 for inquiries about lost items, claims, or LostLink questions. Fill out the form below, and we’ll get back to you within 24 hours. For urgent issues, call <strong>+1-800-555-9999</strong>.
+                        Our support team is available 24/7. Answer a few questions below to send your inquiry, and we’ll get back to you within 24 hours. For urgent issues, call <strong>+1-800-555-9999</strong>.
                     </p>
+                    <div class="chat-prompt">Hi! What’s your name?</div>
                     <form id="contactForm" method="post">
                         <div class="row gtr-50">
                             <div class="col-6 col-12-mobile">
@@ -109,6 +118,7 @@
                                 </div>
                             </div>
                             <div class="col-12">
+                                <div class="chat-prompt">What’s this about?</div>
                                 <div class="form-group">
                                     <label for="subject">Subject</label>
                                     <select name="subject" id="subject" required>
@@ -121,13 +131,14 @@
                                 </div>
                             </div>
                             <div class="col-12">
+                                <div class="chat-prompt">Tell us more!</div>
                                 <div class="form-group">
                                     <label for="message">Message</label>
                                     <textarea name="message" id="message" maxlength="500" placeholder="Describe your issue or question (max 500 characters)" rows="5" required></textarea>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="submit-button">Send</button>
+                                <button type="submit" class="submit-button">Send Inquiry</button>
                             </div>
                         </div>
                     </form>
@@ -196,7 +207,7 @@
         <script src="assets/js/main.js"></script>
         <script>
             $(document).ready(function() {
-                const ZAPIER_WEBHOOK_URL = 'https://zapier.com/editor/303307803/published';
+                const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/96jbrupnijt2emuxol228269gdjabcke';
 
                 function validateEmail(email) {
                     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -215,7 +226,7 @@
 
                     $('.submit-button').prop('disabled', true).text('Sending...');
                     $.ajax({
-                        url: ZAPIER_WEBHOOK_URL,
+                        url: MAKE_WEBHOOK_URL,
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({
@@ -231,10 +242,10 @@
                         },
                         error: function() {
                             alert('Error submitting inquiry. Please try again later.');
-                            $('.submit-button').prop('disabled', false).text('Send');
+                            $('.submit-button').prop('disabled', false).text('Send Inquiry');
                         },
                         complete: function() {
-                            $('.submit-button').prop('disabled', false).text('Send');
+                            $('.submit-button').prop('disabled', false).text('Send Inquiry');
                         }
                     });
                 });
