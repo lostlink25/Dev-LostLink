@@ -60,55 +60,71 @@
 					</section>
 				</article>
 			</div>
-<!-- Footer -->
-<div id="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <!-- Contact -->
-                    <section class="contact">
-                        <header>
-                            <h3>Need Help with a Lost Item?</h3>
-                        </header>
-                        <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-                        <ul class="icons">
-                            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-                            <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-                            <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-                            <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-                            <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-                        </ul>
-                    </section>
+			<!-- Footer -->
+			<div id="footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-12">
+							<!-- Contact -->
+							<section class="contact">
+								<header>
+									<h3>Need Help with a Lost Item?</h3>
+								</header>
+								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+								<ul class="icons">
+									<li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+								</ul>
+							</section>
 
-                <!-- Copyright -->
-                    <div class="copyright">
-                        <ul class="menu">
-                            <li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-                        </ul>
-                    </div>
+							<!-- Copyright -->
+							<div class="copyright">
+								<ul class="menu">
+									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-
-		<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.dropotron.min.js"></script>
-		<script src="assets/js/jquery.scrolly.min.js"></script>
-		<script src="assets/js/jquery.scrollex.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
-		<script>
-			// Get query parameters from URL
-			const urlParams = new URLSearchParams(window.location.search);
-			document.getElementById('trackingId').textContent = urlParams.get('trackingId') || 'Not available';
-			document.getElementById('name').textContent = urlParams.get('name') || 'N/A';
-			document.getElementById('email').textContent = urlParams.get('email') || 'N/A';
-			document.getElementById('phone').textContent = urlParams.get('phone') || 'N/A';
-			document.getElementById('airport').textContent = urlParams.get('airport') || 'N/A';
-			document.getElementById('itemType').textContent = urlParams.get('itemType') || 'N/A';
-			document.getElementById('description').textContent = urlParams.get('description') || 'N/A';
-			document.getElementById('dateLost').textContent = urlParams.get('dateLost') || 'N/A';
-		</script>
-	</body>
-</html>
+			<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script>
+				// Get query parameters from URL
+				const urlParams = new URLSearchParams(window.location.search);
+				document.getElementById('trackingId').textContent = urlParams.get('trackingId') || 'Not available';
+				document.getElementById('name').textContent = urlParams.get('name') || 'N/A';
+				document.getElementById('email').textContent = urlParams.get('email') || 'N/A';
+				document.getElementById('phone').textContent = urlParams.get('phone') || 'N/A';
+				document.getElementById('airport').textContent = urlParams.get('airport') || 'N/A';
+				document.getElementById('itemType').textContent = urlParams.get('itemType') || 'N/A';
+				document.getElementById('description').textContent = urlParams.get('description') || 'N/A';
+				const dateLost = urlParams.get('dateLost') || 'N/A';
+				if (dateLost !== 'N/A') {
+					const parts = dateLost.split('/'); // Expect MM/DD/YY
+					if (parts.length === 3) {
+						const month = parts[0];
+						const day = parts[1];
+						const year = parts[2];
+						document.getElementById('dateLost').textContent = `${month}/${day}/${year}`; // e.g., 02/25/25
+					} else {
+						document.getElementById('dateLost').textContent = 'N/A';
+					}
+				} else {
+					document.getElementById('dateLost').textContent = 'N/A';
+				}
+			</script>
+		</body>
+	</html>
