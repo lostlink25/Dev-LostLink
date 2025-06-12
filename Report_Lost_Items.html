@@ -49,6 +49,21 @@
                 display: none;
                 font-size: 0.9em;
             }
+            .success-message, .error-message {
+                display: none;
+                padding: 10px;
+                border-radius: 4px;
+                margin-top: 10px;
+                text-align: center;
+            }
+            .success-message {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .error-message {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
             .loading-spinner {
                 display: none;
                 border: 4px solid #f3f3f3;
@@ -213,6 +228,8 @@
 
                                         <button type="submit">Submit Report</button>
                                         <div class="loading-spinner" id="loadingSpinner"></div>
+                                        <div class="success-message" id="successMessage"></div>
+                                        <div class="error-message" id="errorMessage"></div>
                                     </form>
                                 </div>
                             </article>
@@ -295,7 +312,7 @@
                         try {
                             // Reset error messages
                             console.log('Resetting error messages');
-                            $('.error').css('display', 'none');
+                            $('.error, .success-message, .error-message').css('display', 'none');
 
                             // Get form values
                             console.log('Retrieving form values');
@@ -315,7 +332,7 @@
                                     airport: !!airport, itemType: !!itemType,
                                     description: !!description, dateLost: !!dateLost
                                 });
-                                alert('Form error: All fields are required.');
+                                $('#errorMessage').text('All fields are required.').css('display', 'block');
                                 return;
                             }
 
@@ -351,7 +368,7 @@
 
                             if (!isValid) {
                                 console.log('Validation failed:', errors);
-                                alert('Please correct the following errors:\n- ' + errors.join('\n- '));
+                                $('#errorMessage').text('Please correct the errors: ' + errors.join(', ')).css('display', 'block');
                                 return;
                             }
 
@@ -392,7 +409,7 @@
                             console.log('Form data with tracking ID:', formData);
 
                             // Submit to Make webhook
-                            console.log('Sending data to Make webhook');
+                            console.log('Sending data to Make webhook:', MAKE_WEBHOOK_URL);
                             $('button[type="submit"]').prop('disabled', true).text('Submitting...');
                             $('#loadingSpinner').show();
 
@@ -401,8 +418,9 @@
                                 type: 'POST',
                                 contentType: 'application/json',
                                 data: JSON.stringify(formData),
-                                success: function() {
-                                    console.log('Webhook submission successful');
+                                success: function(response) {
+                                    console.log('Webhook submission successful:', response);
+                                    $('#successMessage').text(`Report submitted with Tracking ID: ${trackingId}`).css('display', 'block');
                                     // Redirect to report_submission.html
                                     const queryParams = new URLSearchParams({
                                         trackingId,
@@ -414,25 +432,45 @@
                                         description: sanitizedDescription,
                                         dateLost
                                     }).toString();
-                                    console.log('Redirecting to:', '/report_submission.html?' + queryParams);
-                                    window.location.assign('/report_submission.html?' + queryParams);
+                                    console.log('Redirecting to:', 'report_submission.html?' + queryParams);
+                                    try {
+                                        window.location.assign('report_submission.html?' + queryParams);
+                                    } catch (err) {
+                                        console.error('Redirect failed:', err);
+                                        alert('Submission successful, but redirect failed. Your Tracking ID is: ' + trackingId);
+                                    }
                                 },
                                 error: function(jqXHR, textStatus, errorThrown) {
-                                    console.error('Webhook submission error:', textStatus, errorThrown);
-                                    alert('Submission failed: ' + (errorThrown || 'Unknown error'));
-                                    $('button[type="submit"]').prop('disabled', false).text('Submit Report');
+                                    console.error('Webhook submission error:', {
+                                        status: jqXHR.status,
+                                        statusText: jqXHR.statusText,
+                                        responseText: jqXHR.responseText,
+                                        textStatus: textStatus,
+                                        errorThrown: errorThrown
+                                    });
+                                    let errorMsg = 'Submission failed: ';
+                                    if (jqXHR.status === 0) {
+                                        errorMsg += 'Network error. Please check your internet connection.';
+                                    } else if (jqXHR.status >= 400 && jqXHR.status < 500) {
+                                        errorMsg += 'Invalid request. Please check the webhook URL or form data.';
+                                    } else if (jqXHR.status >= 500) {
+                                        errorMsg += 'Server error. Please try again later.';
+                                    } else {
+                                        errorMsg += errorThrown || 'Unknown error';
+                                    }
+                                    $('#errorMessage').text(errorMsg).css('display', 'block');
                                     $('#loadingSpinner').hide();
+                                    $('button[type="submit"]').prop('disabled', false).text('Submit Report');
                                 },
                                 complete: function() {
-                                    $('button[type="submit"]').prop('disabled', false).text('Submit Report');
-                                    $('#loadingSpinner').hide();
+                                    console.log('Webhook request completed');
                                 }
                             });
                         } catch (error) {
                             console.error('Submission error:', error.message);
-                            alert('Submission failed: ' + error.message);
-                            $('button[type="submit"]').prop('disabled', false).text('Submit Report');
+                            $('#errorMessage').text('Submission failed: ' + error.message).css('display', 'block');
                             $('#loadingSpinner').hide();
+                            $('button[type="submit"]').prop('disabled', false).text('Submit Report');
                         }
                     });
                 } catch (error) {
