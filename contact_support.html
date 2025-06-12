@@ -93,7 +93,7 @@
                     <p>
                         Our support team is available 24/7 for inquiries about lost items, claims, or LostLink questions. Fill out the form below, and we’ll get back to you within 24 hours. For urgent issues, call <strong>+1-800-555-9999</strong>.
                     </p>
-                    <form id="contactForm" method="post" action="contact_acknowledgement.html">
+                    <form id="contactForm" method="post">
                         <div class="row gtr-50">
                             <div class="col-6 col-12-mobile">
                                 <div class="form-group">
@@ -196,6 +196,8 @@
         <script src="assets/js/main.js"></script>
         <script>
             $(document).ready(function() {
+                const ZAPIER_WEBHOOK_URL = 'https://zapier.com/editor/303307803/published';
+
                 function validateEmail(email) {
                     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
                     $('#emailError').toggle(!isValid).text(isValid ? '' : 'Please enter a valid email address.');
@@ -204,14 +206,37 @@
 
                 $('#contactForm').submit(function(e) {
                     e.preventDefault();
+                    const name = $('#name').val().trim();
                     const email = $('#email').val().trim();
+                    const subject = $('#subject').val();
+                    const message = $('#message').val().trim();
 
                     if (!validateEmail(email)) return;
 
                     $('.submit-button').prop('disabled', true).text('Sending...');
-                    setTimeout(() => {
-                        window.location.href = 'contact_acknowledgement.html';
-                    }, 1000);
+                    $.ajax({
+                        url: ZAPIER_WEBHOOK_URL,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            type: 'contact_inquiry',
+                            name: name,
+                            email: email,
+                            subject: subject,
+                            message: message,
+                            timestamp: new Date().toISOString()
+                        }),
+                        success: function() {
+                            window.location.href = 'contact_acknowledgement.html';
+                        },
+                        error: function() {
+                            alert('Error submitting inquiry. Please try again later.');
+                            $('.submit-button').prop('disabled', false).text('Send');
+                        },
+                        complete: function() {
+                            $('.submit-button').prop('disabled', false).text('Send');
+                        }
+                    });
                 });
 
                 $('#email').on('input', function() {
