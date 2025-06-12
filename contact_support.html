@@ -34,7 +34,7 @@
             display: none;
             margin-top: 5px;
         }
-        .submit-button, .login-button {
+        .submit-button {
             background-color: #df7366;
             color: white;
             padding: 10px 20px;
@@ -43,10 +43,10 @@
             cursor: pointer;
             font-size: 1em;
         }
-        .submit-button:hover, .login-button:hover {
+        .submit-button:hover {
             background-color: #ef8376;
         }
-        .submit-button:disabled, .login-button:disabled {
+        .submit-button:disabled {
             background-color: #6c757d;
             cursor: not-allowed;
         }
@@ -55,7 +55,7 @@
                 padding: 10px;
             }
             input, select, textarea {
-                font-size: 0.9em;
+                font-size: .9em;
             }
         }
     </style>
@@ -91,10 +91,9 @@
                 <section class="form-container">
                     <h3>Get in Touch</h3>
                     <p>
-                        Our support team is available 24/7 for inquiries about lost items, claims, or LostLink questions. Fill out the form below after signing in with your Google account, and we’ll get back to you within 24 hours. For urgent issues, call <strong>+1-800-555-9999</strong>.
+                        Our support team is available 24/7 for inquiries about lost items, claims, or LostLink questions. Fill out the form below, and we’ll get back to you within 24 hours. For urgent issues, call <strong>+1-800-555-9999</strong>.
                     </p>
-                    <button id="loginButton" class="login-button">Sign in with Google</button>
-                    <form id="contactForm" method="post" style="display: none;">
+                    <form id="contactForm" method="post" action="contact_acknowledgement.html">
                         <div class="row gtr-50">
                             <div class="col-6 col-12-mobile">
                                 <div class="form-group">
@@ -139,7 +138,7 @@
                         <li><strong>Phone:</strong> +1-800-555-9999 (24/7 Support)</li>
                         <li><strong>Email:</strong> lostlinkservice@gmail.com</li>
                         <li><strong>Live Chat:</strong> Available on our <a href="index.html">Homepage</a></li>
-                        <li><strong>In-Person:</strong> Visit the Lost and Found office at Terminal 1, LAX Airport.</li>
+                        <li><strong>In-Person:</strong> Visit the Lost and Found office at Terminal 1, Manhattan Regional Airport.</li>
                     </ul>
                     <h3>Frequently Asked Questions</h3>
                     <ul>
@@ -195,70 +194,24 @@
         <script src="assets/js/breakpoints.min.js"></script>
         <script src="assets/js/util.js"></script>
         <script src="assets/js/main.js"></script>
-        <script src="https://apis.google.com/js/api.js"></script>
         <script>
             $(document).ready(function() {
-                const CLIENT_ID = '321609158255-091oanamuil8009na1t2ajdk6190p5d0.apps.googleusercontent.com';
-                const SPREADSHEET_ID = '1Ua03tbd9imSPsGRjuFi7FLN0YAXW9GSKMPBrrlHd8Wc';
-                const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-                let tokenClient;
-
                 function validateEmail(email) {
                     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
                     $('#emailError').toggle(!isValid).text(isValid ? '' : 'Please enter a valid email address.');
                     return isValid;
                 }
 
-                function initGoogleAuth() {
-                    gapi.load('client', () => {
-                        gapi.client.init({
-                            discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-                        }).then(() => {
-                            tokenClient = google.accounts.oauth2.initTokenClient({
-                                client_id: CLIENT_ID,
-                                scope: SCOPES,
-                                callback: (tokenResponse) => {
-                                    if (tokenResponse.access_token) {
-                                        gapi.client.setToken({ access_token: tokenResponse.access_token });
-                                        $('#loginButton').hide();
-                                        $('#contactForm').show();
-                                    } else {
-                                        alert('Failed to authenticate with Google. Please try again.');
-                                    }
-                                }
-                            });
-                        });
-                    });
-                }
-
-                $('#loginButton').click(function() {
-                    tokenClient.requestAccessToken();
-                });
-
                 $('#contactForm').submit(function(e) {
                     e.preventDefault();
-                    const name = $('#name').val().trim();
                     const email = $('#email').val().trim();
-                    const subject = $('#subject').val();
-                    const message = $('#message').val().trim();
 
                     if (!validateEmail(email)) return;
 
                     $('.submit-button').prop('disabled', true).text('Sending...');
-
-                    gapi.client.sheets.spreadsheets.values.append({
-                        spreadsheetId: SPREADSHEET_ID,
-                        range: 'ContactInquiries!A:E',
-                        valueInputOption: 'RAW',
-                        resource: {
-                            values: [[new Date().toISOString(), name, email, subject, message]]
-                        }
-                    }).then(() => {
+                    setTimeout(() => {
                         window.location.href = 'contact_acknowledgement.html';
-                    }, (error) => {
-                        alert('Error submitting inquiry: ' + (error.result?.error?.message || 'Unknown error.'));
-                        $('.submit-button').prop('disabled', false).text('Send');
-                    });
+                    }, 1000);
                 });
 
                 $('#email').on('input', function() {
@@ -272,8 +225,6 @@
                         $(this).val($(this).val().substring(0, maxLength));
                     }
                 });
-
-                initGoogleAuth();
             });
         </script>
 </body>
