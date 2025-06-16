@@ -192,8 +192,8 @@
                             <div class="col-6 col-12-mobile">
                                 <div class="form-group">
                                     <label for="dateFound">Date Found</label>
-                                    <input type="date" name="dateFound" id="dateFound" required aria-required="true" max="2025-06-12" />
-                                    <span class="error" id="dateFoundError">Please enter a valid date.</span>
+                                    <input type="date" name="dateFound" id="dateFound" required aria-required="true" max="2025-09-30" />
+                                    <span class="error" id="dateFoundError">Please enter a valid date (MM/DD/YY).</span>
                                 </div>
                             </div>
                         </div>
@@ -292,6 +292,15 @@
                     return `FOUND-${rand}-${suffix}`;
                 }
 
+                function formatDateToMMDDYY(dateStr) {
+                    const dateObj = new Date(dateStr);
+                    if (isNaN(dateObj.getTime())) return null;
+                    const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+                    const day = ('0' + dateObj.getDate()).slice(-2);
+                    const year = dateObj.getFullYear().toString().slice(-2);
+                    return `${month}/${day}/${year}`;
+                }
+
                 function validateForm() {
                     let isValid = true;
                     const itemType = $('#itemType').val();
@@ -305,7 +314,7 @@
                     $('#itemTypeError').toggle(!validItemTypes.includes(itemType)).text(itemType ? '' : 'Please select an item type.');
                     $('#airportError').toggle(!validAirports.includes(airport)).text(airport ? '' : 'Please select an airport.');
                     $('#descriptionError').toggle(description.length < 5).text(description.length >= 5 ? '' : 'Description must be at least 5 characters.');
-                    $('#dateFoundError').toggle(!dateFound || !dateFound.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateFound).getTime())).text(dateFound ? '' : 'Please enter a valid date.');
+                    $('#dateFoundError').toggle(!dateFound || !dateFound.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateFound).getTime()) || new Date(dateFound) > new Date('2025-09-30')).text(dateFound ? '' : 'Please enter a valid date (MM/DD/YY, up to 09/30/25).');
                     $('#locationError').toggle(location.length < 5).text(location.length >= 5 ? '' : 'Location must be at least 5 characters.');
                     $('#reportedByError').toggle(reportedBy.length < 2).text(reportedBy.length >= 2 ? '' : 'Reported By must be at least 2 characters.');
                     $('#reporterTypeError').toggle(!validReporterTypes.includes(reporterType)).text(reporterType ? '' : 'Please select a reporter type.');
@@ -313,7 +322,7 @@
                     if (!validItemTypes.includes(itemType) ||
                         !validAirports.includes(airport) ||
                         description.length < 5 ||
-                        !dateFound || !dateFound.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateFound).getTime()) ||
+                        !dateFound || !dateFound.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateFound).getTime()) || new Date(dateFound) > new Date('2025-09-30') ||
                         location.length < 5 ||
                         reportedBy.length < 2 ||
                         !validReporterTypes.includes(reporterType)) {
@@ -327,6 +336,13 @@
                     e.preventDefault();
                     if (!validateForm()) return;
 
+                    const dateFound = $('#dateFound').val();
+                    const formattedDateFound = formatDateToMMDDYY(dateFound);
+                    if (!formattedDateFound) {
+                        $('#dateFoundError').text('Invalid date format.').show();
+                        return;
+                    }
+
                     const trackingId = generateTrackingId();
                     const formData = {
                         type: 'found_item',
@@ -334,7 +350,7 @@
                         itemType: $('#itemType').val(),
                         airport: $('#airport').val(),
                         description: $('#description').val().trim(),
-                        dateFound: $('#dateFound').val(),
+                        dateFound: formattedDateFound,
                         location: $('#location').val().trim(),
                         status: 'Available',
                         reportedBy: $('#reportedBy').val().trim(),
@@ -355,7 +371,7 @@
                             $('#successMessage').text(`Thank you, your report has been submitted with TrackingID: ${trackingId}`).show();
                             $('#foundItemForm')[0].reset();
                             setTimeout(() => {
-                                window.location.href = `contact_acknowledgement.html?type=found_item&trackingID=${encodeURIComponent(trackingId)}`;
+                                window.location.href = `contact_acknowledgement.html?type=found_item&trackingID=${encodeURIComponent(trackingId)}&dateFound=${encodeURIComponent(formattedDateFound)}`;
                             }, 1000);
                         },
                         error: function() {
