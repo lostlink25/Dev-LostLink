@@ -1,131 +1,246 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>LostLink - About Us</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<div id="page-wrapper">
+    <head>
+        <title>LostLink - About Us</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://code.jquery.com; object-src 'none'; base-uri 'self';" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+        <style>
+            .hero-section {
+                background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/airport.jpg') center/cover no-repeat;
+                color: #fff;
+                text-align: center;
+                padding: 5em 2em;
+                margin-bottom: 2em;
+            }
+            .hero-section h1 {
+                font-size: 2.5em;
+                margin-bottom: 0.5em;
+            }
+            .hero-section p {
+                font-size: 1.2em;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .card-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1.5em;
+                justify-content: center;
+                margin: 2em 0;
+            }
+            .card {
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 1.5em;
+                flex: 1;
+                min-width: 250px;
+                max-width: 300px;
+                text-align: center;
+                transition: transform 0.3s ease;
+            }
+            .card:hover {
+                transform: translateY(-5px);
+            }
+            .card h4 {
+                color: #df7366;
+                margin-bottom: 0.5em;
+            }
+            .card p {
+                font-size: 0.9em;
+                color: #5b5b5b;
+            }
+            .cta-button {
+                display: inline-block;
+                background: #df7366;
+                color: #fff;
+                padding: 1em 2em;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: bold;
+                margin: 1em 0;
+                transition: background 0.3s ease;
+            }
+            .cta-button:hover {
+                background: #ef8376;
+            }
+            .section {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .section.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            @media screen and (max-width: 768px) {
+                .hero-section h1 {
+                    font-size: 2em;
+                }
+                .hero-section p {
+                    font-size: 1em;
+                }
+                .card {
+                    min-width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body class="is-preload">
+        <div id="page-wrapper">
+            <!-- Header -->
+            <div id="header">
+                <!-- Nav -->
+                <nav id="nav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li class="current"><a href="About_Us.html">About Us</a></li>
+                        <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
+                        <li><a href="report_found_items.html">Found Items</a></li>
+                        <li><a href="track_your_item.html">Track Items</a></li>
+                        <li><a href="claim_item.html">Claim Items</a></li>
+                        <li><a href="login_staff.html">Staff Login</a></li>
+                        <li><a href="claim_submission.html">Claim Submissions</a></li>
+                        <li><a href="contact_support.html">Contact Us</a></li>
+                    </ul>
+                </nav>
+            </div>
 
-			<!-- Header -->
-			<div id="header">
-				<!-- Nav -->
-				<nav id="nav">
-					<ul>
-						  <li><a href="index.html">Home</a></li>
-                             <li><a href="About_Us.html">About Us</a></li>
-                             <li><a href="Report_Lost_Items.html">Report Lost Items</a></li>
-                             <li><a href="report_found_items.html">Found Items</a></li>
-                             <li><a href="track_your_item.html">Track Items</a></li>
-                             <li><a href="claim_item.html">Claim Items</a></li>
-                             <li><a href="login_staff.html">Staff Login</a></li>
-                             <li><a href="claim_submission.html">Claim Submissions</a></li>
-                             <li><a href="contact_support.html">Contact Us</a></li>
-					</ul>
-				</nav>
-			</div>
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1>About LostLink</h1>
+                <p>Reuniting travelers with their lost belongings through innovative technology and dedicated support, making airport lost and found effortless.</p>
+                <a href="Report_Lost_Items.html" class="cta-button">Report a Lost Item</a>
+            </section>
 
-			<!-- Main -->
-			<div class="wrapper style2">
-				<article id="main" class="container special">
-					<header>
-						<h2>About LostLink</h2>
-						<p>Reuniting travelers with lost items.</p>
-					</header>
-					<section>
-						<h3>Our Mission</h3>
-						<p>
-							LostLink makes it easy for travelers to recover lost belongings with a user-friendly platform and dedicated support, setting a new standard for lost and found services at airports worldwide.
-						</p>
-					</section>
-					<section>
-						<h3>Our Services</h3>
-						<ul>
-							<li><strong>Report Lost Items:</strong> Submit details to locate lost items quickly.</li>
-							<li><strong>Track Items:</strong> Get real-time updates on your lost items.</li>
-							<li><strong>Claim Items:</strong> Securely retrieve your belongings.</li>
-							<li><strong>Staff Support:</strong> Tools for airport staff to manage lost and found.</li>
-						</ul>
-					</section>
-					<section>
-						<h3>Our Team</h3>
-						<p>Founded by travel and tech experts, our team is committed to excellent service.</p>
-						<div class="row">
-							<article class="col-4 col-12-mobile special">
-								<a href="#" class="image featured"><img src="images/team_member1.jpg" alt="Jane Doe" /></a>
-								<header>
-									<h3>Jane Doe</h3>
-								</header>
-								<p>CEO & Founder</p>
-							</article>
-							<article class="col-4 col-12-mobile special">
-								<a href="#" class="image featured"><img src="images/team_member2.jpg" alt="John Smith" /></a>
-								<header>
-									<h3>John Smith</h3>
-								</header>
-								<p>CTO</p>
-							</article>
-							<article class="col-4 col-12-mobile special">
-								<a href="#" class="image featured"><img src="images/team_member3.jpg" alt="Emily Johnson" /></a>
-								<header>
-									<h3>Emily Johnson</h3>
-								</header>
-								<p>Customer Support Lead</p>
-							</article>
-						</div>
-					</section>
-					<section>
-						<h3>Why Choose Us?</h3>
-						<ul>
-							<li><strong>Easy to Use:</strong> Simple platform for reporting and tracking.</li>
-							<li><strong>24/7 Support:</strong> Always available to help.</li>
-							<li><strong>Secure:</strong> Verified claims for safe returns.</li>
-							<li><strong>Global:</strong> Partnered with airports worldwide.</li>
-						</ul>
-					</section>
-				</article>
-			</div>
+            <!-- Main -->
+            <div class="wrapper style2">
+                <article id="main" class="container special">
+                    <section class="section">
+                        <h3>Our Mission</h3>
+                        <p>
+                            At LostLink, we aim to transform the lost and found experience by providing a seamless, user-friendly platform that connects travelers with their belongings. Our mission is to reduce the stress of losing items at airports by offering real-time tracking, secure claiming, and 24/7 support, setting a global standard for excellence in recovery services.
+                        </p>
+                    </section>
+                    <section class="section">
+                        <h3>Our Services</h3>
+                        <div class="card-container">
+                            <div class="card">
+                                <h4>Report Lost Items</h4>
+                                <p>Quickly submit detailed descriptions and images to initiate the search for your lost belongings.</p>
+                            </div>
+                            <div class="card">
+                                <h4>Track in Real Time</h4>
+                                <p>Monitor the status of your lost item with instant updates on its location and recovery progress.</p>
+                            </div>
+                            <div class="card">
+                                <h4>Secure Claiming</h4>
+                                <p>Verify and claim your found items through a safe, streamlined process.</p>
+                            </div>
+                            <div class="card">
+                                <h4>Staff Tools</h4>
+                                <p>Empower airport staff with efficient tools to manage and match lost and found items.</p>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="section">
+                        <h3>Our Team</h3>
+                        <p>
+                            LostLink is powered by a dedicated team of travel industry professionals, technology innovators, and customer service experts. From developing cutting-edge tracking systems to partnering with airports worldwide, our team is committed to ensuring every traveler’s belongings are safely returned. With decades of combined experience, we strive to make your journey worry-free.
+                        </p>
+                    </section>
+                    <section class="section">
+                        <h3>Our Achievements</h3>
+                        <p>
+                            Since launching, LostLink has reunited thousands of travelers with their lost items across major U.S. airports, including LAX, JFK, and ATL. We’ve partnered with over 50 airports globally, achieving a 90% recovery rate for reported items. Our platform has been recognized for its innovative approach to lost and found services, earning accolades from travel industry leaders.
+                        </p>
+                    </section>
+                    <section class="section">
+                        <h3>Why Choose LostLink?</h3>
+                        <div class="card-container">
+                            <div class="card">
+                                <h4>User-Friendly</h4>
+                                <p>Intuitive platform designed for travelers of all ages, with easy reporting and tracking.</p>
+                            </div>
+                            <div class="card">
+                                <h4>24/7 Support</h4>
+                                <p>Round-the-clock assistance via phone, email, or live chat to help you recover your items.</p>
+                            </div>
+                            <div class="card">
+                                <h4>Secure Recovery</h4>
+                                <p>Robust verification ensures your belongings are returned safely to you.</p>
+                            </div>
+                            <div class="card">
+                                <h4>Global Reach</h4>
+                                <p>Collaborations with airports worldwide for seamless lost and found services.</p>
+                            </div>
+                        </div>
+                        <p style="text-align: center;">
+                            <a href="contact_support.html" class="cta-button">Get in Touch</a>
+                        </p>
+                    </section>
+                </article>
+            </div>
 
-		<!-- Footer -->
-		<div id="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<!-- Contact -->
-							<section class="contact">
-								<header>
-									<h3>Need Help with a Lost Item?</h3>
-								</header>
-								<p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
-								<ul class="icons">
-									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-									<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-									<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-								</ul>
-							</section>
+            <!-- Footer -->
+            <div id="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Contact -->
+                            <section class="contact">
+                                <header>
+                                    <h3>Need Help with a Lost Item?</h3>
+                                </header>
+                                <p>Contact our 24/7 support team or visit our Lost and Found office at the airport.</p>
+                                <ul class="icons">
+                                    <li><a href="#" class="icon brands fa-x-twitter"><span class="label">X</span></a></li>
+                                    <li><a href="https://www.facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                                    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                                    <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+                                    <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+                                    <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
+                                </ul>
+                            </section>
 
-						<!-- Copyright -->
-							<div class="copyright">
-								<ul class="menu">
-									<li>© LostLink. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-								</ul>
-							</div>
+                            <!-- Copyright -->
+                            <div class="copyright">
+                                <ul class="menu">
+                                    <li>© LostLink. All rights reserved.</li>
+                                    <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-		<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.dropotron.min.js"></script>
-		<script src="assets/js/jquery.scrolly.min.js"></script>
-		<script src="assets/js/jquery.scrollex.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
-
-	</body>
+        <!-- Scripts -->
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/jquery.dropotron.min.js"></script>
+        <script src="assets/js/jquery.scrolly.min.js"></script>
+        <script src="assets/js/jquery.scrollex.min.js"></script>
+        <script src="assets/js/browser.min.js"></script>
+        <script src="assets/js/breakpoints.min.js"></script>
+        <script src="assets/js/util.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Add animation to sections on scroll
+                $(window).on('scroll', function() {
+                    $('.section').each(function() {
+                        const top = $(this).offset().top;
+                        const windowBottom = $(window).scrollTop() + $(window).height();
+                        if (top < windowBottom - 50) {
+                            $(this).addClass('visible');
+                        }
+                    });
+                }).trigger('scroll');
+            });
+        </script>
+    </body>
 </html>
