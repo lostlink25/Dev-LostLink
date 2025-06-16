@@ -219,12 +219,12 @@
                                         </select>
 
                                         <label for="description">Item Description</label>
-                                        <textarea id="description" name="description" rows="4" placeholder="Describe the item (color, breed, size, etc.)" required></textarea>
+                                        <textarea id="description" name="description" rows="4" placeholder="Describe the item (color, brand, size, etc.)" required></textarea>
                                         <span class="error" id="descriptionError">Please provide a description</span>
 
                                         <label for="date-lost">Date Lost</label>
-                                        <input type="date" id="date-lost" name="dateLost" required max="2025-06-12" autocomplete="off" />
-                                        <span class="error" id="dateLostError">Please select a valid date</span>
+                                        <input type="date" id="date-lost" name="dateLost" required max="2025-09-30" autocomplete="off" />
+                                        <span class="error" id="dateLostError">Please select a valid date (MM/DD/YY)</span>
 
                                         <button type="submit">Submit Report</button>
                                         <div class="loading-spinner" id="loadingSpinner"></div>
@@ -360,9 +360,9 @@
                                 errors.push('Description must be at least 5 characters');
                                 isValid = false;
                             }
-                            if (!dateLost || !dateLost.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateLost).getTime())) {
+                            if (!dateLost || !dateLost.match(/^\d{4}-\d{2}-\d{2}$/) || isNaN(new Date(dateLost).getTime()) || new Date(dateLost) > new Date('2025-09-30')) {
                                 $('#dateLostError').css('display', 'block');
-                                errors.push('Invalid date format');
+                                errors.push('Invalid date format or date after 09/30/25');
                                 isValid = false;
                             }
 
@@ -383,7 +383,7 @@
                             const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
                             const day = ('0' + dateObj.getDate()).slice(-2);
                             const year = dateObj.getFullYear().toString().slice(-2);
-                            dateLost = `${month}/${day}/${year}`; // e.g., 02/25/25
+                            dateLost = `${month}/${day}/${year}`; // e.g., 09/15/25
                             console.log('Formatted dateLost:', dateLost);
 
                             // Sanitize inputs
